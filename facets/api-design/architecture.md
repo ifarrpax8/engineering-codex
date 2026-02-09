@@ -17,6 +17,29 @@ API architecture encompasses the protocols, patterns, and infrastructure that en
 
 REST (Representational State Transfer) is a resource-oriented architecture using HTTP methods and status codes.
 
+```mermaid
+sequenceDiagram
+    participant Client as Client
+    participant Gateway as API Gateway
+    participant Controller as Controller
+    participant Service as Service Layer
+    participant Repository as Repository
+    participant Database as Database
+
+    Client->>Gateway: HTTP Request
+    Gateway->>Gateway: Authentication/Authorization
+    Gateway->>Controller: Route request
+    Controller->>Controller: Validate request
+    Controller->>Service: Business logic call
+    Service->>Repository: Data access call
+    Repository->>Database: SQL Query
+    Database->>Repository: Result set
+    Repository->>Service: Domain objects
+    Service->>Controller: Business result
+    Controller->>Gateway: HTTP Response
+    Gateway->>Client: HTTP Response
+```
+
 ### Resource Modeling
 
 REST models APIs around resources (nouns), not actions (verbs):
@@ -576,6 +599,23 @@ Event-driven synchronization is preferred as it provides near real-time updates 
 
 ### Decision Guide
 
+```mermaid
+flowchart TD
+    Start{Need free-text search?} -->|No| Filter[Use Filtering with query parameters]
+    Start -->|Yes| CoreFeature{Search is core UX?}
+    CoreFeature -->|No| Postgres[PostgreSQL Full-Text Search]
+    CoreFeature -->|Yes| Budget{Infrastructure budget?}
+    Budget -->|No| Lightweight[Meilisearch or Typesense]
+    Budget -->|Yes| LargeDataset{Dataset > 1M documents?}
+    LargeDataset -->|Yes| OpenSearch[OpenSearch]
+    LargeDataset -->|No| AnyEngine[Any search engine works]
+    Filter --> End[Implement solution]
+    Postgres --> End
+    Lightweight --> End
+    OpenSearch --> End
+    AnyEngine --> End
+```
+
 ```
 Do you need free-text search across multiple fields?
 ├── No → Use filtering (query parameters + database queries)
@@ -711,3 +751,18 @@ Version in query parameter: `/users?version=2`
 | Query Parameter | Medium | Easy | Hard | Medium |
 
 **Recommendation**: Use URL path versioning (`/v1/`, `/v2/`) for most APIs. It's explicit, easy to route, and familiar to developers. Reserve header versioning for APIs where URL cleanliness is critical.
+
+```mermaid
+flowchart TD
+    Start{Choose Versioning Strategy} --> Visibility{URL cleanliness critical?}
+    Visibility -->|No| PathVersion[URL Path Versioning /v1/ /v2/]
+    Visibility -->|Yes| Standards{Standards-based approach?}
+    Standards -->|Yes| ContentNeg[Content Negotiation Accept header]
+    Standards -->|No| HeaderVersion[Custom Header Accept-Version]
+    PathVersion --> Benefits1[Explicit, easy routing, familiar]
+    ContentNeg --> Benefits2[Standards-based, version negotiation]
+    HeaderVersion --> Benefits3[Clean URLs, version negotiation]
+    Benefits1 --> End[Implement versioning]
+    Benefits2 --> End
+    Benefits3 --> End
+```

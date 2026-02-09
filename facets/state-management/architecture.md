@@ -14,6 +14,18 @@ State management architecture determines how data flows through an application, 
 
 Understanding the different types of state is fundamental to choosing appropriate management strategies. Each type has different lifecycle requirements, sharing patterns, and persistence needs.
 
+```mermaid
+graph TD
+    componentLocal["Component Local State: useState, ref"]
+    featureLevel["Feature Level State: Pinia store, Zustand"]
+    appGlobal["App Global State: Shared context, theme"]
+    serverState["Server State: TanStack Query cache"]
+    
+    componentLocal -->|"promote when shared"| featureLevel
+    featureLevel -->|"promote when app-wide"| appGlobal
+    appGlobal -->|"fetches from"| serverState
+```
+
 ### Local Component State
 
 Local component state belongs to a single component and has no meaning outside that component's scope. Examples include form input values, toggle states for dropdowns or modals, hover states, and temporary UI flags. This state lives in the component, is initialized when the component mounts, and is destroyed when the component unmounts.
@@ -113,6 +125,27 @@ Micro-frontend architectures require careful consideration of state ownership. E
 ### Per-MFE State Isolation
 
 Each MFE has its own instance of state management libraries. If using Pinia, each MFE has its own Pinia instance. If using TanStack Query, each MFE has its own query client. This ensures complete isolation—state changes in one MFE don't affect another.
+
+```mermaid
+graph LR
+    shell["Shell App: Shared Context"]
+    eventBus["Event Bus: CustomEvent API"]
+    mfe1["MFE 1: Own Store Instance"]
+    mfe2["MFE 2: Own Store Instance"]
+    mfe3["MFE 3: Own Store Instance"]
+    
+    shell -->|"inject context"| mfe1
+    shell -->|"inject context"| mfe2
+    shell -->|"inject context"| mfe3
+    
+    mfe1 -->|"publish events"| eventBus
+    mfe2 -->|"publish events"| eventBus
+    mfe3 -->|"publish events"| eventBus
+    
+    eventBus -->|"subscribe"| mfe1
+    eventBus -->|"subscribe"| mfe2
+    eventBus -->|"subscribe"| mfe3
+```
 
 This isolation means that MFEs cannot directly share state through stores. If two MFEs need to share data, they must use other mechanisms: browser events, URL parameters, or a lightweight pub/sub bus provided by the shell application.
 

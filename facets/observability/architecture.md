@@ -12,6 +12,61 @@ Observability architecture centers on three pillars: logs, metrics, and traces. 
 
 ## The Three Pillars of Observability
 
+```mermaid
+graph TB
+    subgraph Services["Application Services"]
+        Service1["Service 1"]
+        Service2["Service 2"]
+        Service3["Service 3"]
+    end
+    
+    subgraph Pillars["Three Pillars"]
+        Logs["Logs - Event Records"]
+        Metrics["Metrics - Time Series"]
+        Traces["Traces - Request Flow"]
+    end
+    
+    subgraph Collection["Collection Layer"]
+        Collector["OpenTelemetry Collector"]
+    end
+    
+    subgraph Storage["Storage Layer"]
+        LogStore["Log Storage - Loki/ELK"]
+        MetricStore["Metric Storage - Prometheus"]
+        TraceStore["Trace Storage - Tempo/Jaeger"]
+    end
+    
+    subgraph Visualization["Visualization Layer"]
+        Dashboards["Dashboards - Grafana"]
+        Alerts["Alerting - PagerDuty"]
+    end
+    
+    Service1 --> Logs
+    Service2 --> Logs
+    Service3 --> Logs
+    Service1 --> Metrics
+    Service2 --> Metrics
+    Service3 --> Metrics
+    Service1 --> Traces
+    Service2 --> Traces
+    Service3 --> Traces
+    
+    Logs --> Collector
+    Metrics --> Collector
+    Traces --> Collector
+    
+    Collector --> LogStore
+    Collector --> MetricStore
+    Collector --> TraceStore
+    
+    LogStore --> Dashboards
+    MetricStore --> Dashboards
+    TraceStore --> Dashboards
+    MetricStore --> Alerts
+```
+
+## The Three Pillars of Observability
+
 ### Logs
 
 Logs are structured records of discrete events. They capture what happened, when it happened, and in what context. Structured logging—using JSON format with consistent field names—enables querying and aggregation across services.
@@ -71,6 +126,32 @@ OpenTelemetry is the vendor-neutral standard for distributed tracing (and metric
 
 Trace context propagation follows the W3C Trace Context standard. Trace ID and span ID are propagated via HTTP headers (traceparent) and message metadata (Kafka headers, AMQP properties). This enables correlating operations across service boundaries, message queues, and async boundaries.
 
+```mermaid
+sequenceDiagram
+    participant User as User Browser
+    participant Frontend as Frontend Service
+    participant API as API Gateway
+    participant Auth as Auth Service
+    participant Order as Order Service
+    participant Payment as Payment Service
+    
+    User->>Frontend: HTTP Request
+    Frontend->>Frontend: Create Trace - TraceID: abc123 - SpanID: span1
+    Frontend->>API: HTTP Request - traceparent: abc123/span1
+    API->>API: Create Span - TraceID: abc123 - SpanID: span2 - Parent: span1
+    API->>Auth: HTTP Request - traceparent: abc123/span2
+    Auth->>Auth: Create Span - TraceID: abc123 - SpanID: span3 - Parent: span2
+    Auth-->>API: Response - traceparent: abc123/span2
+    API->>Order: HTTP Request - traceparent: abc123/span2
+    Order->>Order: Create Span - TraceID: abc123 - SpanID: span4 - Parent: span2
+    Order->>Payment: HTTP Request - traceparent: abc123/span4
+    Payment->>Payment: Create Span - TraceID: abc123 - SpanID: span5 - Parent: span4
+    Payment-->>Order: Response - traceparent: abc123/span4
+    Order-->>API: Response - traceparent: abc123/span2
+    API-->>Frontend: Response - traceparent: abc123/span1
+    Frontend-->>User: HTTP Response
+```
+
 Sampling is essential in high-throughput systems. Tracing every request generates massive volumes of data. Head-based sampling decides at request start whether to trace the request. Tail-based sampling decides after seeing all spans, keeping interesting traces (errors, slow requests) while sampling successful ones. Tail-based sampling is more sophisticated but requires buffering spans, which adds latency.
 
 ## Frontend Observability
@@ -103,6 +184,31 @@ The collector architecture provides flexibility. Applications send telemetry to 
 ## Alerting
 
 Alerting transforms telemetry data into actionable notifications. Effective alerting requires careful design to avoid alert fatigue while ensuring critical issues are caught.
+
+```mermaid
+flowchart TD
+    Start([Metrics Collected]) --> Threshold{Threshold Exceeded?}
+    Threshold -->|No| Continue([Continue Monitoring])
+    Threshold -->|Yes| Evaluate[Evaluate Alert Rule]
+    Evaluate --> RuleCheck{Alert Rule Matches?}
+    RuleCheck -->|No| Continue
+    RuleCheck -->|Yes| Severity{Determine Severity}
+    Severity --> Critical[Critical Alert]
+    Severity --> Warning[Warning Alert]
+    Severity --> Info[Info Alert]
+    Critical --> Route[Route to Notification Channel]
+    Warning --> Route
+    Info --> Route
+    Route --> PagerDuty[PagerDuty On-Call]
+    Route --> Slack[Slack Channel]
+    Route --> Email[Email Notification]
+    PagerDuty --> Escalate{Response Received?}
+    Escalate -->|No| Escalation[Escalate to Next On-Call]
+    Escalate -->|Yes| Resolve[Alert Resolved]
+    Escalation --> Resolve
+    Slack --> Resolve
+    Email --> Resolve
+```
 
 Alert on SLO burn rate, not raw metrics. "Error rate > 1%" fires constantly and becomes noise. "Error budget burning 10x faster than expected" is actionable—it indicates a problem that requires immediate attention. SLO-based alerting focuses on user impact, not technical metrics.
 

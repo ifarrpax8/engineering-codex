@@ -15,6 +15,20 @@ This document covers the architectural patterns, implementation approaches, and 
 
 Feature toggles can be classified into four primary categories based on their purpose and lifecycle, following Martin Fowler's classification system.
 
+```mermaid
+stateDiagram-v2
+    [*] --> Created: Create toggle
+    Created --> Development: Enable for dev
+    Development --> Testing: Enable for QA
+    Testing --> StagedRollout: Gradual rollout
+    StagedRollout --> FullyEnabled: 100% enabled
+    FullyEnabled --> Archived: Feature complete
+    StagedRollout --> Archived: Feature cancelled
+    Testing --> Archived: Feature cancelled
+    Development --> Archived: Feature cancelled
+    Archived --> [*]: Remove toggle code
+```
+
 ### Release Toggles
 
 Release toggles hide incomplete features behind flags, allowing code to be merged and deployed to production before the feature is ready for users. These are short-lived, typically existing for days to weeks, and should be removed promptly after the feature is fully released.
@@ -27,6 +41,26 @@ Release toggles hide incomplete features behind flags, allowing code to be merge
 - Removed after feature release
 
 **Architecture Considerations**: Release toggles need fast evaluation with minimal overhead. They're checked frequently, so performance is critical. Simple boolean checks are sufficient—complex targeting isn't needed.
+
+```mermaid
+flowchart TD
+    Start([Need Feature Toggle?]) --> CheckPurpose{What is the purpose?}
+    
+    CheckPurpose -->|Hide incomplete feature| ReleaseToggle[Release Toggle: Short-lived, simple boolean]
+    CheckPurpose -->|A/B test or experiment| ExperimentToggle[Experiment Toggle: User targeting, percentage rollout]
+    CheckPurpose -->|Operational control| OpsToggle[Ops Toggle: Kill switch, circuit breaker]
+    CheckPurpose -->|Access control| PermissionToggle[Permission Toggle: Role-based, tenant-based]
+    
+    ReleaseToggle --> SimpleEval[Simple evaluation: Fast, no targeting]
+    ExperimentToggle --> ComplexEval[Complex evaluation: User hashing, consistent assignment]
+    OpsToggle --> InstantEval[Instant evaluation: High availability, defaults to on]
+    PermissionToggle --> ContextEval[Context-aware evaluation: User attributes, business rules]
+    
+    SimpleEval --> End([Implement Toggle])
+    ComplexEval --> End
+    InstantEval --> End
+    ContextEval --> End
+```
 
 ### Experiment Toggles
 
@@ -589,6 +623,35 @@ const InvoicePageV2 = lazy(() =>
 ### Evaluation at Request Time
 
 Toggles are evaluated at request time, checking toggle state for each incoming request. Context includes user ID, tenant ID, role, and request metadata. This ensures that toggle state reflects current configuration and user context.
+
+```mermaid
+sequenceDiagram
+    participant Client as Client Request
+    participant Service as Application Service
+    participant FlagService as Flag Service
+    participant Context as Context Builder
+    participant Cache as Toggle Cache
+    participant DB as Toggle Database
+    
+    Client->>Service: HTTP Request
+    Service->>Context: Extract user context (userId, tenantId, role)
+    Context-->>Service: ToggleContext
+    Service->>FlagService: isEnabled(toggleName, context)
+    
+    FlagService->>Cache: Check cache
+    alt Cache Hit
+        Cache-->>FlagService: Cached result
+    else Cache Miss
+        FlagService->>DB: Fetch toggle definition
+        DB-->>FlagService: Toggle config
+        FlagService->>FlagService: Evaluate targeting rules
+        FlagService->>Cache: Store result
+        FlagService-->>Service: Evaluation result
+    end
+    
+    Service->>Service: Apply feature logic
+    Service-->>Client: Response (feature on/off)
+```
 
 **Context Building**:
 

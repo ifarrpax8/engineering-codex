@@ -153,6 +153,27 @@ Event schemas evolve over time. When an event's structure changes, upcasters tra
 
 Separate the command (write) model from the query (read) model. The write model handles business logic and produces events. The read model is denormalized and optimized for specific query patterns.
 
+### CQRS Read/Write Separation
+
+```mermaid
+flowchart LR
+    Command[Command] --> WriteModel[Write Model]
+    WriteModel --> Aggregate[Aggregate]
+    Aggregate --> EventStore[Event Store]
+    EventStore --> Projection[Projection Handler]
+    Projection --> ReadModel1[Read Model 1]
+    Projection --> ReadModel2[Read Model 2]
+    Projection --> ReadModel3[Read Model 3]
+    
+    Query1[Query 1] --> ReadModel1
+    Query2[Query 2] --> ReadModel2
+    Query3[Query 3] --> ReadModel3
+    
+    ReadModel1 --> Response1[Response]
+    ReadModel2 --> Response2[Response]
+    ReadModel3 --> Response3[Response]
+```
+
 **Write model**: aggregates enforce business rules, validate commands, produce events. Optimized for consistency and correctness.
 
 **Read model**: projections consume events and build query-optimized views. Denormalized for fast reads. May use different storage (PostgreSQL for relational queries, OpenSearch for full-text search, Redis for fast lookups).
@@ -172,6 +193,27 @@ In a microservices architecture, each service owns its database. No service dire
 **Data synchronization strategies**: event-driven synchronization (service publishes events, other services build local copies of needed data), API calls for real-time needs, periodic sync jobs for non-critical data.
 
 ## Migrations
+
+### Database Migration Pipeline
+
+```mermaid
+sequenceDiagram
+    participant Developer
+    participant MigrationScript
+    participant Flyway
+    participant Database
+    
+    Developer->>MigrationScript: Create Migration Script
+    Developer->>Flyway: Deploy Migration
+    Flyway->>Database: Check Schema Version
+    Database-->>Flyway: Current Version
+    Flyway->>Database: Execute Migration Script
+    Database->>Database: Update Schema
+    Database-->>Flyway: Migration Complete
+    Flyway->>Database: Update Schema Version Table
+    Database-->>Flyway: Version Updated
+    Flyway-->>Developer: Migration Success
+```
 
 ### Flyway
 
@@ -194,6 +236,25 @@ This ensures that both old and new versions of the application code work with th
 - Adding an index: use `CREATE INDEX CONCURRENTLY` to avoid table locks
 
 ## Caching
+
+### Caching Layers
+
+```mermaid
+graph TB
+    Application[Application]
+    L1Cache["L1 Cache (In-Process Memory)"]
+    L2Cache["L2 Cache (Redis Cluster)"]
+    Database[(Database)]
+    
+    Application -->|Check| L1Cache
+    L1Cache -->|Hit| Application
+    L1Cache -->|Miss| L2Cache
+    L2Cache -->|Hit| Application
+    L2Cache -->|Miss| Database
+    Database -->|Load| L2Cache
+    L2Cache -->|Store| L1Cache
+    L1Cache -->|Return| Application
+```
 
 ### Cache-Aside (Lazy Loading)
 

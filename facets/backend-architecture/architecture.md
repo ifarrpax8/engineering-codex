@@ -135,6 +135,34 @@ Layered architecture organizes code into horizontal layers: presentation, servic
 - **Domain**: Business logic, domain models, domain services
 - **Infrastructure**: Database access, external service clients, messaging
 
+**Request Flow Through Layers**:
+
+```mermaid
+sequenceDiagram
+    participant Client as HTTP Client
+    participant Controller as Controller Layer
+    participant Service as Service Layer
+    participant Domain as Domain Layer
+    participant Repository as Repository Layer
+    participant DB as Database
+    
+    Client->>Controller: HTTP Request
+    Controller->>Controller: Validate Input
+    Controller->>Service: Call Service Method
+    Service->>Service: Begin Transaction
+    Service->>Domain: Invoke Domain Logic
+    Domain->>Domain: Business Rules
+    Domain->>Repository: Request Data Access
+    Repository->>DB: Execute Query
+    DB-->>Repository: Return Data
+    Repository-->>Domain: Return Domain Object
+    Domain-->>Service: Return Result
+    Service->>Service: Commit Transaction
+    Service-->>Controller: Return DTO
+    Controller->>Controller: Map to Response
+    Controller-->>Client: HTTP Response
+```
+
 **Package Structure** (Kotlin/Spring Boot):
 ```
 com.company.product.user/
@@ -168,6 +196,40 @@ Hexagonal architecture isolates the domain core from infrastructure concerns. Th
 - **Domain Core**: Pure business logic, no framework dependencies
 - **Ports**: Interfaces defined by the domain (inbound: use cases, outbound: repositories, external services)
 - **Adapters**: Infrastructure implementations (inbound: controllers, outbound: JPA repositories, HTTP clients)
+
+**Hexagonal Architecture Structure**:
+
+```mermaid
+graph TB
+    subgraph Domain["Domain Core"]
+        Model[Domain Models]
+        Ports[Ports/Interfaces]
+        Services[Domain Services]
+    end
+    
+    subgraph Inbound["Inbound Adapters"]
+        Controller[HTTP Controller]
+        CLI[CLI Adapter]
+        Messaging[Messaging Listener]
+    end
+    
+    subgraph Outbound["Outbound Adapters"]
+        Repository[JPA Repository]
+        HTTPClient[HTTP Client]
+        EventPub[Event Publisher]
+    end
+    
+    Controller -->|implements| Ports
+    CLI -->|implements| Ports
+    Messaging -->|implements| Ports
+    
+    Ports -->|uses| Model
+    Ports -->|uses| Services
+    
+    Repository -->|implements| Ports
+    HTTPClient -->|implements| Ports
+    EventPub -->|implements| Ports
+```
 
 **Package Structure** (Kotlin/Spring Boot):
 ```
@@ -210,6 +272,31 @@ CQRS separates command (write) and query (read) models. Commands modify state th
 **Command Side**: Commands are handled by aggregates that enforce business rules and emit domain events. Axon Framework provides `@Aggregate`, `@CommandHandler`, and `@EventSourcingHandler` annotations.
 
 **Query Side**: Read models are built from events (event sourcing) or updated synchronously (traditional CQRS). Projections optimize for specific query patterns.
+
+**CQRS Pattern Flow**:
+
+```mermaid
+flowchart LR
+    subgraph CommandSide["Command Side"]
+        Command[Command]
+        Aggregate[Aggregate]
+        EventStore[Event Store]
+        DomainEvent[Domain Events]
+    end
+    
+    subgraph QuerySide["Query Side"]
+        Query[Query]
+        ReadModel[Read Model]
+        Projection[Projection]
+    end
+    
+    Command --> Aggregate
+    Aggregate --> DomainEvent
+    DomainEvent --> EventStore
+    DomainEvent --> Projection
+    Projection --> ReadModel
+    Query --> ReadModel
+```
 
 **When to Use**: Different read/write patterns (many reads, few writes, or vice versa), complex read queries that would complicate write model, need for independent scaling of read/write, event sourcing adoption.
 

@@ -57,6 +57,30 @@ ARIA attributes enhance semantic meaning when native HTML elements are insuffici
 
 Compatibility with current and future tools requires following web standards and avoiding proprietary or deprecated features. Content should work with current versions of screen readers, browser extensions, and other assistive technologies, and should be structured to work with future tools as well.
 
+## Assistive Technology Stack
+
+The accessibility stack consists of multiple layers that work together to make web content accessible to users with disabilities. Understanding this stack helps developers create content that integrates properly with assistive technologies.
+
+```mermaid
+graph TB
+    Browser["Browser Engine"]
+    DOM["DOM Tree"]
+    A11yTree["Accessibility Tree"]
+    ScreenReader["Screen Reader"]
+    
+    Browser -->|"Renders"| DOM
+    DOM -->|"Exposes"| A11yTree
+    A11yTree -->|"Reads"| ScreenReader
+    ScreenReader -->|"Announces"| User["User"]
+    
+    style Browser fill:#e1f5ff
+    style DOM fill:#e1f5ff
+    style A11yTree fill:#fff4e1
+    style ScreenReader fill:#ffe1f5
+```
+
+The browser engine renders HTML into a DOM tree. The DOM tree is then transformed into an accessibility tree that contains semantic information and ARIA attributes. Screen readers consume the accessibility tree and announce content to users. This architecture ensures that semantic HTML and ARIA attributes are properly exposed to assistive technologies.
+
 ## Semantic HTML: The Foundation of Accessibility
 
 Semantic HTML uses HTML elements that convey meaning about the content they contain. Semantic elements have built-in accessibility features: keyboard support, focus management, and screen reader announcements. Using semantic HTML is the most effective way to build accessible interfaces.
@@ -190,6 +214,38 @@ Content must remain usable when text is resized up to 200% using browser zoom or
 Layouts must reflow appropriately when text is enlarged. Content should not require horizontal scrolling at 200% zoom. This requires responsive design principles: flexible layouts, relative sizing, and avoiding fixed widths.
 
 At 400% zoom on a 1280px viewport (equivalent to 320px width), content must reflow without horizontal scrolling. This is a WCAG requirement that ensures content is usable on small screens and with high zoom levels. Use responsive breakpoints and flexible layouts to meet this requirement.
+
+## Accessibility Testing Pipeline
+
+A comprehensive accessibility testing pipeline ensures issues are caught early and fixed before reaching production. Multiple testing gates provide defense in depth.
+
+```mermaid
+flowchart TD
+    Start([Code Commit]) --> Lint["ESLint A11y Rules"]
+    Lint -->|"Pass"| UnitTest["Unit Tests"]
+    Lint -->|"Fail"| FixLint["Fix Lint Errors"]
+    FixLint --> Lint
+    
+    UnitTest -->|"Pass"| AxeCore["axe-core Tests"]
+    UnitTest -->|"Fail"| FixUnit["Fix Unit Tests"]
+    FixUnit --> UnitTest
+    
+    AxeCore -->|"Pass"| ManualAudit["Manual Audit"]
+    AxeCore -->|"Fail"| FixAxe["Fix A11y Issues"]
+    FixAxe --> AxeCore
+    
+    ManualAudit -->|"Pass"| Deploy["Deploy"]
+    ManualAudit -->|"Fail"| FixManual["Fix Manual Issues"]
+    FixManual --> ManualAudit
+    
+    style Lint fill:#e1f5ff
+    style UnitTest fill:#e1f5ff
+    style AxeCore fill:#fff4e1
+    style ManualAudit fill:#ffe1f5
+    style Deploy fill:#e1ffe1
+```
+
+The pipeline starts with linting rules that catch common accessibility mistakes during development. Unit tests verify keyboard interactions and ARIA state management. Automated axe-core tests scan rendered components for WCAG violations. Finally, manual audits catch issues that automated tools miss, such as color contrast in complex designs or logical focus order.
 
 ## Component Patterns for Accessibility
 

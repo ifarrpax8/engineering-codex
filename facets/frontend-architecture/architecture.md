@@ -80,6 +80,30 @@ MFEs are technology-agnostic at the composition layer. While individual MFEs mig
 
 MFEs own their vertical slice. A finance MFE owns everything related to finance—components, API calls, routing within its domain, state management. This vertical ownership aligns with team boundaries and reduces cross-team dependencies.
 
+### Build and Deploy Pipeline
+
+Each MFE has an independent build and deployment pipeline, enabling teams to deploy changes without coordinating with other teams.
+
+```mermaid
+flowchart TD
+    ShellRepo[Shell Repository] --> ShellBuild[Shell Build]
+    ShellBuild --> ShellDeploy[Shell Deployment]
+    
+    FinanceRepo[Finance MFE Repository] --> FinanceBuild[Finance Build]
+    FinanceBuild --> FinanceDeploy[Finance Deployment]
+    
+    OrderRepo[Order MFE Repository] --> OrderBuild[Order Build]
+    OrderBuild --> OrderDeploy[Order Deployment]
+    
+    ReportRepo[Report MFE Repository] --> ReportBuild[Report Build]
+    ReportBuild --> ReportDeploy[Report Deployment]
+    
+    ShellDeploy --> Runtime[Runtime Composition]
+    FinanceDeploy --> Runtime
+    OrderDeploy --> Runtime
+    ReportDeploy --> Runtime
+```
+
 ### Module Federation
 
 Module Federation is a Webpack 5 and Vite feature that enables runtime sharing of JavaScript modules across independently built applications. The shell application and each MFE are separate builds, but they can share dependencies and expose modules to each other at runtime.
@@ -130,6 +154,33 @@ Error boundaries in the shell catch errors from MFEs, preventing one MFE's failu
 
 MFEs must communicate without tight coupling. Direct imports or shared mutable state create dependencies that break deployment independence. Instead, MFEs communicate through events, URL parameters, or shared but immutable configuration.
 
+```mermaid
+graph TB
+    Shell[Shell Application]
+    FinanceMFE[Finance MFE]
+    OrderMFE[Order MFE]
+    ReportMFE[Report MFE]
+    EventBus[Event Bus]
+    SharedState[Shared State Store]
+    
+    Shell -->|Orchestrates| FinanceMFE
+    Shell -->|Orchestrates| OrderMFE
+    Shell -->|Orchestrates| ReportMFE
+    
+    FinanceMFE -->|Publishes Events| EventBus
+    OrderMFE -->|Publishes Events| EventBus
+    ReportMFE -->|Publishes Events| EventBus
+    
+    EventBus -->|Subscribes| FinanceMFE
+    EventBus -->|Subscribes| OrderMFE
+    EventBus -->|Subscribes| ReportMFE
+    
+    Shell -->|Provides| SharedState
+    FinanceMFE -->|Reads| SharedState
+    OrderMFE -->|Reads| SharedState
+    ReportMFE -->|Reads| SharedState
+```
+
 Custom events enable MFEs to publish and subscribe to domain events. When the order management MFE creates an order, it dispatches an `order-created` event. The finance MFE listens for this event and updates its invoice list. This event-driven communication maintains loose coupling while enabling coordination.
 
 URL parameters serve as a communication channel for navigable state. When the finance MFE links to an order detail page in the order management MFE, it includes order ID in the URL. The order management MFE reads this parameter and displays the correct order. URL-based communication is visible, bookmarkable, and doesn't require direct MFE dependencies.
@@ -169,6 +220,27 @@ However, SSR adds complexity. Applications must run on both server and client, r
 ## Component Architecture
 
 Component architecture organizes how UI is decomposed into reusable, composable pieces. Regardless of whether you're building a SPA, MFE, or SSR application, component design patterns determine maintainability, testability, and developer experience.
+
+```mermaid
+graph TD
+    Page[Page Component]
+    Layout[Layout Component]
+    Feature[Feature Component]
+    Organism[Organism Component]
+    Molecule[Molecule Component]
+    Atom[Atom Component]
+    
+    Page --> Layout
+    Layout --> Feature
+    Feature --> Organism
+    Organism --> Molecule
+    Molecule --> Atom
+    
+    Page -->|Uses| Feature
+    Feature -->|Uses| Organism
+    Organism -->|Uses| Molecule
+    Molecule -->|Uses| Atom
+```
 
 ### Atomic Design
 

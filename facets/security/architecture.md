@@ -19,6 +19,28 @@ Security architecture implements defense in depth—multiple layers of security 
 
 Defense in depth organizes security controls into layers: network security, transport security, application security, and data security. Network security controls include firewalls, Web Application Firewalls (WAFs), network segmentation, and DDoS protection. These controls filter traffic before it reaches application servers, blocking known attack patterns and limiting the attack surface.
 
+```mermaid
+flowchart TD
+    request["Incoming Request"]
+    cdn["CDN / WAF: DDoS Protection"]
+    loadBalancer["Load Balancer: Traffic Distribution"]
+    apiGateway["API Gateway: Rate Limiting, Auth"]
+    service["Application Service: Input Validation"]
+    database["Database: Encryption at Rest"]
+    
+    request -->|"filter attacks"| cdn
+    cdn -->|"route traffic"| loadBalancer
+    loadBalancer -->|"distribute load"| apiGateway
+    apiGateway -->|"validate & authorize"| service
+    service -->|"query data"| database
+    
+    database -->|"encrypted response"| service
+    service -->|"validated output"| apiGateway
+    apiGateway -->|"monitored response"| loadBalancer
+    loadBalancer -->|"cached if applicable"| cdn
+    cdn -->|"secure response"| request
+```
+
 Transport security ensures that data in motion is protected from interception and tampering. TLS (Transport Layer Security) encrypts all HTTP traffic, preventing man-in-the-middle attacks and ensuring data confidentiality and integrity. Certificate management automates the provisioning and renewal of TLS certificates, ensuring that expired certificates don't create security gaps.
 
 Application security includes input validation, authentication, authorization, session management, and business logic protections. These controls operate at the application layer, understanding application context and enforcing security policies based on user identity and request content.
@@ -83,6 +105,22 @@ Data classification identifies what data is sensitive and requires protection. C
 
 Content-Security-Policy (CSP) headers restrict where resources can be loaded from, preventing XSS attacks by blocking execution of injected scripts. CSP directives specify allowed sources for scripts (`script-src`), styles (`style-src`), images (`img-src`), fonts (`font-src`), and other resource types. A restrictive CSP might allow scripts only from the same origin and trusted CDNs, blocking inline scripts and `eval()`.
 
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant Server
+    participant SecurityHeaders as Security Headers
+    
+    Browser->>Server: HTTP Request
+    Server->>SecurityHeaders: Apply security headers
+    SecurityHeaders->>Server: CSP, HSTS, X-Frame-Options, etc.
+    Server-->>Browser: Response with Security Headers
+    
+    Note over Browser: Browser enforces: CSP blocks inline scripts, HSTS enforces HTTPS, X-Frame-Options prevents framing, X-Content-Type-Options prevents MIME sniffing
+    
+    Browser->>Browser: Render page with security controls
+```
+
 CSP can be challenging to implement in applications that rely on inline scripts or third-party libraries. Start with a report-only policy that logs violations without blocking, identify all required sources, then switch to an enforcing policy. CSP violations can be reported to endpoints for monitoring and debugging.
 
 X-Content-Type-Options: nosniff prevents browsers from MIME type sniffing, where browsers guess content types based on content rather than headers. MIME type sniffing can enable XSS attacks if browsers misinterpret content types. The nosniff directive forces browsers to respect declared content types.
@@ -122,6 +160,26 @@ Input size limits prevent large payload attacks that consume server resources. C
 Software Composition Analysis (SCA) tools scan dependencies for known vulnerabilities listed in databases like the National Vulnerability Database (NVD) and GitHub Advisory Database. Dependabot (GitHub), Snyk, and OWASP Dependency-Check integrate with CI/CD pipelines to scan dependencies and create pull requests for security updates.
 
 Dependency scanning should block merges when critical or high-severity vulnerabilities are detected. Medium and low-severity vulnerabilities can be tracked and remediated over time, but critical vulnerabilities require immediate attention. Scanning should occur on every pull request and on a schedule to detect newly discovered vulnerabilities in existing dependencies.
+
+```mermaid
+flowchart TD
+    commit["Code Commit"]
+    scan["SCA Tool Scan: Dependabot, Snyk"]
+    report["Vulnerability Report"]
+    decision{"Severity Level"}
+    block["Block Merge: Require Fix"]
+    allow["Allow Merge: Track Issue"]
+    update["Auto Update PR: Security Patches"]
+    
+    commit --> scan
+    scan --> report
+    report --> decision
+    decision -->|"Critical / High"| block
+    decision -->|"Medium / Low"| allow
+    decision -->|"Auto-fixable"| update
+    block -->|"fix applied"| scan
+    update -->|"review & merge"| allow
+```
 
 Lock files (package-lock.json, yarn.lock, gradle.lockfile) pin exact dependency versions, ensuring reproducible builds and preventing unexpected updates that introduce vulnerabilities or breaking changes. Commit lock files to version control and update them intentionally when upgrading dependencies.
 

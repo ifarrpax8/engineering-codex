@@ -20,6 +20,32 @@ last_updated: 2026-02-09
 
 ### CI Pipeline Stages
 
+```mermaid
+flowchart LR
+    Start([Code Commit]) --> Checkout[Checkout Source Code]
+    Checkout --> Install[Install Dependencies]
+    Install --> Lint[Lint & Format Check]
+    Lint --> Compile[Compile Source Code]
+    Compile --> UnitTest[Run Unit Tests]
+    UnitTest --> IntTest[Run Integration Tests]
+    IntTest --> Security[Security Scanning]
+    Security --> BuildArtifact[Build Artifact]
+    BuildArtifact --> Publish[Publish Artifact]
+    Publish --> DeployStaging[Deploy to Staging]
+    DeployStaging --> SmokeTest[Smoke Tests]
+    SmokeTest --> DeployProd[Deploy to Production]
+    DeployProd --> HealthCheck[Health Checks]
+    HealthCheck --> Monitor[Monitor & Alert]
+    Monitor --> End([Deployment Complete])
+    
+    Lint -.->|Fail| Stop([Pipeline Stopped])
+    UnitTest -.->|Fail| Stop
+    IntTest -.->|Fail| Stop
+    Security -.->|Critical| Stop
+    SmokeTest -.->|Fail| Stop
+    HealthCheck -.->|Fail| Rollback([Rollback])
+```
+
 A well-structured CI pipeline follows a logical sequence of stages, each building upon the previous stage's success. The pipeline begins with checkout, retrieving the source code from version control. This stage should be fast and reliable, using shallow clones when possible to reduce checkout time.
 
 Dependency installation follows checkout. For backend services using Gradle, this involves downloading dependencies and populating the build cache. For frontend applications using npm, this involves installing node_modules. Both should leverage caching strategies to avoid redundant downloads. Gradle's dependency cache and npm's package cache can dramatically reduce installation time when properly configured.
@@ -55,6 +81,30 @@ Monitoring and alerting provide ongoing visibility into deployment success. Metr
 Modern CI/CD practices treat pipeline definitions as code. GitHub Actions workflows live in `.github/workflows/` directories, version controlled alongside application code. This approach provides several advantages: pipelines are reviewable through pull requests, auditable through git history, and testable through local execution tools.
 
 Pipeline-as-code enables teams to apply software engineering practices to infrastructure. Code review catches configuration errors before they affect the pipeline. Version control provides a history of changes and the ability to roll back problematic updates. Testing ensures that pipeline changes work correctly before they're merged.
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant Git as Git Repository
+    participant CI as CI Pipeline
+    participant ArgoCD as ArgoCD
+    participant K8s as Kubernetes
+    participant App as Application
+    
+    Dev->>Git: Push Code Changes
+    Git->>CI: Trigger Build
+    CI->>CI: Build & Test
+    CI->>Git: Update Manifest with Image Tag
+    ArgoCD->>Git: Poll for Changes
+    Git-->>ArgoCD: Manifest Updated
+    ArgoCD->>ArgoCD: Compare Desired vs Current State
+    ArgoCD->>K8s: Apply Manifests
+    K8s->>K8s: Deploy New Pods
+    K8s->>App: Route Traffic to New Version
+    App-->>K8s: Health Check OK
+    K8s-->>ArgoCD: Sync Complete
+    ArgoCD-->>Git: Update Status
+```
 
 Reusability becomes possible through shared workflows and composite actions. Common patterns—building a Docker image, running security scans, deploying to Kubernetes—can be encapsulated in reusable components. This reduces duplication, ensures consistency, and makes it easier to adopt best practices across multiple projects.
 
@@ -177,6 +227,27 @@ This strategy supports formal release cycles and version management. However, it
 GitFlow is generally avoided for SaaS applications with continuous deployment. It may be suitable for products with formal release cycles or regulatory requirements, but even then, simpler strategies are often preferable.
 
 ## Quality Gates
+
+```mermaid
+flowchart TD
+    Start([Code Ready]) --> DevEnv[Deploy to Development]
+    DevEnv --> DevGate{Quality Gates Pass?}
+    DevGate -->|No| FixDev[Fix Issues]
+    FixDev --> DevEnv
+    DevGate -->|Yes| StagingEnv[Deploy to Staging]
+    StagingEnv --> StagingGate{Quality Gates Pass?}
+    StagingGate -->|No| FixStaging[Fix Issues]
+    FixStaging --> StagingEnv
+    StagingGate -->|Yes| PreProdEnv[Deploy to Pre-Production]
+    PreProdEnv --> PreProdGate{Quality Gates Pass?}
+    PreProdGate -->|No| FixPreProd[Fix Issues]
+    FixPreProd --> PreProdEnv
+    PreProdGate -->|Yes| ProdEnv[Deploy to Production]
+    ProdEnv --> ProdGate{Quality Gates Pass?}
+    ProdGate -->|No| Rollback[Rollback Deployment]
+    Rollback --> PreProdEnv
+    ProdGate -->|Yes| Complete([Production Deployment])
+```
 
 Quality gates are automated checks that must pass before code merges or deploys. They enforce standards consistently, preventing human error and ensuring that only validated code reaches production.
 

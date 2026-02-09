@@ -15,6 +15,20 @@
 
 The test pyramid is a model for organizing tests by type and quantity:
 
+```mermaid
+flowchart TD
+    E2E["E2E Tests<br/>Few, Slow, Expensive"]
+    Integration["Integration Tests<br/>Some, Medium Speed"]
+    Unit["Unit Tests<br/>Many, Fast, Cheap"]
+    
+    E2E --> Integration
+    Integration --> Unit
+    
+    style E2E fill:#e1f5ff
+    style Integration fill:#b3e5fc
+    style Unit fill:#81d4fa
+```
+
 ```
         /\
        /  \     E2E Tests (few, slow, expensive)
@@ -374,6 +388,37 @@ val admin = user { role = Role.ADMIN; email = "admin@example.com" }
 - Cache test dependencies
 - Reuse test containers
 - Parallelize at multiple levels (shard + parallel)
+
+**Test Execution Pipeline**:
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant CI as CI Pipeline
+    participant Unit as Unit Tests
+    participant Integration as Integration Tests
+    participant E2E as E2E Tests
+    participant Gate as Quality Gate
+    
+    Dev->>CI: Push Code
+    CI->>Unit: Run Unit Tests
+    Unit-->>CI: Results
+    alt Unit Tests Fail
+        CI-->>Dev: Fail Fast
+    else Unit Tests Pass
+        CI->>Integration: Run Integration Tests
+        Integration-->>CI: Results
+        alt Integration Tests Fail
+            CI-->>Dev: Fail
+        else Integration Tests Pass
+            CI->>E2E: Run E2E Tests
+            E2E-->>CI: Results
+            CI->>Gate: Check Quality Gate
+            Gate-->>CI: Pass/Fail
+            CI-->>Dev: Final Status
+        end
+    end
+```
 
 ### Test Environment Management
 

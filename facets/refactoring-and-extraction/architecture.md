@@ -100,6 +100,36 @@ Shotgun surgery is the opposite of large classes. Instead of one class doing too
 
 Extraction patterns provide systematic approaches to refactoring. Each pattern addresses specific code smells and has well-defined steps.
 
+### Extract-and-Verify Workflow
+
+A systematic workflow ensures safe extraction by validating behavior before and after the refactoring.
+
+```mermaid
+flowchart TD
+    Start([Identify Extraction Target]) --> Characterize["Write Characterization Tests"]
+    Characterize -->|"Tests Pass"| Extract["Extract Code"]
+    Characterize -->|"Tests Fail"| FixTests["Fix Tests"]
+    FixTests --> Characterize
+    
+    Extract --> Verify["Verify Tests Still Pass"]
+    Verify -->|"All Pass"| CleanUp["Clean Up"]
+    Verify -->|"Tests Fail"| Rollback["Rollback Extraction"]
+    Rollback --> Characterize
+    
+    CleanUp --> Refactor["Refactor Extracted Code"]
+    Refactor --> FinalVerify["Final Verification"]
+    FinalVerify -->|"Pass"| Done([Complete])
+    FinalVerify -->|"Fail"| Refactor
+    
+    style Characterize fill:#e1f5ff
+    style Extract fill:#fff4e1
+    style Verify fill:#ffe1f5
+    style CleanUp fill:#e1ffe1
+    style Done fill:#e1ffe1
+```
+
+The workflow begins by identifying code to extract and writing characterization tests that capture current behavior. These tests serve as a safety net. After extraction, verify all tests still pass. If tests fail, rollback and investigate. Once extraction is verified, clean up and refactor the extracted code. This systematic approach minimizes risk and ensures behavior is preserved throughout the refactoring.
+
 ### Extract Method
 
 Extract method is the safest refactoring. Select a block of code, extract it to a named method, and replace the original code with a call to the new method. Modern IDEs automate this refactoring, reducing risk.
@@ -143,6 +173,35 @@ Data migration is often the hardest part of service extraction. Data must be mig
 ## The Strangler Fig Pattern
 
 The Strangler Fig Pattern enables incremental migration from a monolith to microservices or between architectures. It reduces risk by allowing gradual migration and instant rollback.
+
+### Strangler Fig Migration Flow
+
+The pattern involves routing traffic through a proxy that gradually shifts requests from the old system to the new system.
+
+```mermaid
+sequenceDiagram
+    participant Client as Client Request
+    participant Proxy as Routing Proxy
+    participant OldSys as Old Monolith
+    participant NewSys as New Service
+    
+    Client->>Proxy: Request
+    Proxy->>Proxy: Check Feature Flag
+    alt New Feature or Migrated Feature
+        Proxy->>NewSys: Route to New Service
+        NewSys->>Proxy: Response
+        Proxy->>Client: Return Response
+    else Legacy Feature
+        Proxy->>OldSys: Route to Monolith
+        OldSys->>Proxy: Response
+        Proxy->>Client: Return Response
+    end
+    
+    Note over Proxy,NewSys: Gradually migrate features one at a time
+    Note over Proxy,OldSys: Old system remains until migration complete
+```
+
+The routing proxy acts as the control point, using feature flags to determine whether requests go to the new service or the old monolith. New features are built in the new service from the start. Existing features are migrated incrementally, with the proxy routing traffic based on migration status. The old system remains operational until all functionality is migrated and validated.
 
 ### Step 1: Identify the Boundary
 

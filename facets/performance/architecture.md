@@ -31,6 +31,22 @@ Dynamic imports enable lazy loading of code, routes, and components. The import(
 
 Bundle analysis tools like rollup-plugin-visualizer reveal bundle composition, identifying large dependencies and opportunities for optimization. Regular bundle analysis prevents gradual size creep and helps teams make informed decisions about new dependencies.
 
+```mermaid
+flowchart TD
+    Start([Build Starts]) --> Build[Build Application - Generate Bundles]
+    Build --> Measure[Measure Bundle Size - Load Time - Core Web Vitals]
+    Measure --> Compare{Compare Against Performance Budget}
+    Compare -->|Within Budget| Pass[Build Passes]
+    Compare -->|Exceeds Budget| Fail[Build Fails]
+    Pass --> Deploy[Deploy to Production]
+    Fail --> Analyze[Analyze Bundle - Identify Issues]
+    Analyze --> Optimize[Optimize Code - Remove Dependencies - Code Split]
+    Optimize --> Build
+    Deploy --> Monitor[Monitor Performance - Real User Metrics]
+    Monitor --> Review[Review Budget - Adjust if Needed]
+    Review --> Start
+```
+
 ### Rendering Performance
 
 Rendering performance determines how quickly the UI updates in response to user interactions and data changes. Virtual DOM diffing efficiency minimizes unnecessary DOM updates, but applications must avoid triggering unnecessary re-renders.
@@ -69,6 +85,35 @@ Limiting font variations reduces bundle size. A font family with regular, bold, 
 
 The critical rendering path is the sequence of steps the browser takes to render a page. Optimizing this path reduces time to first meaningful paint, improving perceived performance.
 
+```mermaid
+sequenceDiagram
+    participant Browser as Browser
+    participant DNS as DNS Server
+    participant Server as Web Server
+    participant API as API Server
+    
+    Browser->>DNS: Resolve Domain
+    DNS-->>Browser: IP Address
+    Browser->>Server: Request HTML
+    Server-->>Browser: HTML Document
+    Browser->>Browser: Parse HTML
+    Browser->>Server: Request Critical CSS
+    Server-->>Browser: CSS Stylesheet
+    Browser->>Browser: Parse CSS - Build CSSOM
+    Browser->>Browser: Build Render Tree
+    Browser->>Server: Request Critical JS
+    Server-->>Browser: JavaScript Bundle
+    Browser->>Browser: Parse & Execute JS
+    Browser->>API: API Call 1
+    API-->>Browser: Response 1
+    Browser->>API: API Call 2
+    API-->>Browser: Response 2
+    Browser->>Browser: Render Content - First Paint
+    Browser->>Server: Request Images
+    Server-->>Browser: Image Assets
+    Browser->>Browser: Final Render - Largest Contentful Paint
+```
+
 Inline critical CSS includes the CSS needed for above-the-fold content directly in the HTML, eliminating a render-blocking request. Non-critical CSS can be loaded asynchronously or deferred, allowing the browser to render content sooner.
 
 Deferring non-critical JavaScript prevents it from blocking rendering. Scripts that don't affect initial render should use the defer attribute, loading after HTML parsing completes. Async scripts load independently and execute when ready, useful for analytics and third-party widgets.
@@ -80,6 +125,41 @@ Minimizing render-blocking resources reduces time to first paint. Each render-bl
 ### Caching Strategies
 
 Caching reduces load time for repeat visits and improves perceived performance. HTTP cache headers control browser and CDN caching behavior.
+
+```mermaid
+graph TB
+    subgraph Client["Client Layer"]
+        Browser["Browser Cache - Local Storage"]
+    end
+    
+    subgraph Edge["Edge Layer"]
+        CDN["CDN Cache - Edge Locations"]
+    end
+    
+    subgraph Application["Application Layer"]
+        APICache["API Cache - Redis"]
+        QueryCache["Query Result Cache - Redis"]
+    end
+    
+    subgraph Data["Data Layer"]
+        DBCache["Database Cache - Query Cache"]
+    end
+    
+    Browser -->|Cache Miss| CDN
+    CDN -->|Cache Miss| APICache
+    APICache -->|Cache Miss| QueryCache
+    QueryCache -->|Cache Miss| DBCache
+    DBCache -->|Query Result| QueryCache
+    QueryCache -->|Cached Result| APICache
+    APICache -->|Cached Response| CDN
+    CDN -->|Cached Asset| Browser
+    
+    Browser -.->|Cache Hit| Browser
+    CDN -.->|Cache Hit| CDN
+    APICache -.->|Cache Hit| APICache
+    QueryCache -.->|Cache Hit| QueryCache
+    DBCache -.->|Cache Hit| DBCache
+```
 
 Cache-Control headers specify how long resources can be cached and whether they can be shared across users. Public resources like images and fonts can be cached for long periods with content hashing for cache busting. Private resources like user-specific API responses should use no-cache or short TTLs.
 

@@ -10,6 +10,32 @@ Error handling architecture spans backend exception management, frontend error b
 
 ## Backend Error Architecture
 
+### Error Propagation Flow
+
+Errors originate in various layers and propagate through the system:
+
+```mermaid
+flowchart TD
+    Start([Error Occurs]) --> Layer{Error Layer}
+    Layer -->|Domain| DomainError[Domain Exception]
+    Layer -->|Service| ServiceError[Service Exception]
+    Layer -->|Infrastructure| InfraError[Infrastructure Exception]
+    
+    DomainError --> Handler[Global Exception Handler]
+    ServiceError --> Handler
+    InfraError --> Handler
+    
+    Handler --> Map{Map to HTTP Status}
+    Map -->|"4xx"| ClientError[Client Error Response]
+    Map -->|"5xx"| ServerError[Server Error Response]
+    
+    ClientError --> Frontend[Frontend Error Handling]
+    ServerError --> Frontend
+    
+    Frontend --> Log[Error Logging]
+    Frontend --> User[User Notification]
+```
+
 ### Exception Hierarchy
 
 Use domain-specific exceptions instead of generic RuntimeException. Create a clear exception hierarchy that maps to HTTP status codes and error categories.
@@ -427,6 +453,34 @@ Circuit breakers prevent cascading failures by stopping calls to failing depende
 - **Open**: Dependency is failing, calls fail fast without calling dependency
 - **Half-Open**: Testing if dependency recovered, allow limited calls
 
+**Circuit Breaker States**:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Closed: Initial State
+    
+    Closed --> Open: Failure Threshold Exceeded
+    Open --> HalfOpen: Wait Duration Elapsed
+    
+    HalfOpen --> Closed: Success Threshold Met
+    HalfOpen --> Open: Failure Detected
+    
+    note right of Closed
+        Normal Operation
+        Calls Pass Through
+    end note
+    
+    note right of Open
+        Fast Fail
+        No Calls Made
+    end note
+    
+    note right of HalfOpen
+        Testing Recovery
+        Limited Calls Allowed
+    end note
+```
+
 **Bulkhead Pattern**:
 
 Bulkheads isolate dependency calls to prevent one slow dependency from blocking others:
@@ -446,6 +500,36 @@ fun bulkheadRegistry(): BulkheadRegistry {
 ### Dead Letter Queues
 
 Messages that fail processing after N retries should be routed to a dead letter queue (DLQ) for manual inspection and replay.
+
+**Dead Letter Queue Flow**:
+
+```mermaid
+sequenceDiagram
+    participant Producer as Message Producer
+    participant Queue as Message Queue
+    participant Handler as Message Handler
+    participant RetryQueue as Retry Queue
+    participant DLQ as Dead Letter Queue
+    participant Monitor as DLQ Monitor
+    
+    Producer->>Queue: Send Message
+    Queue->>Handler: Consume Message
+    Handler->>Handler: Process Message
+    
+    alt Processing Succeeds
+        Handler-->>Queue: Acknowledge
+    else Processing Fails
+        alt Retryable Error & Retries < Max
+            Handler->>RetryQueue: Send to Retry Queue
+            RetryQueue->>Queue: Retry Message
+        else Retries Exhausted
+            Handler->>DLQ: Send to DLQ
+            DLQ->>Monitor: Alert on DLQ Growth
+            Monitor->>Monitor: Manual Inspection
+            Monitor->>Queue: Replay After Fix
+        end
+    end
+```
 
 **Kafka Dead Letter Queue Pattern**:
 

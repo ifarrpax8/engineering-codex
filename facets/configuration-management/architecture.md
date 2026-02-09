@@ -18,11 +18,35 @@ Configuration management architecture determines how applications discover, load
 
 The Twelve-Factor App methodology establishes configuration as a first-class concern. The third factor states that configuration should be stored in the environment, not in code. Anything that varies between deployments—database URLs, API keys, feature flags, timeouts—is configuration and should be externalized.
 
+```mermaid
+graph LR
+    BuildArtifact["Build Artifact (immutable code)"]
+    EnvConfig["Environment Config (deployment-specific)"]
+    RunningService["Running Service (code + config)"]
+    
+    BuildArtifact -->|"combined with"| RunningService
+    EnvConfig -->|"injected into"| RunningService
+```
+
 This principle ensures that the same codebase can run in any environment by changing only configuration, not code. It enables environment parity, simplifies deployment, and reduces the risk of accidentally exposing production secrets in code repositories.
 
 ## Configuration Hierarchy and Precedence
 
 Configuration systems must establish a clear hierarchy that determines which configuration source takes precedence when multiple sources provide values for the same property. The general principle is that more specific sources override less specific ones.
+
+```mermaid
+flowchart TD
+    codeDefaults["Code Defaults (lowest precedence)"]
+    sharedDefaults["Shared Defaults (application.yml)"]
+    envSpecific["Environment-Specific (application-staging.yml, ConfigMaps)"]
+    secretsVault["Secrets Vault (Vault, Secrets Manager)"]
+    runtimeOverrides["Runtime Overrides (env vars, CLI args) (highest precedence)"]
+    
+    codeDefaults -->|"overridden by"| sharedDefaults
+    sharedDefaults -->|"overridden by"| envSpecific
+    envSpecific -->|"overridden by"| secretsVault
+    secretsVault -->|"overridden by"| runtimeOverrides
+```
 
 **Runtime Overrides** (highest precedence): Command-line arguments and environment variables set at process startup. These enable immediate changes without modifying files or redeploying.
 
@@ -173,6 +197,29 @@ Version-controlled configuration provides audit trails, enables rollback, and ma
 ## Configuration Refresh and Hot Reloading
 
 Some configuration can be changed at runtime without restarting the application. This requires careful design: applications must handle configuration changes gracefully, and not all configuration can be changed safely while the application is running.
+
+```mermaid
+sequenceDiagram
+    participant Admin as Admin/Operator
+    participant Vault as Config Vault/ConfigMap
+    participant Service as Application Service
+    participant Cache as Config Cache
+    
+    Admin->>Vault: Update configuration value
+    Vault->>Service: Configuration change detected (polling or webhook)
+    
+    alt Hot Reload Supported
+        Service->>Cache: Invalidate cache entry
+        Service->>Service: Reload @ConfigurationProperties
+        Service->>Service: Apply new configuration
+        Service-->>Admin: Configuration updated (no restart required)
+    else Restart Required
+        Service->>Service: Signal restart needed
+        Service->>Service: Graceful shutdown
+        Service->>Service: Restart with new config
+        Service-->>Admin: Service restarted (configuration applied)
+    end
+```
 
 Spring Boot Actuator provides configuration refresh endpoints that reload `@ConfigurationProperties` beans. This enables changing configuration via Spring Cloud Config Server or other external sources without full restarts.
 

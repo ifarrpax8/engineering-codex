@@ -24,6 +24,31 @@ The cost structure differs significantly. i18n is a fixed cost—once the archit
 
 Message catalogs are the foundation of frontend i18n. They store translations as key-value pairs, typically in JSON files organized by locale. Each locale has its own file: `en.json` for English, `de.json` for German, `fr.json` for French. The structure mirrors the application's feature organization, with namespaced keys like `common.save`, `billing.invoice.title`, `users.profile.editButton`.
 
+### Message Resolution Chain
+
+When a translation key is requested, the i18n system searches through multiple scopes in a specific order until a match is found.
+
+```mermaid
+flowchart TD
+    Start([Translation Key Requested]) --> ComponentScope["Component Scope"]
+    ComponentScope -->|"Found"| Return["Return Translation"]
+    ComponentScope -->|"Not Found"| FeatureScope["Feature Scope"]
+    FeatureScope -->|"Found"| Return
+    FeatureScope -->|"Not Found"| GlobalScope["Global Scope"]
+    GlobalScope -->|"Found"| Return
+    GlobalScope -->|"Not Found"| FallbackLocale["Fallback Locale"]
+    FallbackLocale -->|"Found"| Return
+    FallbackLocale -->|"Not Found"| KeyDisplay["Display Key"]
+    
+    style ComponentScope fill:#e1f5ff
+    style FeatureScope fill:#e1f5ff
+    style GlobalScope fill:#fff4e1
+    style FallbackLocale fill:#ffe1f5
+    style Return fill:#e1ffe1
+```
+
+The resolution chain starts with the most specific scope (component-level) and progressively falls back to broader scopes. If no translation is found in the current locale, the system checks the fallback locale (typically English). As a last resort, the key itself is displayed, making missing translations visible during development.
+
 Key-based message lookup provides several advantages. Keys are stable identifiers that don't change when translations are updated. They serve as documentation, making it clear what content belongs to which feature. They enable fallback behavior—if a translation is missing, the key can be displayed or a default locale used. Keys also facilitate tooling for finding unused translations and identifying missing translations.
 
 The message catalog structure should mirror the application's feature structure. If the codebase is organized by feature modules, the translation keys should follow the same organization. This makes it easy for developers to find relevant translations and for translators to understand context. Flat key structures with hundreds of keys become unmaintainable; hierarchical structures scale better.
@@ -75,6 +100,30 @@ Don't send pre-formatted strings from the backend. Formatted strings cannot be r
 Currency formatting requires the currency code, not just the symbol. The same symbol may represent different currencies (dollar sign for USD, CAD, AUD, etc.), and the positioning varies by locale. Use `Intl.NumberFormat` with the currency option and the appropriate currency code.
 
 Date formatting must respect locale conventions for date order, separator characters, and whether to include time. Some locales use 24-hour time, others use 12-hour with AM/PM. Some locales include the day of the week, others don't. The Intl API handles all these variations automatically.
+
+### Translation Loading Flow
+
+The translation loading process begins at application initialization and continues through locale detection and lazy loading.
+
+```mermaid
+sequenceDiagram
+    participant App as Application
+    participant I18n as i18n Instance
+    participant LocaleDetector as Locale Detector
+    participant Loader as Translation Loader
+    participant Renderer as Component Renderer
+    
+    App->>I18n: Initialize i18n
+    I18n->>LocaleDetector: Detect user locale
+    LocaleDetector-->>I18n: Return locale (e.g., "en-US")
+    I18n->>Loader: Lazy load translations
+    Loader->>Loader: Import locale file dynamically
+    Loader-->>I18n: Return translation messages
+    I18n->>Renderer: Provide translations
+    Renderer->>Renderer: Render localized content
+```
+
+The flow starts when the application initializes the i18n instance. The locale detector determines the user's preferred language from browser settings, cookies, or user profile. The translation loader dynamically imports only the required locale file, reducing initial bundle size. Once loaded, translations are available to all components for rendering.
 
 ### Lazy Loading Locales
 

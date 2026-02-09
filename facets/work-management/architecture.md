@@ -15,6 +15,35 @@ Work management architecture defines how work is structured, tracked, and execut
 
 Work management systems organize work into a hierarchy that reflects scope and relationships. Understanding each level of this hierarchy—and when to use it—ensures work is tracked at the appropriate granularity.
 
+### Work Hierarchy Structure
+
+The work hierarchy organizes tickets by scope, with epics containing stories, stories containing subtasks, and parallel ticket types for different work categories.
+
+```mermaid
+graph TD
+    Epic["Epic"] --> Story1["Story"]
+    Epic --> Story2["Story"]
+    Story1 --> Subtask1["Subtask"]
+    Story1 --> Subtask2["Subtask"]
+    Story2 --> Subtask3["Subtask"]
+    
+    Epic -.->|"Can Link"| Spike["Spike"]
+    Epic -.->|"Can Link"| Bug["Bug"]
+    Story1 -.->|"Can Link"| Spike
+    Story1 -.->|"Can Link"| Bug
+    
+    style Epic fill:#e1f5ff
+    style Story1 fill:#fff4e1
+    style Story2 fill:#fff4e1
+    style Subtask1 fill:#ffe1f5
+    style Subtask2 fill:#ffe1f5
+    style Subtask3 fill:#ffe1f5
+    style Spike fill:#e1ffe1
+    style Bug fill:#ffe1e1
+```
+
+Epics represent large initiatives spanning multiple sprints. Stories break epics into independently valuable pieces of work. Subtasks decompose stories into implementation steps. Spikes and bugs are parallel ticket types that can link to epics or stories but don't fit the hierarchical structure.
+
 ### Epic
 
 An epic represents a large body of work that can be broken into smaller stories. Epics span multiple sprints and often represent a feature, initiative, or project. They have a clear business objective and measurable outcome. Examples include "Implement invoice management system" or "Migrate authentication to OIDC."
@@ -144,6 +173,40 @@ The epic template keeps epics focused on outcomes rather than implementation. An
 ## Workflow States
 
 Workflow states define the lifecycle of a ticket from creation to completion. The workflow enforces process and provides visibility into work status. Different teams need different workflow complexity, but all workflows should enable clear status tracking.
+
+### Ticket Lifecycle
+
+Tickets progress through a series of states from initial planning to completion. Understanding this lifecycle helps teams track progress and identify bottlenecks.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Backlog: Created
+    Backlog --> SprintPlanning: Refined
+    SprintPlanning --> InProgress: Committed
+    InProgress --> InReview: Code Complete
+    InReview --> QA: Approved
+    InReview --> InProgress: Changes Requested
+    QA --> Done: Verified
+    QA --> InProgress: Issues Found
+    Done --> [*]
+    
+    note right of Backlog
+        Needs clarification
+        and estimation
+    end note
+    
+    note right of InProgress
+        Active development
+        WIP limits apply
+    end note
+    
+    note right of QA
+        Testing and
+        validation
+    end note
+```
+
+The lifecycle begins when a ticket is created and added to the backlog. After refinement and estimation, tickets move to sprint planning where they're committed to a sprint. Once work begins, tickets move to In Progress. After code completion, tickets enter review, then QA, and finally Done when all acceptance criteria are met.
 
 ### Minimal Workflow
 

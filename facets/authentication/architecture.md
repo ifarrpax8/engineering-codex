@@ -52,6 +52,19 @@ Access tokens are short-lived (15 minutes to 1 hour) and included in every API r
 
 The separation enables security (short-lived access tokens limit exposure if compromised) while maintaining usability (refresh tokens enable seamless re-authentication). When an access token expires, the client uses the refresh token to obtain a new access token without user interaction.
 
+```mermaid
+stateDiagram-v2
+    [*] --> Issued: Token issued
+    Issued --> Active: Token validated
+    Active --> Expired: Lifetime exceeded
+    Active --> Revoked: Revocation requested
+    Expired --> Refreshing: Refresh token used
+    Refreshing --> Issued: New tokens issued
+    Refreshing --> Revoked: Refresh token invalid
+    Revoked --> [*]
+    Expired --> [*]: No refresh token
+```
+
 ### Token Rotation Strategies
 
 Refresh token rotation issues a new refresh token each time it's used, invalidating the old one. This detects token theft—if an attacker uses a stolen refresh token, the legitimate client's next refresh will fail, alerting to compromise. Rotation requires server-side tracking of refresh tokens, moving toward a hybrid stateless/stateful model.
@@ -88,6 +101,25 @@ The Authorization Code flow is the most secure OAuth 2.0 flow for SPAs and nativ
 PKCE (Proof Key for Code Exchange) adds security for public clients (SPAs, mobile apps) by requiring a code verifier and challenge. This prevents authorization code interception attacks. The client generates a random code verifier, derives a code challenge, includes the challenge in the authorization request, and provides the verifier when exchanging the code for tokens.
 
 This flow is recommended for all OAuth 2.0 implementations, especially public clients. It provides strong security while supporting modern application architectures.
+
+```mermaid
+sequenceDiagram
+    participant Browser as Browser/SPA
+    participant AuthServer as Authorization Server
+    participant ApiServer as API Server
+
+    Browser->>Browser: Generate code_verifier and derive code_challenge
+    Browser->>AuthServer: GET /authorize with client_id, code_challenge, redirect_uri
+    AuthServer->>Browser: Redirect to login page
+    Browser->>AuthServer: User authenticates
+    AuthServer->>Browser: Redirect with authorization_code
+    Browser->>AuthServer: POST /token with code and code_verifier
+    AuthServer->>AuthServer: Verify code_challenge matches code_verifier
+    AuthServer->>Browser: Return access_token and refresh_token
+    Browser->>ApiServer: API Request with Bearer access_token
+    ApiServer->>ApiServer: Validate token signature
+    ApiServer->>Browser: Return API response
+```
 
 ### Client Credentials Flow
 
@@ -143,6 +175,21 @@ Authenticate once at the API gateway or edge, before requests reach application 
 
 This pattern centralizes authentication logic, reduces duplication across services, and ensures consistent authentication enforcement. It requires a trusted gateway and secure communication between gateway and services. The gateway becomes a critical security component requiring high availability and careful access control.
 
+```mermaid
+flowchart TD
+    Client[Client Application] --> Gateway[API Gateway]
+    Gateway -->|Validate Token| AuthModule[Auth Module]
+    AuthModule -->|Token Valid| Gateway
+    AuthModule -->|Token Invalid| Gateway
+    Gateway -->|Forward with User Context| Service1[User Service]
+    Gateway -->|Forward with User Context| Service2[Order Service]
+    Gateway -->|Forward with User Context| Service3[Product Service]
+    Gateway -->|401 Unauthorized| Client
+    Service1 --> Database[(Database)]
+    Service2 --> Database
+    Service3 --> Database
+```
+
 ### Per-Service Authorization
 
 Each service enforces its own authorization rules, even if authentication happens at the gateway. Services receive user identity from the gateway but make independent authorization decisions based on their domain logic. This enables service-specific authorization rules and maintains service autonomy.
@@ -160,6 +207,24 @@ Spring Security's filter chain, Express middleware, and similar patterns in othe
 In microservices architectures, authenticated requests must carry user context across service boundaries. This context includes user ID, roles, permissions, tenant ID, and other claims. Services pass this context in headers, message metadata, or thread-local storage.
 
 Context propagation must be secure (prevent tampering), complete (include all necessary claims), and efficient (minimal overhead). Services should validate that propagated context matches the authenticated identity to prevent context spoofing attacks.
+
+```mermaid
+sequenceDiagram
+    participant Client as Client
+    participant Gateway as API Gateway
+    participant ServiceA as Service A
+    participant ServiceB as Service B
+    participant AuthService as Auth Service
+
+    Client->>Gateway: Request with Bearer token
+    Gateway->>AuthService: Validate token
+    AuthService->>Gateway: User context (id, roles, tenant)
+    Gateway->>ServiceA: Request + X-User-ID, X-Roles, X-Tenant-ID
+    ServiceA->>ServiceB: Request + X-User-ID, X-Roles, X-Tenant-ID
+    ServiceB->>ServiceA: Response
+    ServiceA->>Gateway: Response
+    Gateway->>Client: Response
+```
 
 ## Session Storage
 

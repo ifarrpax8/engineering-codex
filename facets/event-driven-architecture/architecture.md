@@ -77,6 +77,28 @@ Choreography distributes process logic across participating services. Each servi
 
 In a choreographed order fulfillment process, the Order service emits `OrderPlaced`. The Inventory service reacts by emitting `InventoryReserved`. The Payment service reacts by emitting `PaymentProcessed`. The Fulfillment service reacts to both `InventoryReserved` and `PaymentProcessed` by emitting `OrderFulfilled`. Each service makes local decisions. No service knows the complete process flow.
 
+```mermaid
+sequenceDiagram
+    participant OrderService
+    participant InventoryService
+    participant PaymentService
+    participant FulfillmentService
+    participant EventBus
+    
+    OrderService->>EventBus: OrderPlaced Event
+    EventBus->>InventoryService: OrderPlaced Event
+    EventBus->>PaymentService: OrderPlaced Event
+    
+    InventoryService->>EventBus: InventoryReserved Event
+    PaymentService->>EventBus: PaymentProcessed Event
+    
+    EventBus->>FulfillmentService: InventoryReserved Event
+    EventBus->>FulfillmentService: PaymentProcessed Event
+    
+    FulfillmentService->>FulfillmentService: Check Both Events Received
+    FulfillmentService->>EventBus: OrderFulfilled Event
+```
+
 Choreography's strengths include loose coupling and simple services. Each service focuses on its domain. Services can be developed and deployed independently. Adding new participants doesn't require modifying existing services. The system is resilient—if one service fails, others continue operating.
 
 Choreography's weaknesses include difficulty understanding overall flows and debugging. There's no single place to see the complete process. Understanding what happens when an order is placed requires tracing events across multiple services. Debugging failures requires correlating events across services. There's no single view of process state—each service knows only its part.
@@ -108,6 +130,32 @@ Many systems use both. Simple flows use choreography. Complex flows use orchestr
 ## Event Sourcing
 
 Event sourcing stores state changes as a sequence of events in an append-only log. Instead of storing current state, systems store events that led to current state. Current state is derived by replaying events. This provides complete history, audit trails, and the ability to reconstruct state at any point in time.
+
+### Event Sourcing Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant CommandHandler
+    participant Aggregate
+    participant EventStore
+    participant ProjectionHandler
+    participant ReadModel
+    
+    Client->>CommandHandler: Send Command
+    CommandHandler->>Aggregate: Load Aggregate
+    Aggregate->>EventStore: Load Events
+    EventStore-->>Aggregate: Return Events
+    Aggregate->>Aggregate: Apply Business Logic
+    Aggregate->>EventStore: Save Domain Events
+    EventStore-->>Aggregate: Confirm Saved
+    Aggregate-->>CommandHandler: Return Result
+    CommandHandler-->>Client: Return Response
+    
+    EventStore->>ProjectionHandler: Publish Event
+    ProjectionHandler->>ReadModel: Update Read Model
+    ReadModel-->>ProjectionHandler: Confirm Updated
+```
 
 Event sourcing naturally produces events that drive read model projections. As aggregates emit domain events, projection handlers consume these events to update read models. This creates a clean separation between write models (event-sourced aggregates) and read models (projections). The same events that represent state changes also drive integration with other systems.
 
