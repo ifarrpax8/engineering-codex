@@ -4,6 +4,19 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-09] - New Skills and Commands
+
+### Added
+
+- **Skill: Checklist Runner** — interactive audit of any codex checklist against a project, with pass/fail/partial per item and gap reports
+- **Skill: Experience Audit** — review frontend code against an experience's UX guidelines, covering product alignment, architecture patterns, best practices, and gotchas
+- **Skill: Onboarding Guide** — scan a project's tech stack and generate a personalised reading path through the codex, role-aware
+- **Command: Gotcha Check** — instantly surface the gotchas for any facet or experience
+- **Command: Generate Checklist** — create a project-specific checklist tailored to the project's stack and type
+- **Command: What Should I Read?** — describe a task and get a prioritised reading list of relevant codex content
+
+---
+
 ## [2026-02-09] - Checklists, Evolution Guides, and Reading Paths
 
 ### Added

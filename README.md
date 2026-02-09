@@ -118,11 +118,17 @@ engineering-codex/
 - **facet-deep-dive** -- Explore a facet or experience topic interactively
 - **architecture-review** -- Compare your implementation against codex recommendations
 - **create-facet** -- Scaffold a new facet or experience
+- **checklist-runner** -- Run a codex checklist interactively against your project
+- **experience-audit** -- Audit your frontend against an experience's UX guidelines
+- **onboarding-guide** -- Generate a personalised reading path for a project
 
 ### Commands (Quick Triggers)
 
 - **compare-options** -- Quick side-by-side option comparison
 - **generate-adr** -- Generate an ADR from a codex decision
+- **gotcha-check** -- Instantly surface gotchas for any facet or experience
+- **generate-checklist** -- Create a project-specific checklist tailored to your stack
+- **what-should-i-read** -- Map a task description to relevant codex content
 
 ## Related Resources
 
