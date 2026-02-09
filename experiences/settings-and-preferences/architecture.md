@@ -204,6 +204,29 @@ const useAppearanceSettings = () => {
 
 ## Real-Time Settings Propagation
 
+### Settings Propagation Flow
+
+When a user changes a setting, the change propagates through the system to update caches and notify other browser tabs:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant API
+    participant Cache
+    participant OtherTabs
+    
+    User->>Frontend: Change setting
+    Frontend->>Frontend: Optimistic update
+    Frontend->>API: PATCH /settings
+    API->>API: Save to database
+    API->>Cache: Invalidate cache
+    API-->>Frontend: 200 OK
+    Frontend->>Frontend: Apply change (theme, etc.)
+    Frontend->>OtherTabs: BroadcastChannel message
+    OtherTabs->>OtherTabs: Update local state
+```
+
 ### Applying Theme Changes Without Page Refresh
 
 Use CSS custom properties (CSS variables) for runtime theme switching:
@@ -316,6 +339,26 @@ class SettingsWebSocketHandler : TextWebSocketHandler() {
 ```
 
 ## Settings Hierarchy
+
+### Settings Storage Hierarchy
+
+Settings resolution follows a hierarchical fallback chain from user preferences down to system defaults:
+
+```mermaid
+flowchart TD
+    userPref[User Preference]
+    teamDefault[Team Default]
+    orgDefault[Org Default]
+    systemDefault[System Default]
+    
+    userPref -->|Override exists| resolved[Resolved Setting]
+    userPref -->|No override| teamDefault
+    teamDefault -->|Override exists| resolved
+    teamDefault -->|No override| orgDefault
+    orgDefault -->|Override exists| resolved
+    orgDefault -->|No override| systemDefault
+    systemDefault -->|Final fallback| resolved
+```
 
 ### Resolution Logic: System → Org → User
 

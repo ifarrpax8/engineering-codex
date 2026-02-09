@@ -142,6 +142,37 @@ public class WorkflowController {
 
 ## Approval Chain Architecture
 
+### Multi-Step Approval Workflow
+
+Approval workflows progress through multiple states with validation at each step:
+
+```mermaid
+stateDiagram-v2
+    [*] --> draft: Create
+    draft --> submitted: Submit
+    submitted --> review: Assign Reviewer
+    review --> approved: Approve
+    review --> rejected: Reject
+    approved --> completed: Complete
+    rejected --> draft: Revise
+    completed --> [*]
+    
+    note right of draft
+        Initial state
+        Editable
+    end note
+    
+    note right of review
+        Awaiting approval
+        Can approve/reject
+    end note
+    
+    note right of completed
+        Workflow complete
+        Final state
+    end note
+```
+
 ### Sequential Approval
 
 Approvals must happen in a specific order:
@@ -230,6 +261,40 @@ public class ApprovalService {
 ```
 
 ## Long-Running Task Patterns
+
+### Long-Running Task Pattern
+
+Long-running tasks are submitted asynchronously, return immediately with 202 Accepted, and clients poll or receive notifications for completion:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API
+    participant TaskQueue
+    participant Worker
+    participant NotificationService
+    
+    Client->>API: POST /tasks
+    API->>TaskQueue: Enqueue task
+    API-->>Client: 202 Accepted + taskId
+    
+    par Polling or Notification
+        Client->>API: GET /tasks/{taskId}/status
+        API-->>Client: Status: processing
+        Client->>API: GET /tasks/{taskId}/status
+        API-->>Client: Status: processing
+    and
+        Worker->>TaskQueue: Dequeue task
+        Worker->>Worker: Process task
+        Worker->>API: Update progress
+        Worker->>Worker: Complete task
+        Worker->>NotificationService: Task completed
+        NotificationService->>Client: WebSocket/SSE notification
+    end
+    
+    Client->>API: GET /tasks/{taskId}/status
+    API-->>Client: Status: completed
+```
 
 ### Async Task Execution with Kafka
 

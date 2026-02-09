@@ -90,6 +90,31 @@ function UserProfile({ userId }) {
 
 Optimistic updates modify the UI immediately, before server confirmation. If the server request fails, rollback the change and show an error.
 
+### Optimistic Update Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant UI as UI Component
+    participant API as API Service
+    participant Server
+
+    User->>UI: User Action
+    UI->>UI: Update UI Optimistically
+    UI->>API: Send Request
+    API->>Server: API Call
+    Server-->>API: Success Response
+    API-->>UI: Confirm Update
+    UI->>UI: Reconcile if needed
+    
+    alt Request Fails
+        Server-->>API: Error Response
+        API-->>UI: Error
+        UI->>UI: Rollback Change
+        UI->>User: Show Error Message
+    end
+```
+
 **Pattern Structure:**
 1. Update UI optimistically (immediate)
 2. Send request to server (background)
@@ -178,6 +203,28 @@ function TodoList() {
 ## Progressive Loading
 
 Progressive loading prioritizes above-the-fold content, loading below-the-fold content lazily or after initial render.
+
+### Progressive Loading Strategy
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant Shell as App Shell
+    participant Skeleton as Skeleton Screen
+    participant API as Data API
+    participant Content as Content Component
+
+    Browser->>Shell: Load Shell
+    Shell->>Skeleton: Render Skeleton
+    Skeleton-->>Browser: Show Skeleton UI
+    Shell->>API: Fetch Critical Data
+    API-->>Shell: Return Data
+    Shell->>Content: Render Content
+    Content-->>Browser: Show Content
+    Shell->>API: Fetch Secondary Data
+    API-->>Shell: Return Secondary Data
+    Shell->>Content: Hydrate Components
+```
 
 **Above-the-Fold First:**
 ```tsx

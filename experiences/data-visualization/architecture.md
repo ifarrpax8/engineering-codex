@@ -12,6 +12,25 @@
 
 ## Charting Library Integration
 
+### Chart Rendering Architecture
+
+```mermaid
+graph TB
+    DataSource["Data Source (API Response)"]
+    Transform["Transform Layer (Format Conversion)"]
+    ChartLib["Chart Library (Chart.js/Recharts)"]
+    Container["Responsive Container (ResizeObserver)"]
+    User[User Interface]
+    
+    DataSource -->|Raw Data| Transform
+    Transform -->|Chart Format| ChartLib
+    ChartLib -->|Rendered Chart| Container
+    Container -->|Display| User
+    
+    User -->|Resize Event| Container
+    Container -->|Update Chart| ChartLib
+```
+
 ### Vue 3 with Chart.js
 
 Use `vue-chartjs` wrapper for Chart.js integration:
@@ -351,6 +370,32 @@ class CacheConfig {
 ```
 
 ## Dashboard Architecture
+
+### Dashboard Data Pipeline
+
+```mermaid
+sequenceDiagram
+    participant User as User Browser
+    participant API as API Gateway
+    participant AggService as Aggregation Service
+    participant Cache as Redis Cache
+    participant DB as Database
+    participant Render as Chart Renderer
+    
+    User->>API: Request dashboard data
+    API->>Cache: Check cache
+    alt Cache Hit
+        Cache->>API: Return cached data
+    else Cache Miss
+        API->>AggService: Request aggregated data
+        AggService->>DB: Query with aggregation
+        DB->>AggService: Return aggregated results
+        AggService->>Cache: Store in cache (5min TTL)
+        AggService->>API: Return aggregated data
+    end
+    API->>Render: Transform for chart format
+    Render->>User: Render chart component
+```
 
 ### Layout System
 

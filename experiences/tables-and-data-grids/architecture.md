@@ -108,7 +108,25 @@ const virtualizer = useVirtualizer({
 
 ## Data Fetching Patterns
 
-### Server-Side Pagination (Spring Data Pageable)
+### Server-Side Pagination Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Table as Data Table
+    participant API as API Client
+    participant Backend as Backend API
+    participant DB as Database
+
+    User->>Table: Change Page/Sort/Filter
+    Table->>API: Build Request<br/>page, size, sort, filters
+    API->>Backend: GET /api/resource?page=0&size=20&sort=name
+    Backend->>DB: Query with Pagination
+    DB-->>Backend: Page of Results + Total Count
+    Backend-->>API: Page Response<br/>content, totalElements, totalPages
+    API-->>Table: Update Table State
+    Table-->>User: Render New Page
+```
 
 The standard approach for datasets > 100 rows. Spring Data provides `Pageable` interface and `Page<T>` response wrapper.
 
@@ -744,6 +762,20 @@ fun bulkDelete(@RequestBody request: BulkDeleteRequest): ResponseEntity<Void> {
 ## Virtual Scrolling
 
 For datasets with 10K+ rows, virtual scrolling renders only visible rows.
+
+### Virtual Scrolling Architecture
+
+```mermaid
+graph TB
+    Viewport[Viewport<br/>Visible Area] --> Virtualizer[Virtual Scroller]
+    Virtualizer --> RenderedRows[Rendered Rows<br/>Visible + Buffer]
+    Virtualizer --> BufferZone[Buffer Zone<br/>Overscan]
+    RenderedRows --> DataSource[Data Source]
+    BufferZone --> DataSource
+    Viewport --> ScrollPosition[Scroll Position]
+    ScrollPosition --> Virtualizer
+    DataSource --> AllData[All Data<br/>or Current Page]
+```
 
 ```vue
 <script setup>

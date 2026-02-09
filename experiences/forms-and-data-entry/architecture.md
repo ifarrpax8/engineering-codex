@@ -118,6 +118,25 @@ const { register, handleSubmit, formState: { errors } } = useForm();
 
 Validation must occur at multiple layers: client-side for immediate feedback, server-side for security and data integrity, and async validation for checks requiring server resources.
 
+### Form Validation Flow
+
+```mermaid
+flowchart TD
+    UserInput[User Input] --> ClientValidation[Client Validation]
+    ClientValidation --> ClientValid{Valid?}
+    ClientValid -->|No| ShowClientErrors[Show Client Errors]
+    ShowClientErrors --> UserInput
+    ClientValid -->|Yes| SubmitForm[Submit Form]
+    SubmitForm --> ServerValidation[Server Validation]
+    ServerValidation --> ServerValid{Valid?}
+    ServerValid -->|No| ReturnErrors[Return Validation Errors]
+    ReturnErrors --> MapErrors[Map Errors to Fields]
+    MapErrors --> ShowServerErrors[Show Server Errors]
+    ShowServerErrors --> UserInput
+    ServerValid -->|Yes| ProcessData[Process Data]
+    ProcessData --> Success[Success Response]
+```
+
 ### Client-Side Validation
 
 Client-side validation provides immediate feedback without server round-trips. Use for:
@@ -284,6 +303,34 @@ Share validation schemas between frontend and backend to ensure consistency.
 ## Multi-Page/Wizard Forms
 
 Multi-page forms break complex data entry into manageable steps, improving completion rates and user experience.
+
+### Multi-Step Wizard Flow
+
+```mermaid
+stateDiagram-v2
+    [*] --> Step1
+    Step1 --> ValidateStep1: User Input
+    ValidateStep1 --> Step1: Validation Failed
+    ValidateStep1 --> SaveDraft: Auto-save
+    ValidateStep1 --> Step2: Next Button
+    Step2 --> ValidateStep2: User Input
+    ValidateStep2 --> Step2: Validation Failed
+    ValidateStep2 --> SaveDraft: Auto-save
+    ValidateStep2 --> Step3: Next Button
+    Step3 --> ValidateStep3: User Input
+    ValidateStep3 --> Step3: Validation Failed
+    ValidateStep3 --> SaveDraft: Auto-save
+    ValidateStep3 --> ReviewStep: Next Button
+    ReviewStep --> Step1: Back Button
+    ReviewStep --> Step2: Back Button
+    ReviewStep --> Step3: Back Button
+    ReviewStep --> Submit: Submit Button
+    Submit --> ValidateAll: Server Validation
+    ValidateAll --> ReviewStep: Validation Failed
+    ValidateAll --> Success: Validation Passed
+    SaveDraft --> [*]: Draft Saved
+    Success --> [*]
+```
 
 ### Step State Management
 

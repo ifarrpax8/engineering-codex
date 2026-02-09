@@ -237,6 +237,43 @@ data class FeedbackContext(
 
 ## Support System Integration
 
+### Support Escalation Flow
+
+Support requests escalate through multiple tiers based on complexity and user tier:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Chatbot
+    participant KB
+    participant Tier1
+    participant Tier2
+    participant Engineering
+    
+    User->>Chatbot: Submit question
+    Chatbot->>KB: Search knowledge base
+    KB-->>Chatbot: Found answer?
+    alt Answer found
+        Chatbot-->>User: Provide answer
+    else No answer
+        Chatbot->>Tier1: Escalate to Tier 1
+        Tier1->>Tier1: Attempt resolution
+        alt Resolved
+            Tier1-->>User: Solution provided
+        else Needs escalation
+            Tier1->>Tier2: Escalate to Tier 2
+            Tier2->>Tier2: Deep investigation
+            alt Resolved
+                Tier2-->>User: Solution provided
+            else Bug identified
+                Tier2->>Engineering: Escalate to Engineering
+                Engineering->>Engineering: Fix bug
+                Engineering-->>User: Bug fixed
+            end
+        end
+    end
+```
+
 ### Ticketing Systems
 
 Integrate with external ticketing systems for ticket lifecycle management:
@@ -657,6 +694,33 @@ export function submitFeedbackWithReplay(feedback: FeedbackPayload) {
 ```
 
 ## Feedback Routing
+
+### Feedback Routing Pipeline
+
+User feedback flows through categorization and routing to the appropriate team:
+
+```mermaid
+flowchart TD
+    userFeedback[User Feedback]
+    categorize[Categorize Feedback]
+    
+    bugCategory[Bug Category]
+    featureCategory[Feature Request]
+    supportCategory[Support Question]
+    
+    engineeringTeam[Engineering Team]
+    productTeam[Product Team]
+    supportTeam[Support Team]
+    
+    userFeedback --> categorize
+    categorize -->|Error/Broken| bugCategory
+    categorize -->|New Feature| featureCategory
+    categorize -->|Question| supportCategory
+    
+    bugCategory --> engineeringTeam
+    featureCategory --> productTeam
+    supportCategory --> supportTeam
+```
 
 ### Categorization and Priority
 

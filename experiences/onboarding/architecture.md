@@ -18,6 +18,32 @@ Technical patterns, data models, and implementation approaches for building effe
 
 Onboarding is fundamentally a state machine. Users move through states: `new` → `in-progress` → `completed` or `skipped`.
 
+### Onboarding State Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> newUser: User Created
+    newUser --> guidedTour: Start Onboarding
+    guidedTour --> keyActions: Complete Tour
+    keyActions --> activated: Complete Actions
+    activated --> [*]
+    
+    newUser --> skipped: User Skips
+    guidedTour --> skipped: User Skips
+    keyActions --> skipped: User Skips
+    skipped --> [*]
+    
+    note right of newUser
+        Initial state
+        No progress
+    end note
+    
+    note right of activated
+        Onboarding complete
+        Full feature access
+    end note
+```
+
 ### User States
 
 ```typescript
@@ -180,6 +206,29 @@ function OnboardingProvider({ children }) {
 ## Progressive Disclosure Implementation
 
 Progressive disclosure means revealing features and complexity gradually, based on user readiness and context.
+
+### Progressive Disclosure Flow
+
+Features unlock progressively as users complete key achievements:
+
+```mermaid
+flowchart TD
+    initial[Initial Features]
+    achievement1[User Achievement 1]
+    achievement2[User Achievement 2]
+    achievement3[User Achievement 3]
+    
+    featureSet1[Feature Set 1]
+    featureSet2[Feature Set 2]
+    featureSet3[Feature Set 3]
+    
+    initial --> achievement1
+    achievement1 -->|Unlock| featureSet1
+    featureSet1 --> achievement2
+    achievement2 -->|Unlock| featureSet2
+    featureSet2 --> achievement3
+    achievement3 -->|Unlock| featureSet3
+```
 
 ### Feature Gating by Onboarding Stage
 

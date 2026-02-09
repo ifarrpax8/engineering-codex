@@ -16,6 +16,28 @@
 
 Search capabilities exist on a spectrum from simple database queries to dedicated search infrastructure. Choose the right level based on your requirements, data volume, and user expectations.
 
+### Search vs Filter Decision Flow
+
+```mermaid
+flowchart TD
+    Start[User Query] --> CheckType{Query Type?}
+    CheckType -->|Exact Match| UseFilter[Use DB Filter]
+    CheckType -->|Simple Prefix| UseFilter
+    CheckType -->|Full Text| CheckVolume{Data Volume?}
+    CheckVolume -->|Small < 10K| UsePostgres[PostgreSQL FTS]
+    CheckVolume -->|Medium 10K-1M| UsePostgres
+    CheckVolume -->|Large > 1M| UseSearchEngine[Search Engine]
+    CheckType -->|Typo Tolerance| UseSearchEngine
+    CheckType -->|Relevance Ranking| UseSearchEngine
+    CheckType -->|Faceted Search| UseSearchEngine
+    UseFilter --> ExecuteFilter[Execute SQL WHERE]
+    UsePostgres --> ExecutePostgres[Execute tsvector Query]
+    UseSearchEngine --> ExecuteSearch[Query Search Index]
+    ExecuteFilter --> Results[Return Results]
+    ExecutePostgres --> Results
+    ExecuteSearch --> Results
+```
+
 ### Level 1: Database Filtering
 
 **What it is**: Standard SQL WHERE clauses with query parameters, potentially with LIKE or ILIKE for text matching.
@@ -182,7 +204,19 @@ Combine patterns: event-driven for real-time updates, scheduled reindex for cons
 
 ## Search Architecture Patterns
 
-### Separate Search Endpoint
+### Search Architecture Overview
+
+```mermaid
+graph TB
+    Frontend[Frontend Search UI] --> SearchAPI[Search API]
+    SearchAPI --> SearchIndex[Search Index<br/>OpenSearch/Elasticsearch]
+    SearchIndex --> Database[(Primary Database)]
+    Database --> SyncPipeline[Sync Pipeline]
+    SyncPipeline --> SearchIndex
+    SearchAPI --> Cache[Result Cache]
+    Cache --> Frontend
+    SearchIndex --> Frontend
+```
 
 **Pattern**: Dedicated `/search` endpoint separate from list/filter endpoints.
 

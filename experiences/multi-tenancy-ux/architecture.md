@@ -16,6 +16,34 @@
 
 Tenant context must be established and maintained throughout the request lifecycle. Multiple mechanisms work together to ensure tenant identity is never lost.
 
+### Tenant Context Flow
+
+```mermaid
+sequenceDiagram
+    participant User as User Browser
+    participant Frontend as Frontend App
+    participant Auth as Auth Service
+    participant API as Backend API
+    participant Filter as Tenant Filter
+    participant DB as Database
+    
+    User->>Frontend: Login
+    Frontend->>Auth: Authenticate
+    Auth->>Frontend: JWT with tenantId claim
+    Frontend->>Frontend: Store tenant in state
+    
+    User->>Frontend: Navigate to /acme-corp/dashboard
+    Frontend->>API: GET /api/dashboard with X-Tenant-Id header
+    API->>Filter: Extract tenant from JWT/Header
+    Filter->>Filter: Validate tenant access
+    Filter->>Filter: Set TenantContextHolder
+    Filter->>DB: Query with tenant filter
+    DB->>Filter: Return tenant-scoped data
+    Filter->>API: Process request
+    API->>Frontend: Return tenant-scoped response
+    Frontend->>User: Render dashboard
+```
+
 ### Tenant ID in JWT Claims
 
 The authentication token includes the current tenant ID, allowing the backend to validate tenant context.
@@ -326,6 +354,33 @@ export const apiClient = new TenantAwareApiClient()
 ## Tenant Switching Architecture
 
 Switching tenants requires coordinated updates across frontend state, backend context, and cached data.
+
+### Tenant Switching Flow
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant UI as UI Component
+    participant Store as Tenant Store
+    participant Auth as Auth Service
+    participant Cache as Cache Layer
+    participant API as Backend API
+    participant Router as Router
+    
+    User->>UI: Select new tenant
+    UI->>Store: switchTenant(tenantId)
+    Store->>Auth: Update JWT with new tenantId
+    Auth->>Store: New JWT token
+    Store->>API: Fetch new tenant details
+    API->>Store: Tenant data
+    Store->>Cache: Clear all cached data
+    Cache->>Cache: Remove tenant-specific keys
+    Store->>API: Reload permissions
+    API->>Store: New tenant permissions
+    Store->>Router: Update URL with tenant slug
+    Router->>UI: Navigate to new tenant route
+    UI->>User: Display new tenant context
+```
 
 ### Re-fetch Permissions on Switch
 

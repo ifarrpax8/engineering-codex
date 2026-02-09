@@ -338,6 +338,26 @@ Show different content based on application state:
 </template>
 ```
 
+## Content Resolution Chain
+
+Content resolution follows a hierarchical fallback chain:
+
+```mermaid
+flowchart TD
+    Start([Content Key Requested])
+    Start --> ComponentCheck{Component Translation?}
+    ComponentCheck -->|Found| Component["Component Translation (invoice.form.submit)"]
+    ComponentCheck -->|Not Found| FeatureCheck{Feature Translation?}
+    FeatureCheck -->|Found| Feature["Feature Translation (invoice.submit)"]
+    FeatureCheck -->|Not Found| GlobalCheck{Global Translation?}
+    GlobalCheck -->|Found| Global["Global Translation (button.submit)"]
+    GlobalCheck -->|Not Found| Fallback["Fallback Text (Submit)"]
+    Component --> Render[Render Content]
+    Feature --> Render
+    Global --> Render
+    Fallback --> Render
+```
+
 ## Content Hierarchy in Components
 
 Components often need multiple content types. Establish a clear hierarchy:
@@ -648,6 +668,41 @@ Support multiple content formats:
 public ResponseEntity<InvoiceResponse> getInvoice(@PathVariable String id) {
     // Response format negotiated based on Accept header
 }
+```
+
+## Content Governance Workflow
+
+Content goes through a structured workflow from creation to publication:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft: Content Created
+    Draft --> Review: Submit for Review
+    Review --> Draft: Request Changes
+    Review --> Approved: Approve Content
+    Approved --> Published: Publish
+    Published --> Archived: Archive Old Content
+    Archived --> [*]
+    
+    note right of Draft
+        Content writer creates/edits
+        copy in message files or CMS
+    end note
+    
+    note right of Review
+        Content reviewer checks
+        style, terminology, clarity
+    end note
+    
+    note right of Approved
+        Content approved but
+        not yet live
+    end note
+    
+    note right of Published
+        Content is live
+        and visible to users
+    end note
 ```
 
 ## Versioning

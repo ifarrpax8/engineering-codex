@@ -13,7 +13,27 @@
 
 ## Route Architecture
 
-### Vue Router
+### Route Resolution Flow
+
+```mermaid
+flowchart TD
+    URL[URL Change] --> Router[Router]
+    Router --> ParseURL[Parse URL]
+    ParseURL --> MatchRoute[Match Route]
+    MatchRoute --> AuthGuard{Auth Guard?}
+    AuthGuard -->|Not Authenticated| RedirectLogin[Redirect to Login]
+    AuthGuard -->|Authenticated| CheckPermissions{Permissions?}
+    CheckPermissions -->|No Permission| RedirectUnauthorized[Redirect Unauthorized]
+    CheckPermissions -->|Has Permission| LazyLoad{Lazy Load?}
+    LazyLoad -->|Yes| LoadComponent[Load Component]
+    LazyLoad -->|No| RenderComponent[Render Component]
+    LoadComponent --> RenderComponent
+    RenderComponent --> LoadData[Load Route Data]
+    LoadData --> Render[Render View]
+    RedirectLogin --> [*]
+    RedirectUnauthorized --> [*]
+    Render --> [*]
+```
 
 Vue Router provides a powerful routing system for Vue 3 applications with several key features:
 
@@ -559,6 +579,24 @@ const showModal = computed(() => route.query.modal === 'subscriptions')
 ## MFE Navigation
 
 Micro Frontend (MFE) architecture introduces navigation complexity when multiple applications need to coordinate routing.
+
+### MFE Navigation Architecture
+
+```mermaid
+graph TB
+    Shell[Shell Router] --> MFE1[MFE 1 Router]
+    Shell --> MFE2[MFE 2 Router]
+    Shell --> MFE3[MFE 3 Router]
+    Shell --> SharedState[Shared URL State]
+    MFE1 --> SharedState
+    MFE2 --> SharedState
+    MFE3 --> SharedState
+    SharedState --> EventBus[Event Bus]
+    EventBus --> Shell
+    EventBus --> MFE1
+    EventBus --> MFE2
+    EventBus --> MFE3
+```
 
 **Shell-Owned Routing:**
 

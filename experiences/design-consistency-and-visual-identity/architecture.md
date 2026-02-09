@@ -20,6 +20,28 @@ last_updated: 2026-02-09
 
 Design tokens are the atomic design decisions—colors, spacing, typography, shadows, border-radius—expressed as semantic variables. They form the foundation of visual consistency.
 
+### Design Token Pipeline
+
+```mermaid
+flowchart LR
+    Figma["Figma Design Tokens (Designer Creates)"]
+    Transform["Transform Layer (Style Dictionary)"]
+    CSSVars["CSS Variables (--color-primary)"]
+    Components["Component Consumption (var(--color-primary))"]
+    Apps["Consuming Applications (MFEs & Apps)"]
+    
+    Figma -->|Export JSON| Transform
+    Transform -->|Generate CSS| CSSVars
+    CSSVars -->|Reference| Components
+    Components -->|Use| Apps
+    
+    style Figma fill:#e1f5ff
+    style Transform fill:#fff4e1
+    style CSSVars fill:#e8f5e9
+    style Components fill:#f3e5f5
+    style Apps fill:#fce4ec
+```
+
 ### What Tokens Are
 
 Tokens abstract design values into named, semantic variables:
@@ -119,6 +141,26 @@ module.exports = {
 **Usage**: `className="bg-primary-500 p-4"` - tokens become utility classes.
 
 ## Component Library Integration Patterns
+
+### Component Library Architecture
+
+```mermaid
+graph TB
+    Tokens["Design Tokens (CSS Variables)"]
+    BaseComponents["Base Components (Button, Input, Card)"]
+    ThemedVariants["Themed Variants (Primary, Secondary)"]
+    ConsumingApps["Consuming Applications (Finance MFE, Orders MFE)"]
+    
+    Tokens -->|Provide Values| BaseComponents
+    BaseComponents -->|Extend| ThemedVariants
+    ThemedVariants -->|Import| ConsumingApps
+    Tokens -->|Direct Access| ConsumingApps
+    
+    style Tokens fill:#e1f5ff
+    style BaseComponents fill:#e8f5e9
+    style ThemedVariants fill:#fff4e1
+    style ConsumingApps fill:#fce4ec
+```
 
 ### Consuming Propulsion
 

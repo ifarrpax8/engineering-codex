@@ -303,6 +303,36 @@ The delivery pipeline processes notifications from event to delivery:
 Event → Enrich → Resolve Preferences → Render → Dispatch → Track
 ```
 
+### Notification Delivery Pipeline
+
+```mermaid
+sequenceDiagram
+    participant Event as Domain Event
+    participant Queue as Message Queue
+    participant Service as Notification Service
+    participant Template as Template Engine
+    participant Channel as Channel Registry
+    participant Email as Email Channel
+    participant Push as Push Channel
+    participant InApp as In-App Channel
+
+    Event->>Queue: Publish Event
+    Queue->>Service: Consume Event
+    Service->>Service: Enrich Request
+    Service->>Service: Resolve Preferences
+    Service->>Template: Render Template
+    Template-->>Service: Rendered Content
+    Service->>Channel: Get Channel
+    Channel-->>Service: Channel Instance
+    Service->>Email: Send (if enabled)
+    Service->>Push: Send (if enabled)
+    Service->>InApp: Send (if enabled)
+    Email-->>Service: Delivery Result
+    Push-->>Service: Delivery Result
+    InApp-->>Service: Delivery Result
+    Service->>Service: Track Delivery
+```
+
 ### Pipeline Stages
 
 **1. Event Reception**:
@@ -486,6 +516,26 @@ class PreferenceService(
 ## Real-Time Delivery
 
 For in-app notifications, choose a real-time delivery mechanism.
+
+### Real-Time Notification Flow
+
+```mermaid
+sequenceDiagram
+    participant Backend as Backend Service
+    participant DB as Database
+    participant WS as WebSocket/SSE
+    participant Frontend as Frontend Client
+    participant Toast as Toast Component
+    participant Badge as Badge Component
+
+    Backend->>DB: Save Notification
+    DB-->>Backend: Notification Saved
+    Backend->>WS: Push Notification
+    WS->>Frontend: Send Event
+    Frontend->>Toast: Show Toast
+    Frontend->>Badge: Update Badge Count
+    Frontend->>DB: Mark as Read (optional)
+```
 
 ### WebSocket Approach
 

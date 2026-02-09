@@ -255,6 +255,31 @@ function Navigation() {
 
 ## Breakpoint System
 
+### Breakpoint Decision Flow
+
+The system detects viewport size, matches it to a breakpoint, and adapts the layout accordingly:
+
+```mermaid
+flowchart TD
+    viewport[Viewport Detected]
+    checkMobile{Width < 768px?}
+    checkTablet{Width < 1024px?}
+    checkDesktop{Width < 1280px?}
+    
+    mobileLayout[Mobile Layout]
+    tabletLayout[Tablet Layout]
+    desktopLayout[Desktop Layout]
+    xlLayout[XL Layout]
+    
+    viewport --> checkMobile
+    checkMobile -->|Yes| mobileLayout
+    checkMobile -->|No| checkTablet
+    checkTablet -->|Yes| tabletLayout
+    checkTablet -->|No| checkDesktop
+    checkDesktop -->|Yes| desktopLayout
+    checkDesktop -->|No| xlLayout
+```
+
 ### Tailwind CSS Default Breakpoints
 ```javascript
 // tailwind.config.js
@@ -345,6 +370,27 @@ Add custom breakpoints when:
 **Avoid**: Adding breakpoints for every minor layout adjustment. Use fluid layouts (`clamp()`) instead.
 
 ## Responsive Images
+
+### Responsive Image Loading Flow
+
+The browser evaluates viewport and device pixel ratio, then requests the optimal image from CDN:
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant SrcsetEvaluator
+    participant CDN
+    participant ImageService
+    
+    Browser->>SrcsetEvaluator: Evaluate viewport size
+    Browser->>SrcsetEvaluator: Check device pixel ratio
+    SrcsetEvaluator->>SrcsetEvaluator: Calculate needed image size
+    SrcsetEvaluator->>SrcsetEvaluator: Select from srcset
+    Browser->>CDN: Request optimized image
+    CDN->>ImageService: Transform/optimize
+    ImageService-->>CDN: Optimized image (WebP/AVIF)
+    CDN-->>Browser: Deliver optimized image
+```
 
 ### srcset and sizes Attributes
 Serve appropriately-sized images based on viewport and device pixel ratio.

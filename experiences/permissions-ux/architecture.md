@@ -316,6 +316,32 @@ permissionEventSource.onmessage = (event) => {
 
 **Critical principle**: Frontend permissions are a convenience layer. Server ALWAYS enforces.
 
+### Permission Resolution Flow
+
+Permission checks traverse multiple layers to determine access:
+
+```mermaid
+flowchart TD
+    userRequest[User Request]
+    roleCheck[Check User Role]
+    permissionCheck[Check Permission]
+    tenantScope[Check Tenant Scope]
+    resourceCheck[Check Resource Access]
+    
+    allow[Allow Access]
+    deny[Deny Access]
+    
+    userRequest --> roleCheck
+    roleCheck -->|Role found| permissionCheck
+    roleCheck -->|No role| deny
+    permissionCheck -->|Permission exists| tenantScope
+    permissionCheck -->|No permission| deny
+    tenantScope -->|Tenant match| resourceCheck
+    tenantScope -->|Tenant mismatch| deny
+    resourceCheck -->|Resource accessible| allow
+    resourceCheck -->|Resource not accessible| deny
+```
+
 ### Frontend: Hide/Disable Based on Cached Permissions
 
 ```typescript
@@ -378,6 +404,42 @@ public class ProjectController {
 ```
 
 ## Dynamic UI Rendering Based on Permissions
+
+### UI Permission Adaptation Flow
+
+The UI adapts based on permission checks using different strategies:
+
+```mermaid
+flowchart TD
+    featureCheck[Check Feature Permission]
+    hasPermission{Has Permission?}
+    
+    hide[Hide Element]
+    disable[Disable Element]
+    showWithExplanation[Show with Explanation]
+    showNormal[Show Normally]
+    
+    featureCheck --> hasPermission
+    hasPermission -->|No| hide
+    hasPermission -->|No| disable
+    hasPermission -->|No| showWithExplanation
+    hasPermission -->|Yes| showNormal
+    
+    note right of hide
+        Remove from DOM
+        No visual trace
+    end note
+    
+    note right of disable
+        Visible but disabled
+        Shows what's unavailable
+    end note
+    
+    note right of showWithExplanation
+        Visible with tooltip
+        Explains why unavailable
+    end note
+```
 
 ### Conditional Navigation Items
 

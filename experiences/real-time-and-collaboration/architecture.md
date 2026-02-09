@@ -130,6 +130,27 @@ class SseController {
 **Automatic Reconnection**: Browsers automatically reconnect SSE connections
 **Event IDs**: Use `id` field for resume capability—client can request events after a specific ID
 
+## Real-Time Communication Spectrum
+
+Choose the right real-time communication strategy based on your needs:
+
+```mermaid
+flowchart TD
+    Start([Need Real-Time Updates?])
+    Start --> LowFreq{Low Frequency Updates?}
+    LowFreq -->|Yes| Polling["Polling (1-5s interval)"]
+    LowFreq -->|No| OneWay{One-Way Server Push?}
+    OneWay -->|Yes| SSE["Server-Sent Events (SSE)"]
+    OneWay -->|No| Bidirectional{Bidirectional Communication?}
+    Bidirectional -->|Yes| Conflict{Need Conflict Resolution?}
+    Conflict -->|No| WebSocket["WebSocket (STOMP)"]
+    Conflict -->|Yes| CRDT["CRDT (Conflict-Free Types)"]
+    Polling --> UseCase1["Simple Feeds & Notifications"]
+    SSE --> UseCase2["Live Feeds & Status Updates"]
+    WebSocket --> UseCase3["Collaborative Editing & Chat"]
+    CRDT --> UseCase4["Real-Time Documents & Shared State"]
+```
+
 ## Polling as Fallback
 
 When WebSocket/SSE fails, fall back to polling strategies.
@@ -163,6 +184,28 @@ const usePolling = (url: string, interval: number) => {
 ## Presence System
 
 Track who's online, viewing pages, or actively editing.
+
+### Presence System Flow
+
+```mermaid
+sequenceDiagram
+    participant User as User Client
+    participant WS as WebSocket Server
+    participant Redis as Redis Cache
+    participant Broadcast as Presence Broadcast
+    
+    User->>WS: Connect & Authenticate
+    User->>WS: Send Heartbeat (every 30s)
+    WS->>Redis: Update presence key (TTL: 2min)
+    WS->>Broadcast: Broadcast presence update
+    Broadcast->>User: Presence list updated
+    
+    Note over User,Redis: User closes browser/laptop
+    Note over Redis: TTL expires after 2min
+    Redis->>WS: Presence key expired
+    WS->>Broadcast: Broadcast user offline
+    Broadcast->>User: Remove from presence list
+```
 
 ### Heartbeat Mechanism
 
