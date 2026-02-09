@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 WCAG compliance, semantic HTML, ARIA, keyboard navigation, screen readers, color contrast.
 
+## TL;DR
+
+- **Default choice**: WCAG 2.1 Level AA compliance; Propulsion design system components for standard patterns; automated testing (axe-core + linting) combined with manual keyboard and screen reader testing
+- **Key principle**: Build accessibility into the foundation using semantic HTML and design system components—accessibility should be integrated, not retrofitted
+- **Watch out for**: Automated tools only catch 30-40% of accessibility issues—manual keyboard navigation and screen reader testing are essential for real-world validation
+- **Start here**: [Options](options.md) for testing strategy decision matrix and component library selection guidance
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

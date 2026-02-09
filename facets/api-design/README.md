@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 REST, GraphQL, gRPC, API versioning, contracts, documentation
 
+## TL;DR
+
+- **Default choice**: REST for most web APIs—widely understood, excellent tooling, browser-friendly, natural HTTP caching
+- **Key principle**: Choose API style based on consumer needs—REST for simple CRUD, GraphQL for complex queries with multiple consumers, gRPC for high-performance internal services
+- **Watch out for**: Over-fetching and N+1 problems in REST (GraphQL helps), query complexity attacks in GraphQL (set complexity limits), browser limitations with gRPC (requires proxy)
+- **Start here**: [Options](options.md) — Decision matrix covers REST, GraphQL, and gRPC with pagination strategies (offset vs cursor-based)
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

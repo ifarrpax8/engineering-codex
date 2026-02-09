@@ -8,7 +8,12 @@ last_updated: 2026-02-09
 
 Messaging, event sourcing, CQRS, choreography vs orchestration.
 
-## Perspectives
+## TL;DR
+
+- **Default choice**: Hybrid communication pattern—synchronous for queries and request-response, asynchronous messaging for commands and state changes
+- **Key principle**: Use the right pattern for each use case; CQRS naturally supports hybrid with async writes and sync reads
+- **Watch out for**: Eventual consistency issues when reads need immediate consistency, debugging complexity in distributed event flows
+- **Start here**: [Options](options.md) — contains the default recommendation and decision matrix for communication patterns, message brokers, and process coordination
 
 - [Product Perspective](product.md) -- Business value, user flows, personas
 - [Architecture](architecture.md) -- Patterns, diagrams, trade-offs

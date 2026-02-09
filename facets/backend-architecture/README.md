@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Layered, hexagonal, CQRS, microservices, monoliths, modulith.
 
+## TL;DR
+
+- **Default choice**: Monolith for < 5 developers, Modulith for 5-15 developers, Microservices for 15+ developers—match deployment architecture to team size
+- **Key principle**: Start simple, evolve when triggers are reached—don't optimize prematurely for scale you don't have yet
+- **Watch out for**: Premature microservices (high operational complexity without team size justification), deployment conflicts in monoliths as teams grow, shared database coupling in microservices
+- **Start here**: [Options](options.md) — Decision matrix covers deployment architectures (Monolith, Modulith, Microservices) and internal patterns (Layered, Hexagonal, CQRS)
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

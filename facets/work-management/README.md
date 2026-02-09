@@ -8,7 +8,12 @@ last_updated: 2026-02-09
 
 Ticket systems, ticket types, workflows, estimation, sprint management, backlog grooming.
 
-## Perspectives
+## TL;DR
+
+- **Default choice**: GitHub Issues for small to medium teams (< 20 developers), Jira for larger teams or enterprise needs, Azure Boards if already in Azure DevOps ecosystem
+- **Key principle**: Process discipline matters more than tool choice; choose tools that support your team's practices, not tools that require changing practices to fit
+- **Watch out for**: Over-configuration leading to process bloat, tickets becoming a burden engineers avoid, estimation becoming performance evaluation
+- **Start here**: [Options](options.md) — contains the decision matrix comparing ticket systems, estimation approaches, and workflow complexity options
 
 - [Product Perspective](product.md) -- Business value, user flows, personas
 - [Architecture](architecture.md) -- Patterns, diagrams, trade-offs

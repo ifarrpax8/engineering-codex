@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Logging, metrics, tracing, alerting, dashboards, SLOs.
 
+## TL;DR
+
+- **Default choice**: OpenTelemetry for instrumentation (vendor-neutral, portable); cloud-native observability (CloudWatch, Azure Monitor, GCP Operations) for small teams; open source stack (Prometheus + Grafana + Loki + Tempo) for growing teams
+- **Key principle**: Always start with OpenTelemetry SDK regardless of backend—instrument once, switch backends without re-instrumenting
+- **Watch out for**: High-cardinality labels create excessive time series in Prometheus, leading to performance issues and increased costs
+- **Start here**: [Options](options.md) for observability stack selection and instrumentation standard guidance
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

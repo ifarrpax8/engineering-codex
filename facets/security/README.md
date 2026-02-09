@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Input validation, secrets management, dependency scanning, encryption, CORS, CSP, OWASP.
 
+## TL;DR
+
+- **Default choice**: Cloud provider secrets managers (AWS Secrets Manager, Azure Key Vault, GCP Secret Manager) for single-cloud deployments; Dependabot/Renovate for automated dependency updates; SAST (Static Application Security Testing) first, then add DAST for critical applications
+- **Key principle**: Start with managed services for simplicity, upgrade to advanced solutions (HashiCorp Vault, comprehensive SCA tools) as requirements grow
+- **Watch out for**: Kubernetes Secrets are base64-encoded by default—not encrypted. Enable encryption providers for production use
+- **Start here**: [Options](options.md) for decision matrices on secrets management, dependency scanning, and application security testing
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

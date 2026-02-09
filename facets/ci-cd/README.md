@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Pipelines, build automation, deployment strategies, quality gates, artifact management.
 
+## TL;DR
+
+- **Default choice**: Canary deployments for production (data-driven rollouts with automatic rollback); trunk-based development for high-velocity teams; GitHub Actions for GitHub-hosted repositories
+- **Key principle**: Frequent small deployments reduce risk and enable rapid iteration—canary deployments validate changes with real traffic before full rollout
+- **Watch out for**: Trunk-based development requires feature flag infrastructure to hide incomplete work—without it, you can't merge frequently without impacting users
+- **Start here**: [Options](options.md) for deployment strategies, branching approaches, and CI platform selection
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

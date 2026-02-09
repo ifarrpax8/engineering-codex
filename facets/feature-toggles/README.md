@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Feature toggles, also known as feature flags, are a powerful technique that allows teams to modify system behavior without changing code. They enable decoupling deployment from release, reducing risk, enabling progressive rollouts, and supporting experimentation. This facet covers the complete lifecycle of feature toggles from creation through removal, including release toggles, experiment toggles, ops toggles, and permission toggles.
 
+## TL;DR
+
+- **Default choice**: Start with configuration-file toggles for < 5 toggles, evolve to database-backed service for 5-20 toggles, consider commercial platform for 20+ toggles with advanced needs
+- **Key principle**: Toggles are temporary—plan for removal from day one; test both toggle states (on and off)
+- **Watch out for**: Toggle debt from forgotten toggles, inconsistent evaluation across services, testing failures when toggle state isn't managed in tests
+- **Start here**: [Options](options.md) — contains the decision matrix comparing implementation approaches and evolution guidance
+
 ## Core Concepts
 
 **Release Toggles**: Hide incomplete features behind flags, allowing code to be merged and deployed to production before the feature is ready for users. These are short-lived, typically removed within days or weeks after the feature is fully released.

@@ -8,7 +8,12 @@ last_updated: 2026-02-09
 
 Exception strategies, error boundaries, retry patterns, user-facing errors, dead letter queues.
 
-## Perspectives
+## TL;DR
+
+- **Default choice**: RFC 7807 Problem Details (Spring 6+) for error responses, retry with exponential backoff for transient failures, error boundaries per feature section
+- **Key principle**: Always sanitize errors—never log or expose passwords, tokens, or PII in error messages or logs
+- **Watch out for**: Leaking sensitive information in error messages, not propagating correlation IDs for distributed tracing
+- **Start here**: [Options](options.md) — contains the recommended error handling stack and decision matrix for error response formats and resilience patterns
 
 - [Product Perspective](product.md) -- Business value, user flows, personas
 - [Architecture](architecture.md) -- Patterns, diagrams, trade-offs

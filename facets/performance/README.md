@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Frontend loading, backend throughput, database optimization, caching, profiling, budgets.
 
+## TL;DR
+
+- **Default choice**: k6 for load testing (JavaScript-based, CI-friendly); Lighthouse CI for frontend performance monitoring (automated audits in CI); Redis cache-aside pattern for distributed applications
+- **Key principle**: Measure before optimizing—establish performance baselines with automated monitoring, then optimize based on real data
+- **Watch out for**: Spring Cache provides per-instance caching that doesn't scale across multiple instances—use Redis for distributed applications requiring shared cache
+- **Start here**: [Options](options.md) for load testing tools, frontend monitoring solutions, and backend caching strategies
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

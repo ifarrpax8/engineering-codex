@@ -14,6 +14,13 @@ The investment in internationalization pays dividends in market expansion, user 
 
 This facet covers the complete spectrum of internationalization concerns, from product strategy and user experience through technical architecture, testing approaches, and operational best practices. It provides guidance for teams working with Java/Kotlin Spring Boot backends, Vue 3 or React frontends, and REST APIs, though many principles apply broadly across technology stacks.
 
+## TL;DR
+
+- **Default choice**: Framework-specific libraries (vue-i18n for Vue, react-intl for React) for frontend; TMS platforms (Crowdin, Phrase, Lokalise) for 5+ languages; Spring MessageSource for Spring Boot backends
+- **Key principle**: Build i18n into the foundation from day one—retrofitting is exponentially more expensive than building it in initially
+- **Watch out for**: Hardcoded strings and string concatenation break translations—always use message keys and interpolation patterns
+- **Start here**: [README](README.md) for comprehensive overview, then [Options](options.md) for library selection and translation management decisions
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas, market expansion, translation management

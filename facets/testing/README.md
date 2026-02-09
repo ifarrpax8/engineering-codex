@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Unit, integration, e2e, contract, performance, TDD, BDD, test architecture
 
+## TL;DR
+
+- **Default choice**: Test-After for rapid development, evolve to TDD for business logic and BDD for user-facing features—use the right strategy for each scenario
+- **Key principle**: Test distribution follows architecture—Pyramid for monoliths (many unit tests), Diamond/Trophy for microservices (focus on integration tests)
+- **Watch out for**: Over-testing trivial code (TDD can lead to this), brittle E2E tests (keep them focused on critical user journeys), flaky tests slowing CI/CD (target < 1% flakiness)
+- **Start here**: [Options](options.md) — Decision matrix covers TDD, BDD, Test-After, ATDD strategies plus test distribution patterns (Pyramid, Diamond, Trophy)
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

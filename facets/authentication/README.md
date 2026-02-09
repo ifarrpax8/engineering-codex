@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 AuthN/AuthZ, identity, sessions, tokens, OAuth, RBAC, ABAC
 
+## TL;DR
+
+- **Default choice**: Session-based for traditional web apps, JWT for APIs/SPAs/microservices, OAuth 2.0/OIDC for SSO and enterprise
+- **Key principle**: Match authentication strategy to your architecture—stateless for microservices, session-based for monoliths, OAuth for multi-app ecosystems
+- **Watch out for**: JWT revocation challenges (stateless tokens can't be revoked without blacklist), localStorage XSS vulnerabilities (prefer httpOnly cookies)
+- **Start here**: [Options](options.md) — Decision matrix helps choose between Session-Based, JWT, and OAuth 2.0/OIDC based on your needs
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas

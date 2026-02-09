@@ -8,6 +8,13 @@ last_updated: 2026-02-09
 
 Client state, server state, global vs local, reactive patterns.
 
+## TL;DR
+
+- **Default choice**: Local component state + TanStack Query/VueQuery (server state) + Pinia/Zustand (shared client state)—covers 95% of applications with minimal boilerplate
+- **Key principle**: Separate concerns—local state for component-specific data, server state libraries for API data with caching, lightweight stores for shared UI state
+- **Watch out for**: Prop drilling beyond 2-3 levels (lift to store), cache invalidation bugs with server state (map mutations to affected queries), over-using global state (most state should be local)
+- **Start here**: [Options](options.md) — Decision matrix covers client state (Local, Pinia/Zustand, Redux) and server state (Manual, TanStack Query/VueQuery, GraphQL clients)
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas
