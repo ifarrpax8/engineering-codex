@@ -31,6 +31,59 @@ Configuration should be type-safe and validated. Scattering string-based configu
 
 Spring Boot's `@ConfigurationProperties` provides type safety, IDE autocomplete, and runtime validation. Instead of using `@Value("${database.url}")` throughout the codebase, create a `DatabaseProperties` class with a typed `url` property. This enables compile-time checking, IDE support, and centralized validation.
 
+**Kotlin:**
+```kotlin
+@ConfigurationProperties(prefix = "app.database")
+@Validated
+data class DatabaseProperties(
+    @field:NotBlank
+    val url: String,
+    
+    @field:Min(1)
+    @field:Max(100)
+    val maxPoolSize: Int = 10,
+    
+    @field:Pattern(regexp = "^[a-zA-Z0-9]+$")
+    val schema: String
+)
+
+@Configuration
+@EnableConfigurationProperties(DatabaseProperties::class)
+class DatabaseConfig
+```
+
+**Java:**
+```java
+@ConfigurationProperties(prefix = "app.database")
+@Validated
+public class DatabaseProperties {
+    @NotBlank
+    private String url;
+    
+    @Min(1)
+    @Max(100)
+    private int maxPoolSize = 10;
+    
+    @Pattern(regexp = "^[a-zA-Z0-9]+$")
+    private String schema;
+    
+    // Getters and setters
+    public String getUrl() { return url; }
+    public void setUrl(String url) { this.url = url; }
+    
+    public int getMaxPoolSize() { return maxPoolSize; }
+    public void setMaxPoolSize(int maxPoolSize) { this.maxPoolSize = maxPoolSize; }
+    
+    public String getSchema() { return schema; }
+    public void setSchema(String schema) { this.schema = schema; }
+}
+
+@Configuration
+@EnableConfigurationProperties(DatabaseProperties.class)
+public class DatabaseConfig {
+}
+```
+
 Validation should happen at startup, not at runtime when configuration is first used. Use validation annotations like `@NotNull`, `@Min`, `@Max`, `@Pattern`, and `@Valid` to ensure configuration is correct before the application starts accepting requests. Fail fast with clear error messages rather than discovering problems when the first request hits broken code.
 
 ## Fail Fast on Missing Configuration
@@ -56,6 +109,60 @@ Environments should differ only in configuration values, not in configuration st
 This parity enables reliable testing. Bugs that exist in production will reproduce in staging if environments have the same configuration structure. Configuration drift—where environments have different properties or structures—causes "worked in staging" bugs that don't manifest until production.
 
 Use template-based configuration approaches where a base configuration is overlaid with environment-specific values. Helm values files, Kustomize overlays, or Spring Boot profiles enable this pattern. The base configuration defines structure; environment-specific files provide values.
+
+**Spring Boot Profiles (application.yml):**
+```yaml
+# application.yml (base configuration)
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+app:
+  api:
+    timeout: 5000
+    retry-count: 3
+
+---
+# application-dev.yml (development profile)
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/myapp_dev
+    username: dev_user
+  jpa:
+    show-sql: true
+
+app:
+  api:
+    timeout: 10000
+
+---
+# application-prod.yml (production profile)
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    show-sql: false
+
+app:
+  api:
+    timeout: 3000
+    retry-count: 5
+```
 
 ## Document Every Configuration Property
 
@@ -90,6 +197,88 @@ Prefix client-exposed environment variables with `VITE_` to make it explicit whi
 Use mode-based `.env` files (`.env.development`, `.env.production`) for environment-specific values. Keep `.env.local` in `.gitignore` for local overrides. Commit `.env.example` with placeholder values to document required configuration.
 
 Never expose secrets in frontend configuration. Everything prefixed with `VITE_` is included in the client bundle and visible to users. Use backend-for-frontend patterns for any functionality requiring secrets.
+
+**Vue 3 Feature Flag Composable:**
+```typescript
+// composables/useFeatureFlag.ts
+import { ref, computed } from 'vue'
+import { useFetch } from '@vueuse/core'
+
+export function useFeatureFlag(flagName: string) {
+  const { data, error } = useFetch<Record<string, boolean>>(
+    `${import.meta.env.VITE_API_URL}/api/feature-flags`,
+    { immediate: true }
+  )
+  
+  const isEnabled = computed(() => {
+    return data.value?.[flagName] ?? false
+  })
+  
+  return {
+    isEnabled,
+    isLoading: computed(() => !data.value && !error.value),
+    error
+  }
+}
+
+// Usage in component
+<script setup lang="ts">
+import { useFeatureFlag } from '@/composables/useFeatureFlag'
+
+const { isEnabled: isNewCheckoutEnabled } = useFeatureFlag('new-checkout-flow')
+</script>
+
+<template>
+  <div v-if="isNewCheckoutEnabled">
+    <NewCheckoutFlow />
+  </div>
+  <div v-else>
+    <LegacyCheckoutFlow />
+  </div>
+</template>
+```
+
+**React Feature Flag Hook:**
+```typescript
+// hooks/useFeatureFlag.ts
+import { useState, useEffect } from 'react'
+
+interface FeatureFlags {
+  [key: string]: boolean
+}
+
+export function useFeatureFlag(flagName: string) {
+  const [flags, setFlags] = useState<FeatureFlags>({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+  
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/feature-flags`)
+      .then(res => res.json())
+      .then(data => {
+        setFlags(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        setError(err)
+        setLoading(false)
+      })
+  }, [])
+  
+  return {
+    isEnabled: flags[flagName] ?? false,
+    isLoading: loading,
+    error
+  }
+}
+
+// Usage in component
+function CheckoutPage() {
+  const { isEnabled: isNewCheckoutEnabled } = useFeatureFlag('new-checkout-flow')
+  
+  return isNewCheckoutEnabled ? <NewCheckoutFlow /> : <LegacyCheckoutFlow />
+}
+```
 
 ### Kubernetes
 

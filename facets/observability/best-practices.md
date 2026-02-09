@@ -23,6 +23,99 @@ Never log sensitive data. Passwords, tokens, credit card numbers, and PII must b
 
 Use appropriate log levels. ERROR for failures that need human attention, WARN for handled but unexpected situations, INFO for significant business events (order placed, user created), DEBUG for diagnostic detail (usually disabled in production). Log level should reflect severity, not verbosity.
 
+**Example: Structured Logging with Correlation ID**
+
+```kotlin
+// Kotlin example
+import mu.KotlinLogging
+import org.slf4j.MDC
+
+private val logger = KotlinLogging.logger {}
+
+@Service
+class OrderService {
+    fun placeOrder(request: CreateOrderRequest): Order {
+        // Set correlation ID in MDC for all logs in this request scope
+        MDC.put("correlationId", request.correlationId)
+        MDC.put("userId", request.userId)
+        
+        try {
+            logger.info { 
+                "Placing order" to mapOf(
+                    "orderId" to request.orderId,
+                    "customerId" to request.customerId,
+                    "totalAmount" to request.totalAmount.toString()
+                )
+            }
+            
+            val order = processOrder(request)
+            
+            logger.info { 
+                "Order placed successfully" to mapOf(
+                    "orderId" to order.id,
+                    "status" to order.status.name
+                )
+            }
+            
+            return order
+        } catch (e: Exception) {
+            logger.error(e) { 
+                "Failed to place order" to mapOf(
+                    "orderId" to request.orderId,
+                    "error" to e.message
+                )
+            }
+            throw e
+        } finally {
+            // Clean up MDC
+            MDC.clear()
+        }
+    }
+}
+```
+
+```java
+// Java example
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+@Service
+public class OrderService {
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+    
+    public Order placeOrder(CreateOrderRequest request) {
+        // Set correlation ID in MDC for all logs in this request scope
+        MDC.put("correlationId", request.getCorrelationId());
+        MDC.put("userId", request.getUserId());
+        
+        try {
+            logger.info("Placing order - orderId: {}, customerId: {}, totalAmount: {}", 
+                       request.getOrderId(), 
+                       request.getCustomerId(), 
+                       request.getTotalAmount());
+            
+            Order order = processOrder(request);
+            
+            logger.info("Order placed successfully - orderId: {}, status: {}", 
+                       order.getId(), 
+                       order.getStatus());
+            
+            return order;
+        } catch (Exception e) {
+            logger.error("Failed to place order - orderId: {}, error: {}", 
+                        request.getOrderId(), 
+                        e.getMessage(), 
+                        e);
+            throw e;
+        } finally {
+            // Clean up MDC
+            MDC.clear();
+        }
+    }
+}
+```
+
 ## Correlation IDs End-to-End
 
 Generate a correlation ID at the API gateway or frontend for every user request. Propagate this correlation ID through every service, message, and log line. This enables tracing a user action from the UI through the entire system, even across async boundaries and message queues.
@@ -85,6 +178,102 @@ Use dynamic log level adjustment for temporary debugging. Rather than changing c
 
 Micrometer provides metrics abstraction with annotations (@Timed, @Counted) and programmatic API. Use @Timed on controller methods to automatically record request duration. Use @Counted for business events (orders processed, payments completed).
 
+**Example: Custom Micrometer Metrics for Business Events**
+
+```kotlin
+// Kotlin example
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
+
+@Service
+class OrderMetricsService(
+    private val meterRegistry: MeterRegistry
+) {
+    private val ordersPlacedCounter: Counter = Counter.builder("orders.placed")
+        .description("Total number of orders placed")
+        .tag("status", "success")
+        .register(meterRegistry)
+    
+    private val ordersFailedCounter: Counter = Counter.builder("orders.placed")
+        .description("Total number of failed order placements")
+        .tag("status", "failed")
+        .register(meterRegistry)
+    
+    private val orderProcessingTimer: Timer = Timer.builder("orders.processing.duration")
+        .description("Time taken to process an order")
+        .register(meterRegistry)
+    
+    fun recordOrderPlaced(orderAmount: BigDecimal) {
+        ordersPlacedCounter.increment()
+        meterRegistry.counter("orders.placed.amount", 
+                             "currency", "USD")
+            .increment(orderAmount.toDouble())
+    }
+    
+    fun recordOrderFailed(reason: String) {
+        ordersFailedCounter.increment(
+            Counter.builder("orders.placed")
+                .tag("status", "failed")
+                .tag("reason", reason)
+                .register(meterRegistry)
+        )
+    }
+    
+    fun <T> recordProcessingTime(operation: () -> T): T {
+        return orderProcessingTimer.recordCallable(operation)
+    }
+}
+```
+
+```java
+// Java example
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+
+@Service
+public class OrderMetricsService {
+    private final Counter ordersPlacedCounter;
+    private final Counter ordersFailedCounter;
+    private final Timer orderProcessingTimer;
+    
+    public OrderMetricsService(MeterRegistry meterRegistry) {
+        this.ordersPlacedCounter = Counter.builder("orders.placed")
+            .description("Total number of orders placed")
+            .tag("status", "success")
+            .register(meterRegistry);
+        
+        this.ordersFailedCounter = Counter.builder("orders.placed")
+            .description("Total number of failed order placements")
+            .tag("status", "failed")
+            .register(meterRegistry);
+        
+        this.orderProcessingTimer = Timer.builder("orders.processing.duration")
+            .description("Time taken to process an order")
+            .register(meterRegistry);
+    }
+    
+    public void recordOrderPlaced(BigDecimal orderAmount) {
+        ordersPlacedCounter.increment();
+        meterRegistry.counter("orders.placed.amount", "currency", "USD")
+            .increment(orderAmount.doubleValue());
+    }
+    
+    public void recordOrderFailed(String reason) {
+        Counter.builder("orders.placed")
+            .tag("status", "failed")
+            .tag("reason", reason)
+            .register(meterRegistry)
+            .increment();
+    }
+    
+    public <T> T recordProcessingTime(Callable<T> operation) throws Exception {
+        return orderProcessingTimer.recordCallable(operation);
+    }
+}
+```
+
 Spring Boot Actuator provides health checks and metrics endpoints (/actuator/health, /actuator/metrics). Customize health checks to include dependency checks (database connectivity, message broker connectivity). Don't expose actuator endpoints publicly—use authentication or network restrictions.
 
 Spring Cloud Sleuth (deprecated) and Micrometer Tracing provide distributed tracing. Prefer Micrometer Tracing with OpenTelemetry exporter for vendor-neutral tracing. Verify that trace context propagates through @Async methods and message listeners.
@@ -102,6 +291,139 @@ Kotlin's data classes work well for structured log context. Create data classes 
 ### Frontend (Vue/React)
 
 Error boundary components catch render errors and prevent entire application crashes. Log errors to error tracking service (Sentry, Datadog RUM) with user context and stack traces. Error boundaries should log errors but allow the application to continue functioning for other routes.
+
+**Example: Frontend Error Tracking**
+
+```vue
+<!-- Vue 3 example -->
+<script setup lang="ts">
+import { onErrorCaptured, ref } from 'vue'
+import * as Sentry from '@sentry/vue'
+
+const hasError = ref(false)
+const errorMessage = ref<string | null>(null)
+
+onErrorCaptured((err, instance, info) => {
+  // Log to error tracking service
+  Sentry.captureException(err, {
+    tags: {
+      component: instance?.$options.name || 'Unknown',
+      errorInfo: info
+    },
+    contexts: {
+      vue: {
+        componentName: instance?.$options.name,
+        propsData: instance?.$props
+      }
+    },
+    user: {
+      id: getCurrentUserId(), // Your user context
+      email: getCurrentUserEmail()
+    }
+  })
+  
+  hasError.value = true
+  errorMessage.value = err.message
+  
+  // Return false to prevent error from propagating
+  return false
+})
+
+function getCurrentUserId(): string | undefined {
+  // Your user context retrieval logic
+  return undefined
+}
+
+function getCurrentUserEmail(): string | undefined {
+  // Your user context retrieval logic
+  return undefined
+}
+</script>
+
+<template>
+  <div v-if="hasError" class="error-boundary">
+    <h2>Something went wrong</h2>
+    <p>{{ errorMessage }}</p>
+    <button @click="hasError = false; errorMessage = null">
+      Dismiss
+    </button>
+  </div>
+  <slot v-else />
+</template>
+```
+
+```tsx
+// React example
+import React, { Component, ErrorInfo, ReactNode } from 'react'
+import * as Sentry from '@sentry/react'
+
+interface Props {
+  children: ReactNode
+  fallback?: ReactNode
+}
+
+interface State {
+  hasError: boolean
+  error: Error | null
+}
+
+class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Log to error tracking service
+    Sentry.captureException(error, {
+      tags: {
+        componentStack: errorInfo.componentStack
+      },
+      contexts: {
+        react: {
+          componentStack: errorInfo.componentStack
+        }
+      },
+      user: {
+        id: this.getCurrentUserId(),
+        email: this.getCurrentUserEmail()
+      }
+    })
+  }
+
+  private getCurrentUserId(): string | undefined {
+    // Your user context retrieval logic
+    return undefined
+  }
+
+  private getCurrentUserEmail(): string | undefined {
+    // Your user context retrieval logic
+    return undefined
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="error-boundary">
+          <h2>Something went wrong</h2>
+          <p>{this.state.error?.message}</p>
+          <button onClick={() => this.setState({ hasError: false, error: null })}>
+            Dismiss
+          </button>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
+export default ErrorBoundary
+```
 
 Performance Observer API provides access to Core Web Vitals and custom timing marks. Measure key user flows (checkout completion, search results) and send metrics to observability backend. Include user context (anonymous ID, session ID) to enable filtering by user segment.
 

@@ -172,20 +172,233 @@ Review logging code carefully to ensure credentials aren't accidentally logged. 
 
 **@PreAuthorize Annotations**: Use method-level security annotations (`@PreAuthorize`, `@PostAuthorize`, `@Secured`) to enforce authorization at the method level. This provides declarative authorization that's easy to read and maintain. Enable method security with `@EnableMethodSecurity` or `@EnableGlobalMethodSecurity`.
 
+```kotlin
+// Kotlin: UserService.kt
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.stereotype.Service
+
+@Service
+class UserService(
+    private val userRepository: UserRepository
+) {
+    @PreAuthorize("hasRole('ADMIN')")
+    fun deleteUser(userId: Long) {
+        userRepository.deleteById(userId)
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or authentication.name == #userId.toString()")
+    fun updateUser(userId: Long, userData: UserUpdateDto) {
+        // Only admins or the user themselves can update
+        userRepository.save(userData.toEntity(userId))
+    }
+
+    @PreAuthorize("@userSecurityService.canAccessUser(authentication.name, #userId)")
+    fun getUserDetails(userId: Long): UserDto {
+        // Custom authorization logic via bean method
+        return userRepository.findById(userId).toDto()
+    }
+}
+```
+
+```java
+// Java: UserService.java
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or authentication.name == #userId.toString()")
+    public void updateUser(Long userId, UserUpdateDto userData) {
+        // Only admins or the user themselves can update
+        userRepository.save(userData.toEntity(userId));
+    }
+
+    @PreAuthorize("@userSecurityService.canAccessUser(authentication.name, #userId)")
+    public UserDto getUserDetails(Long userId) {
+        // Custom authorization logic via bean method
+        return userRepository.findById(userId).toDto();
+    }
+}
+```
+
 **Method-Level Security**: Combine method-level security with endpoint-level security for defense in depth. Method security is particularly valuable for service layer authorization where business logic enforces domain-specific permissions.
 
 ### Vue: Vue Router and Pinia
 
 **Vue Router Navigation Guards**: Use `beforeEach` navigation guards to check authentication before route access. Redirect unauthenticated users to login, preserving the intended destination for post-login redirect. Use `meta.requiresAuth` route metadata to mark protected routes.
 
+```typescript
+// Vue 3: router/index.ts
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/dashboard',
+      component: () => import('@/views/Dashboard.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/login',
+      component: () => import('@/views/Login.vue')
+    }
+  ]
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next()
+  }
+})
+
+export default router
+```
+
 **Pinia Auth Store Pattern**: Create a Pinia store for authentication state (user, token, isAuthenticated). The store manages login, logout, token refresh, and provides reactive authentication state to components. Use the store in navigation guards and components that need auth state.
 
 **Axios Interceptors for Token Refresh**: Configure axios interceptors to automatically refresh expired access tokens using refresh tokens. Intercept 401 responses, attempt token refresh, and retry the original request. Handle refresh failures by redirecting to login.
+
+```typescript
+// Vue 3 / React: utils/api.ts
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
+import { useAuthStore } from '@/stores/auth' // Vue Pinia
+// import { useAuth } from '@/contexts/AuthContext' // React Context
+
+const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL
+})
+
+let isRefreshing = false
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void
+  reject: (reason?: unknown) => void
+}> = []
+
+const processQueue = (error: AxiosError | null, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error)
+    } else {
+      prom.resolve(token)
+    }
+  })
+  failedQueue = []
+}
+
+// Request interceptor: add access token
+apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const authStore = useAuthStore() // Vue
+  // const { token } = useAuth() // React - would need different approach
+  
+  if (authStore.token) {
+    config.headers.Authorization = `Bearer ${authStore.token}`
+  }
+  return config
+})
+
+// Response interceptor: handle token refresh
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+    const authStore = useAuthStore()
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        // Queue requests while refresh is in progress
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject })
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`
+            return apiClient(originalRequest)
+          })
+          .catch((err) => Promise.reject(err))
+      }
+
+      originalRequest._retry = true
+      isRefreshing = true
+
+      try {
+        const newToken = await authStore.refreshToken()
+        processQueue(null, newToken)
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        return apiClient(originalRequest)
+      } catch (refreshError) {
+        processQueue(refreshError as AxiosError, null)
+        authStore.logout()
+        // Redirect to login (Vue: router.push('/login'), React: navigate('/login'))
+        return Promise.reject(refreshError)
+      } finally {
+        isRefreshing = false
+      }
+    }
+
+    return Promise.reject(error)
+  }
+)
+
+export default apiClient
+```
 
 ### React: Context and Protected Routes
 
 **React Context for Auth State**: Use React Context (or state management libraries like Zustand) to provide authentication state throughout the component tree. Create an AuthContext that provides user, token, login, and logout functions. Wrap your application with the AuthProvider.
 
 **Protected Route Components**: Create a `ProtectedRoute` component that checks authentication before rendering child routes. Redirect unauthenticated users to login. Use this component to wrap routes that require authentication, providing a clean declarative API for route protection.
+
+```typescript
+// React: components/ProtectedRoute.tsx
+import { Navigate, useLocation } from 'react-router-dom'
+import { useAuth } from '@/contexts/AuthContext'
+
+interface ProtectedRouteProps {
+  children: React.ReactNode
+}
+
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { isAuthenticated } = useAuth()
+  const location = useLocation()
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />
+  }
+
+  return <>{children}</>
+}
+
+// Usage in App.tsx
+<Routes>
+  <Route path="/login" element={<Login />} />
+  <Route
+    path="/dashboard"
+    element={
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    }
+  />
+</Routes>
+```
 
 **Axios/Fetch Interceptors**: Configure request interceptors to add authentication tokens to API requests. Configure response interceptors to handle token expiration: refresh tokens automatically or redirect to login on refresh failure. Use libraries like axios with interceptors or fetch wrappers that handle token management.

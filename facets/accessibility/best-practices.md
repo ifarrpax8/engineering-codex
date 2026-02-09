@@ -45,6 +45,151 @@ Labels should be visible and positioned near their inputs. While it's technicall
 
 For groups of related inputs like radio buttons or checkboxes, use a `<fieldset>` with a `<legend>` to provide a group label. Individual inputs within the group can have their own labels, but the fieldset legend provides context for the group.
 
+### Example: Accessible Form with Labels and Error Messages
+
+**Vue 3:**
+```vue
+<template>
+  <form @submit.prevent="handleSubmit">
+    <div class="form-group">
+      <label for="email">Email Address <span aria-label="required">*</span></label>
+      <input
+        id="email"
+        v-model="email"
+        type="email"
+        :aria-invalid="errors.email ? 'true' : 'false'"
+        :aria-describedby="errors.email ? 'email-error' : undefined"
+        required
+      />
+      <span
+        v-if="errors.email"
+        id="email-error"
+        role="alert"
+        aria-live="assertive"
+        class="error-message"
+      >
+        {{ errors.email }}
+      </span>
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Password <span aria-label="required">*</span></label>
+      <input
+        id="password"
+        v-model="password"
+        type="password"
+        :aria-invalid="errors.password ? 'true' : 'false'"
+        :aria-describedby="errors.password ? 'password-error' : undefined"
+        required
+      />
+      <span
+        v-if="errors.password"
+        id="password-error"
+        role="alert"
+        aria-live="assertive"
+        class="error-message"
+      >
+        {{ errors.password }}
+      </span>
+    </div>
+    
+    <button type="submit">Submit</button>
+  </form>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+
+const email = ref('')
+const password = ref('')
+const errors = reactive<Record<string, string>>({})
+
+function handleSubmit() {
+  errors.email = email.value ? '' : 'Email is required'
+  errors.password = password.value.length >= 8 
+    ? '' 
+    : 'Password must be at least 8 characters'
+}
+</script>
+```
+
+**React:**
+```tsx
+import { useState } from 'react'
+
+function LoginForm() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setErrors({
+      email: email ? '' : 'Email is required',
+      password: password.length >= 8 
+        ? '' 
+        : 'Password must be at least 8 characters'
+    })
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="email">
+          Email Address <span aria-label="required">*</span>
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          aria-invalid={errors.email ? 'true' : 'false'}
+          aria-describedby={errors.email ? 'email-error' : undefined}
+          required
+        />
+        {errors.email && (
+          <span
+            id="email-error"
+            role="alert"
+            aria-live="assertive"
+            className="error-message"
+          >
+            {errors.email}
+          </span>
+        )}
+      </div>
+      
+      <div className="form-group">
+        <label htmlFor="password">
+          Password <span aria-label="required">*</span>
+        </label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          aria-invalid={errors.password ? 'true' : 'false'}
+          aria-describedby={errors.password ? 'password-error' : undefined}
+          required
+        />
+        {errors.password && (
+          <span
+            id="password-error"
+            role="alert"
+            aria-live="assertive"
+            className="error-message"
+          >
+            {errors.password}
+          </span>
+        )}
+      </div>
+      
+      <button type="submit">Submit</button>
+    </form>
+  )
+}
+```
+
 ## Manage Focus Intentionally
 
 When content changes dynamically, focus must be managed explicitly to ensure keyboard users can continue their workflow. Dynamic content changes include dialogs opening, content loading asynchronously, sections expanding or collapsing, and page navigation.
@@ -70,6 +215,44 @@ Keyboard navigation should be logical and predictable. The Tab key should move f
 Focus indicators must be visible for keyboard users. Never remove focus outlines entirely—keyboard users need to see where focus is to navigate effectively. Use `:focus-visible` to show focus indicators only for keyboard navigation, maintaining clean aesthetics for mouse users while ensuring accessibility for keyboard users.
 
 All interactive elements must be keyboard accessible. Buttons, links, form controls, and custom components must be reachable and usable via keyboard. Test that every clickable element can be activated with Enter or Space, and that every input can be reached and used with keyboard.
+
+### Example: Skip-to-Content Link
+
+A skip link allows keyboard users to bypass repetitive navigation and jump directly to main content:
+
+```html
+<!-- Skip link should be the first focusable element -->
+<a href="#main-content" class="skip-link">
+  Skip to main content
+</a>
+
+<nav>
+  <!-- Navigation links -->
+</nav>
+
+<main id="main-content">
+  <!-- Main content -->
+</main>
+```
+
+```css
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+```
+
+The skip link is visually hidden until focused, then appears at the top of the page. When activated, it moves focus to the main content area, allowing keyboard users to bypass navigation.
 
 ## Use the Design System
 

@@ -33,6 +33,81 @@ If only one component uses a piece of state, keep it local. A dropdown's open/cl
 
 Promote to shared state only when necessary. If two sibling components need the same data, consider lifting state to their common parent first. If components in different parts of the application need the same data, use a store. If the data comes from an API, use a server state library.
 
+```typescript
+// Vue 3: Avoiding prop drilling with provide/inject
+// Parent: App.vue
+<script setup lang="ts">
+import { provide, ref } from 'vue'
+import { User } from '@/types'
+
+const currentUser = ref<User | null>(null)
+
+// Provide user to all descendants
+provide('currentUser', currentUser)
+
+// Deep child component can inject without prop drilling
+</script>
+
+// Deep child: components/UserProfile.vue
+<script setup lang="ts">
+import { inject } from 'vue'
+import type { Ref } from 'vue'
+import type { User } from '@/types'
+
+// Inject user without passing through intermediate components
+const currentUser = inject<Ref<User | null>>('currentUser')
+</script>
+
+<template>
+  <div v-if="currentUser">
+    <h1>{{ currentUser.name }}</h1>
+  </div>
+</template>
+```
+
+```typescript
+// React: Avoiding prop drilling with Context
+// contexts/UserContext.tsx
+import { createContext, useContext, useState, ReactNode } from 'react'
+import { User } from '@/types'
+
+interface UserContextType {
+  currentUser: User | null
+  setCurrentUser: (user: User | null) => void
+}
+
+const UserContext = createContext<UserContextType | undefined>(undefined)
+
+export function UserProvider({ children }: { children: ReactNode }) {
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  
+  return (
+    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+      {children}
+    </UserContext.Provider>
+  )
+}
+
+export function useUser() {
+  const context = useContext(UserContext)
+  if (context === undefined) {
+    throw new Error('useUser must be used within UserProvider')
+  }
+  return context
+}
+
+// Usage in deep child component
+function UserProfile() {
+  const { currentUser } = useUser()
+  
+  return (
+    <div>
+      {currentUser && <h1>{currentUser.name}</h1>}
+    </div>
+  )
+}
+```
+
 Avoid premature abstraction. Don't create a store for state that might be shared in the future—wait until you actually need to share it. YAGNI (You Aren't Gonna Need It) applies to state management: keep it simple until complexity is justified.
 
 ## URL as Source of Truth for Navigation State
@@ -79,6 +154,35 @@ Error handling is critical for optimistic updates. Users must be notified if an 
 
 Define stores with `defineStore`. Use the setup function syntax for composable stores that use other stores or composables. Use the options API syntax for simpler stores that don't need composition.
 
+```typescript
+// Vue 3: stores/counter.ts
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+export const useCounterStore = defineStore('counter', () => {
+  // State
+  const count = ref(0)
+  
+  // Getters (computed)
+  const doubleCount = computed(() => count.value * 2)
+  
+  // Actions
+  function increment() {
+    count.value++
+  }
+  
+  function decrement() {
+    count.value--
+  }
+  
+  function reset() {
+    count.value = 0
+  }
+  
+  return { count, doubleCount, increment, decrement, reset }
+})
+```
+
 Use `storeToRefs()` when destructuring store state in components. Direct destructuring loses reactivity—`const { count } = store` creates a non-reactive value. `const { count } = storeToRefs(store)` maintains reactivity.
 
 Composable stores (stores that use other stores) enable code reuse and modular design. A user store might use an auth store to check permissions. A cart store might use a product store to get product details. This creates clear dependencies and reusable logic.
@@ -90,6 +194,40 @@ Pinia stores are automatically reactive. You can mutate state directly in action
 ## React / Zustand Specific Practices
 
 Create stores with `create()`, which accepts a function returning state and actions. The function receives `set` and `get` parameters for updating and reading state. This creates a simple, functional API.
+
+```typescript
+// React: stores/counterStore.ts
+import { create } from 'zustand'
+
+interface CounterState {
+  count: number
+  doubleCount: () => number
+  increment: () => void
+  decrement: () => void
+  reset: () => void
+}
+
+export const useCounterStore = create<CounterState>((set, get) => ({
+  count: 0,
+  doubleCount: () => get().count * 2,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+  decrement: () => set((state) => ({ count: state.count - 1 })),
+  reset: () => set({ count: 0 })
+}))
+
+// Usage in component
+function Counter() {
+  const count = useCounterStore((state) => state.count)
+  const increment = useCounterStore((state) => state.increment)
+  
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  )
+}
+```
 
 Use selectors to minimize re-renders. Instead of `const count = useStore(state => state.count)`, use `const count = useStore(state => state.count)`. The selector function ensures the component only re-renders when the selected value changes, not when any store state changes.
 

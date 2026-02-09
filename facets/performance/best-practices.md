@@ -49,6 +49,54 @@ Caching is the most impactful performance optimization for read-heavy applicatio
 
 - **Static assets**: long Cache-Control max-age (1 year) with content-hash filenames for cache busting. Vite handles this automatically.
 - **API responses**: short TTL (seconds to minutes) for data that changes frequently. Longer TTL (hours) for reference data. Explicit invalidation after mutations.
+
+**Kotlin (Spring Boot):**
+```kotlin
+@Service
+class ProductService(
+    private val productRepository: ProductRepository
+) {
+    @Cacheable(value = ["products"], key = "#id", unless = "#result == null")
+    fun getProduct(id: Long): Product? {
+        return productRepository.findById(id)
+    }
+    
+    @CacheEvict(value = ["products"], key = "#product.id")
+    fun updateProduct(product: Product) {
+        productRepository.save(product)
+    }
+}
+
+// application.yml
+spring:
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000  # 1 hour in milliseconds
+```
+
+**Java (Spring Boot):**
+```java
+@Service
+public class ProductService {
+    private final ProductRepository productRepository;
+    
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+    
+    @Cacheable(value = "products", key = "#id", unless = "#result == null")
+    public Product getProduct(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+    
+    @CacheEvict(value = "products", key = "#product.id")
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
+    }
+}
+```
+
 - **Computed values**: cache expensive computations (reports, aggregations) with TTL appropriate to the data freshness requirement.
 - **Database queries**: Redis cache-aside for expensive or frequently repeated queries. Monitor cache hit rate to verify the cache is effective.
 
@@ -59,8 +107,69 @@ Stale data is worse than slow data for most business operations. When in doubt, 
 Only load resources the user needs right now. Defer everything else.
 
 - **Routes**: every route should use dynamic imports. This is the single highest-impact code splitting optimization.
+
+**Vue 3:**
+```typescript
+// router.ts
+import { defineAsyncComponent } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/dashboard',
+      component: defineAsyncComponent(() => import('./views/Dashboard.vue'))
+    },
+    {
+      path: '/reports',
+      component: defineAsyncComponent(() => import('./views/Reports.vue'))
+    }
+  ]
+})
+```
+
+**React:**
+```typescript
+// App.tsx
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
+const Dashboard = lazy(() => import('./views/Dashboard'))
+const Reports = lazy(() => import('./views/Reports'))
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reports" element={<Reports />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  )
+}
+```
+
 - **Components**: heavy components (charts, rich text editors, PDF viewers) should be loaded on demand with `defineAsyncComponent` (Vue) or `React.lazy`.
 - **Images**: use `loading="lazy"` for below-the-fold images. Use responsive images with `srcset` to serve appropriately sized images.
+
+```html
+<!-- Responsive image with lazy loading -->
+<img
+  srcset="
+    /images/hero-400w.jpg 400w,
+    /images/hero-800w.jpg 800w,
+    /images/hero-1200w.jpg 1200w
+  "
+  sizes="(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px"
+  src="/images/hero-800w.jpg"
+  alt="Hero image"
+  loading="lazy"
+/>
+```
+
 - **Data**: don't fetch all data on page load. Fetch data for the current view and prefetch data for likely next navigations.
 
 ## Paginate All Collections

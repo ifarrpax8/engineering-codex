@@ -106,6 +106,80 @@ The configuration cache stores the task graph, reducing configuration time for l
 
 Parallel execution runs independent tasks simultaneously. Enable with `--parallel` or in `gradle.properties`. Gradle automatically determines task dependencies and parallelizes safely, but proper task input/output declarations are required.
 
+**Example: Gradle Test Configuration with Parallel Execution**
+
+```kotlin
+// build.gradle.kts
+plugins {
+    kotlin("jvm") version "1.9.20"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.9.20"
+}
+
+tasks.test {
+    useJUnitPlatform()
+    
+    // Parallel test execution
+    maxParallelForks = Runtime.getRuntime().availableProcessors()
+    
+    // Fail fast on first test failure (optional)
+    failFast = false
+    
+    // Test output configuration
+    testLogging {
+        events("passed", "skipped", "failed")
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        showStandardStreams = false
+    }
+    
+    // Memory configuration
+    minHeapSize = "128m"
+    maxHeapSize = "1g"
+    
+    // Filter tests by tags or patterns
+    // filter {
+    //     includeTestsMatching("*Test")
+    //     excludeTestsMatching("*IntegrationTest")
+    // }
+}
+
+// Separate task for integration tests
+tasks.register<Test>("integrationTest") {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    
+    // Integration tests typically run sequentially
+    maxParallelForks = 1
+    
+    include("**/*IntegrationTest.class")
+}
+
+// Ensure integration tests run after unit tests
+tasks.named("check") {
+    dependsOn("integrationTest")
+}
+```
+
+```properties
+# gradle.properties
+# Build cache
+org.gradle.caching=true
+
+# Configuration cache
+org.gradle.configuration-cache=true
+
+# Parallel execution
+org.gradle.parallel=true
+
+# Daemon settings
+org.gradle.daemon=true
+org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m
+
+# Kotlin compiler options
+kotlin.incremental=true
+kotlin.incremental.js=true
+```
+
 The Gradle wrapper ensures consistent Gradle versions. Always use `./gradlew` instead of a globally installed Gradle. Commit the wrapper to version control so all developers and CI use the same version.
 
 Dependency locking prevents dependency resolution changes. Generate `gradle.lockfile` and commit it to version control. Use `--write-locks` when updating dependencies to keep the lockfile current.
@@ -124,6 +198,104 @@ Bundle analysis helps identify optimization opportunities. Tools visualize bundl
 
 Composite actions encapsulate reusable workflow steps. Common patterns—building Docker images, running security scans—can be defined once and reused across multiple workflows. This reduces duplication and ensures consistency.
 
+**Example: Complete GitHub Actions Workflow**
+
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run test:unit
+      - run: npm run test:integration
+      - uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/coverage-final.json
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - name: Deploy to staging
+        run: |
+          echo "Deploying to staging environment"
+          # Add deployment commands here
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production environment"
+          # Add deployment commands here
+```
+
+This workflow demonstrates fail-fast principles (lint runs first), parallel execution (jobs run in parallel when possible), and environment-specific deployments.
+
 Reusable workflows enable sharing entire workflows across repositories. Organizations can define standard CI pipelines that multiple projects use, ensuring consistent practices. Workflows accept inputs and can be customized per project while maintaining core structure.
 
 Matrix builds test across multiple versions or configurations simultaneously. Test against multiple Node.js versions, Java versions, or operating systems in parallel. This provides comprehensive coverage without sequential execution.
@@ -133,6 +305,59 @@ Concurrency groups prevent duplicate workflow runs. When multiple events trigger
 ### Docker
 
 Multi-stage builds separate build-time and runtime dependencies. Build stages contain full SDKs needed for compilation. Runtime stages contain only what's needed to run the application. This creates smaller, more secure images.
+
+**Example: Multi-Stage Dockerfile for Kotlin/Spring Boot Application**
+
+```dockerfile
+# Stage 1: Build
+FROM gradle:8.5-jdk17 AS builder
+
+WORKDIR /app
+
+# Copy dependency files first (better caching)
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY gradle/ ./gradle/
+
+# Download dependencies (cached if gradle files unchanged)
+RUN gradle dependencies --no-daemon || true
+
+# Copy source code
+COPY src/ ./src/
+
+# Build application
+RUN gradle build --no-daemon -x test
+
+# Stage 2: Runtime
+FROM eclipse-temurin:17-jre-alpine
+
+# Create non-root user
+RUN addgroup -S spring && adduser -S spring -G spring
+
+WORKDIR /app
+
+# Copy built artifact from builder stage
+COPY --from=builder /app/build/libs/*.jar app.jar
+
+# Switch to non-root user
+USER spring:spring
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+
+# Run application
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+This multi-stage build:
+- Uses a full Gradle image for building (with JDK)
+- Uses a minimal JRE image for runtime (smaller, more secure)
+- Copies dependency files before source code (better layer caching)
+- Runs as non-root user (security best practice)
+- Includes health check for container orchestration
 
 The `.dockerignore` file prevents unnecessary files from being included in build context. Large files or directories that aren't needed slow down builds and increase image size. Proper `.dockerignore` configuration is essential for efficient builds.
 

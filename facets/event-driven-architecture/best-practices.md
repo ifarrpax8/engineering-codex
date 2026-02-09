@@ -47,6 +47,115 @@ Idempotency means that processing the same event multiple times has the same eff
 
 Idempotency keys uniquely identify events. Consumers track processed idempotency keys. If an event with a known key arrives, it's ignored. Store idempotency keys in a database with unique constraints. Use event IDs as idempotency keys if they're guaranteed unique.
 
+**Example: Idempotent Consumer with Processed Events Table**
+
+```kotlin
+// Kotlin example
+@Service
+class OrderEventHandler(
+    private val orderRepository: OrderRepository,
+    private val processedEventRepository: ProcessedEventRepository
+) {
+    @KafkaListener(topics = ["order-events"])
+    fun handleOrderPlaced(event: OrderPlacedEvent) {
+        // Check if event already processed
+        if (processedEventRepository.existsByEventId(event.eventId)) {
+            logger.debug { "Event ${event.eventId} already processed, skipping" }
+            return
+        }
+        
+        try {
+            // Process event
+            val order = Order(
+                orderId = event.orderId,
+                customerId = event.customerId,
+                totalAmount = event.totalAmount,
+                status = OrderStatus.PLACED
+            )
+            orderRepository.save(order)
+            
+            // Record processed event
+            processedEventRepository.save(
+                ProcessedEvent(
+                    eventId = event.eventId,
+                    processedAt = Instant.now()
+                )
+            )
+        } catch (e: DataIntegrityViolationException) {
+            // Handle duplicate key constraint violation
+            logger.warn { "Order ${event.orderId} already exists, event may be duplicate" }
+        }
+    }
+}
+
+@Entity
+@Table(name = "processed_events", uniqueConstraints = [
+    UniqueConstraint(columnNames = ["event_id"])
+])
+data class ProcessedEvent(
+    @Id
+    @GeneratedValue
+    val id: Long? = null,
+    @Column(name = "event_id", nullable = false, unique = true)
+    val eventId: String,
+    @Column(name = "processed_at", nullable = false)
+    val processedAt: Instant
+)
+```
+
+```java
+// Java example
+@Service
+public class OrderEventHandler {
+    private final OrderRepository orderRepository;
+    private final ProcessedEventRepository processedEventRepository;
+    
+    @KafkaListener(topics = "order-events")
+    public void handleOrderPlaced(OrderPlacedEvent event) {
+        // Check if event already processed
+        if (processedEventRepository.existsByEventId(event.getEventId())) {
+            logger.debug("Event {} already processed, skipping", event.getEventId());
+            return;
+        }
+        
+        try {
+            // Process event
+            Order order = new Order(
+                event.getOrderId(),
+                event.getCustomerId(),
+                event.getTotalAmount(),
+                OrderStatus.PLACED
+            );
+            orderRepository.save(order);
+            
+            // Record processed event
+            processedEventRepository.save(
+                new ProcessedEvent(event.getEventId(), Instant.now())
+            );
+        } catch (DataIntegrityViolationException e) {
+            // Handle duplicate key constraint violation
+            logger.warn("Order {} already exists, event may be duplicate", 
+                       event.getOrderId());
+        }
+    }
+}
+
+@Entity
+@Table(name = "processed_events", 
+       uniqueConstraints = @UniqueConstraint(columnNames = "event_id"))
+public class ProcessedEvent {
+    @Id
+    @GeneratedValue
+    private Long id;
+    
+    @Column(name = "event_id", nullable = false, unique = true)
+    private String eventId;
+    
+    @Column(name = "processed_at", nullable = false)
+    private Instant processedAt;
+}
+```
+
 Database constraints provide natural idempotency. If creating an order requires a unique order ID, processing the same `OrderPlaced` event twice will fail on the second attempt due to the constraint. This provides idempotency without explicit tracking.
 
 Deduplication logic compares incoming events to recently processed events. If a duplicate is detected, it's ignored. This works for short time windows but doesn't scale to long retention periods. Use idempotency keys or database constraints for long-term deduplication.
@@ -119,6 +228,98 @@ Use coroutines for async event processing. Kotlin coroutines provide structured 
 
 Use `@EventHandler` for projections. Projection handlers consume events and update read models. Keep projections focused and fast. Use `@DisallowReplay` for handlers that should not process replayed events—notification handlers, for example.
 
+**Example: Axon Event Handler for Read Model Projection**
+
+```kotlin
+// Kotlin example
+@Component
+class OrderProjection(
+    private val orderViewRepository: OrderViewRepository
+) {
+    @EventHandler
+    fun on(event: OrderPlacedEvent) {
+        val orderView = OrderView(
+            orderId = event.orderId,
+            customerId = event.customerId,
+            totalAmount = event.totalAmount,
+            status = "PLACED",
+            placedAt = event.timestamp
+        )
+        orderViewRepository.save(orderView)
+    }
+    
+    @EventHandler
+    fun on(event: OrderShippedEvent) {
+        val orderView = orderViewRepository.findByOrderId(event.orderId)
+            ?: throw IllegalStateException("Order ${event.orderId} not found")
+        
+        orderViewRepository.save(
+            orderView.copy(
+                status = "SHIPPED",
+                shippedAt = event.timestamp,
+                trackingNumber = event.trackingNumber
+            )
+        )
+    }
+}
+
+data class OrderView(
+    @Id
+    val orderId: String,
+    val customerId: String,
+    val totalAmount: BigDecimal,
+    val status: String,
+    val placedAt: Instant,
+    val shippedAt: Instant? = null,
+    val trackingNumber: String? = null
+)
+```
+
+```java
+// Java example
+@Component
+public class OrderProjection {
+    private final OrderViewRepository orderViewRepository;
+    
+    @EventHandler
+    public void on(OrderPlacedEvent event) {
+        OrderView orderView = new OrderView(
+            event.getOrderId(),
+            event.getCustomerId(),
+            event.getTotalAmount(),
+            "PLACED",
+            event.getTimestamp()
+        );
+        orderViewRepository.save(orderView);
+    }
+    
+    @EventHandler
+    public void on(OrderShippedEvent event) {
+        OrderView orderView = orderViewRepository.findByOrderId(event.getOrderId())
+            .orElseThrow(() -> new IllegalStateException(
+                "Order " + event.getOrderId() + " not found"));
+        
+        orderView.setStatus("SHIPPED");
+        orderView.setShippedAt(event.getTimestamp());
+        orderView.setTrackingNumber(event.getTrackingNumber());
+        orderViewRepository.save(orderView);
+    }
+}
+
+@Entity
+@Table(name = "order_views")
+public class OrderView {
+    @Id
+    private String orderId;
+    private String customerId;
+    private BigDecimal totalAmount;
+    private String status;
+    private Instant placedAt;
+    private Instant shippedAt;
+    private String trackingNumber;
+}
+```
+
 Use `@SagaEventHandler` for sagas. Saga handlers react to events and dispatch commands. Use association properties to correlate events to saga instances. Use `@EndSaga` to mark saga completion.
 
 Use tracking processors for projections that need exactly-once processing. Tracking processors track processing progress and enable replay. Use subscribing processors for handlers that don't need replay—notification handlers, for example.
@@ -130,6 +331,90 @@ Configure idempotent producers in Axon. Use `IdempotencyConfig` to prevent dupli
 Use `@EventListener` for in-process events only. Spring's `@EventListener` handles events within the same JVM. It's not for distributed events. Use it for internal event handling within a service.
 
 Use Spring Cloud Stream for Kafka/RabbitMQ abstraction. Spring Cloud Stream provides a simple programming model for message-driven microservices. It abstracts broker-specific details and enables switching brokers.
+
+**Example: Typed Event Publisher with Spring Kafka**
+
+```kotlin
+// Kotlin example
+@Service
+class OrderEventPublisher(
+    private val kafkaTemplate: KafkaTemplate<String, Any>
+) {
+    fun publishOrderPlaced(orderId: String, customerId: String, totalAmount: BigDecimal) {
+        val event = OrderPlacedEvent(
+            eventId = UUID.randomUUID().toString(),
+            orderId = orderId,
+            customerId = customerId,
+            totalAmount = totalAmount,
+            timestamp = Instant.now(),
+            correlationId = MDC.get("correlationId") ?: UUID.randomUUID().toString()
+        )
+        
+        kafkaTemplate.send(
+            "order-events",
+            event.orderId, // partition key
+            event
+        ).addCallback(
+            { result -> 
+                logger.info { "Published OrderPlaced event: ${event.eventId}" }
+            },
+            { failure -> 
+                logger.error(failure) { "Failed to publish OrderPlaced event: ${event.eventId}" }
+            }
+        )
+    }
+}
+
+data class OrderPlacedEvent(
+    val eventId: String,
+    val orderId: String,
+    val customerId: String,
+    val totalAmount: BigDecimal,
+    val timestamp: Instant,
+    val correlationId: String
+)
+```
+
+```java
+// Java example
+@Service
+public class OrderEventPublisher {
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+    
+    public void publishOrderPlaced(String orderId, String customerId, 
+                                   BigDecimal totalAmount) {
+        OrderPlacedEvent event = new OrderPlacedEvent(
+            UUID.randomUUID().toString(),
+            orderId,
+            customerId,
+            totalAmount,
+            Instant.now(),
+            MDC.get("correlationId") != null ? 
+                MDC.get("correlationId") : UUID.randomUUID().toString()
+        );
+        
+        kafkaTemplate.send(
+            "order-events",
+            event.getOrderId(), // partition key
+            event
+        ).addCallback(
+            result -> logger.info("Published OrderPlaced event: {}", 
+                                 event.getEventId()),
+            failure -> logger.error("Failed to publish OrderPlaced event: {}", 
+                                   event.getEventId(), failure)
+        );
+    }
+}
+
+public record OrderPlacedEvent(
+    String eventId,
+    String orderId,
+    String customerId,
+    BigDecimal totalAmount,
+    Instant timestamp,
+    String correlationId
+) {}
+```
 
 Configure retry and DLQ handling. Spring Cloud Stream supports retry policies and dead letter topics. Configure retries with exponential backoff. Route failed messages to DLQs after retries are exhausted.
 

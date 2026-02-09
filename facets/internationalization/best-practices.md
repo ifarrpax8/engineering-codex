@@ -119,6 +119,79 @@ Use `$t()` in templates for translations: `<button>{{ $t('common.save') }}</butt
 
 In the Composition API, use `useI18n()` composable to access translation functions. This provides type safety and better integration with Vue's reactivity: `const { t, locale, availableLocales } = useI18n()`. Use `t()` for translations, `locale.value` for the current locale, and update `locale.value` to change languages.
 
+**Vue 3 i18n Setup:**
+```typescript
+// i18n.ts
+import { createI18n } from 'vue-i18n'
+import en from './locales/en.json'
+import es from './locales/es.json'
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  fallbackLocale: 'en',
+  messages: {
+    en,
+    es
+  }
+})
+
+export default i18n
+
+// main.ts
+import { createApp } from 'vue'
+import App from './App.vue'
+import i18n from './i18n'
+
+createApp(App).use(i18n).mount('#app')
+```
+
+**Lazy-loaded Locales:**
+```typescript
+// i18n.ts with lazy loading
+import { createI18n } from 'vue-i18n'
+import en from './locales/en.json'
+
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  fallbackLocale: 'en',
+  messages: {
+    en
+  }
+})
+
+// Lazy load additional locales
+export async function loadLocale(locale: string) {
+  const messages = await import(`./locales/${locale}.json`)
+  i18n.global.setLocaleMessage(locale, messages.default)
+  i18n.global.locale.value = locale
+}
+
+export default i18n
+
+// Component usage
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+import { loadLocale } from '@/i18n'
+
+const { t, locale } = useI18n()
+
+async function switchLanguage(newLocale: string) {
+  await loadLocale(newLocale)
+  locale.value = newLocale
+}
+</script>
+
+<template>
+  <div>
+    <h1>{{ t('common.welcome') }}</h1>
+    <p>{{ t('common.greeting', { name: 'John' }) }}</p>
+    <button @click="switchLanguage('es')">Switch to Spanish</button>
+  </div>
+</template>
+```
+
 Lazy load locales with `defineI18nLocale` and dynamic imports. Load only the active locale initially, then load additional locales on demand when users switch languages. This reduces initial bundle size significantly for applications with many languages.
 
 Use vue-i18n-extract for finding missing translations and unused keys. This tool scans Vue components and extracts i18n usage, helping maintain translation completeness and identify unused translations for cleanup.
@@ -128,6 +201,81 @@ Configure vue-i18n with fallback locale and missing key handling. Define what ha
 ### React / react-intl
 
 Use `<FormattedMessage>` components for translations in JSX. The component handles interpolation, pluralization, and formatting automatically. For dynamic content, use the `id` prop with message keys and `values` prop for interpolation variables.
+
+**React Intl Setup:**
+```typescript
+// i18n.ts
+import { createIntl, createIntlCache } from '@formatjs/intl'
+import enMessages from './locales/en.json'
+import esMessages from './locales/es.json'
+
+const cache = createIntlCache()
+
+const intl = createIntl(
+  {
+    locale: 'en',
+    defaultLocale: 'en',
+    messages: enMessages
+  },
+  cache
+)
+
+export default intl
+
+// App.tsx
+import { IntlProvider } from 'react-intl'
+import enMessages from './locales/en.json'
+import esMessages from './locales/es.json'
+
+const messages = {
+  en: enMessages,
+  es: esMessages
+}
+
+function App() {
+  const [locale, setLocale] = useState('en')
+  
+  return (
+    <IntlProvider locale={locale} messages={messages[locale]}>
+      <YourApp />
+    </IntlProvider>
+  )
+}
+```
+
+**Component Usage:**
+```typescript
+// Using FormattedMessage component
+import { FormattedMessage, useIntl } from 'react-intl'
+
+function WelcomePage() {
+  const intl = useIntl()
+  
+  return (
+    <div>
+      <h1>
+        <FormattedMessage
+          id="common.welcome"
+          defaultMessage="Welcome"
+        />
+      </h1>
+      <p>
+        <FormattedMessage
+          id="common.greeting"
+          defaultMessage="Hello, {name}!"
+          values={{ name: 'John' }}
+        />
+      </p>
+      <p>
+        {intl.formatMessage(
+          { id: 'common.items', defaultMessage: 'You have {count} items' },
+          { count: 5 }
+        )}
+      </p>
+    </div>
+  )
+}
+```
 
 For imperative translations outside JSX, use the `useIntl()` hook which provides a `formatMessage` function. The hook integrates with React's context system, so locale changes propagate automatically to all components using it.
 
@@ -140,6 +288,129 @@ Configure react-intl with proper locale data. Import locale data for all support
 ### Spring Boot
 
 Use MessageSource with ResourceBundleMessageSource implementation. Configure it as a Spring bean with basename pointing to your message files (e.g., "messages" for `messages.properties`). Set fallback behavior for missing translations.
+
+**Kotlin:**
+```kotlin
+@Configuration
+class I18nConfig {
+    @Bean
+    fun messageSource(): MessageSource {
+        val messageSource = ResourceBundleMessageSource()
+        messageSource.setBasename("messages")
+        messageSource.setDefaultEncoding("UTF-8")
+        messageSource.setFallbackToSystemLocale(false)
+        return messageSource
+    }
+    
+    @Bean
+    fun localeResolver(): LocaleResolver {
+        return AcceptHeaderLocaleResolver().apply {
+            setDefaultLocale(Locale.ENGLISH)
+            supportedLocales = listOf(Locale.ENGLISH, Locale("es"))
+        }
+    }
+}
+
+// Service usage
+@Service
+class ProductService(
+    private val messageSource: MessageSource
+) {
+    fun getProductMessage(locale: Locale, productId: Long): String {
+        return messageSource.getMessage(
+            "product.notFound",
+            arrayOf(productId.toString()),
+            "Product not found",
+            locale
+        )
+    }
+}
+
+// Controller usage
+@RestController
+class ProductController(
+    private val messageSource: MessageSource
+) {
+    @GetMapping("/products/{id}")
+    fun getProduct(
+        @PathVariable id: Long,
+        locale: Locale
+    ): ResponseEntity<Product> {
+        // Locale is automatically resolved by LocaleResolver
+        val message = messageSource.getMessage(
+            "product.loaded",
+            arrayOf(id.toString()),
+            locale
+        )
+        return ResponseEntity.ok(product)
+    }
+}
+```
+
+**Java:**
+```java
+@Configuration
+public class I18nConfig {
+    @Bean
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setFallbackToSystemLocale(false);
+        return messageSource;
+    }
+    
+    @Bean
+    public LocaleResolver localeResolver() {
+        AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
+        resolver.setDefaultLocale(Locale.ENGLISH);
+        resolver.setSupportedLocales(List.of(Locale.ENGLISH, Locale.forLanguageTag("es")));
+        return resolver;
+    }
+}
+
+// Service usage
+@Service
+public class ProductService {
+    private final MessageSource messageSource;
+    
+    public ProductService(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+    
+    public String getProductMessage(Locale locale, Long productId) {
+        return messageSource.getMessage(
+            "product.notFound",
+            new Object[]{productId},
+            "Product not found",
+            locale
+        );
+    }
+}
+
+// Controller usage
+@RestController
+public class ProductController {
+    private final MessageSource messageSource;
+    
+    public ProductController(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+    
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Product> getProduct(
+        @PathVariable Long id,
+        Locale locale
+    ) {
+        String message = messageSource.getMessage(
+            "product.loaded",
+            new Object[]{id},
+            locale
+        );
+        return ResponseEntity.ok(product);
+    }
+}
+```
 
 Use LocaleResolver for determining the user's locale. AcceptHeaderLocaleResolver reads the `Accept-Language` header automatically. CookieLocaleResolver stores locale preference in cookies. SessionLocaleResolver uses HTTP sessions. Choose based on your application's requirements.
 

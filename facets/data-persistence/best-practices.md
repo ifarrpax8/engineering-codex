@@ -115,9 +115,146 @@ Transactions should encompass business logic, not HTTP handling. Place `@Transac
 
 Spring Data JPA repositories are interfaces that extend `JpaRepository`. Define custom query methods using method names (Spring generates queries) or `@Query` annotations. Use repositories for all database access: they provide type safety, pagination support, and transaction management.
 
+```kotlin
+// Kotlin: repositories/UserRepository.kt
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import org.springframework.stereotype.Repository
+
+@Repository
+interface UserRepository : JpaRepository<User, Long> {
+    // Method name query (Spring generates SQL)
+    fun findByEmail(email: String): User?
+    
+    // Custom JPQL query
+    @Query("SELECT u FROM User u WHERE u.status = :status AND u.createdAt > :since")
+    fun findActiveUsersSince(
+        @Param("status") status: UserStatus,
+        @Param("since") since: LocalDateTime
+    ): List<User>
+    
+    // Native SQL query
+    @Query(
+        value = "SELECT * FROM users WHERE email LIKE :pattern",
+        nativeQuery = true
+    )
+    fun findByEmailPattern(@Param("pattern") pattern: String): List<User>
+}
+```
+
+```java
+// Java: repositories/UserRepository.java
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    // Method name query (Spring generates SQL)
+    Optional<User> findByEmail(String email);
+    
+    // Custom JPQL query
+    @Query("SELECT u FROM User u WHERE u.status = :status AND u.createdAt > :since")
+    List<User> findActiveUsersSince(
+        @Param("status") UserStatus status,
+        @Param("since") LocalDateTime since
+    );
+    
+    // Native SQL query
+    @Query(
+        value = "SELECT * FROM users WHERE email LIKE :pattern",
+        nativeQuery = true
+    )
+    List<User> findByEmailPattern(@Param("pattern") String pattern);
+}
+```
+
 ### Custom Query Methods (@Query)
 
 `@Query` annotations enable custom JPQL or native SQL queries. Use JPQL for database-agnostic queries, native SQL for database-specific features or performance-critical queries. Parameter binding prevents SQL injection: use `:parameterName` in JPQL or `?1, ?2` in native SQL.
+
+### Paginated Queries
+
+Use Spring Data's `Pageable` interface for pagination and sorting. This provides efficient database-level pagination and consistent API patterns.
+
+```kotlin
+// Kotlin: repositories/UserRepository.kt
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+
+interface UserRepository : JpaRepository<User, Long> {
+    // Paginated query with sorting
+    fun findByStatus(status: UserStatus, pageable: Pageable): Page<User>
+    
+    // Custom paginated query
+    @Query("SELECT u FROM User u WHERE u.createdAt >= :since")
+    fun findUsersCreatedSince(
+        @Param("since") since: LocalDateTime,
+        pageable: Pageable
+    ): Page<User>
+}
+
+// Usage in service
+@Service
+class UserService(private val userRepository: UserRepository) {
+    fun getActiveUsers(page: Int, size: Int, sortBy: String): Page<User> {
+        val pageable = PageRequest.of(
+            page,
+            size,
+            Sort.by(Sort.Direction.DESC, sortBy)
+        )
+        return userRepository.findByStatus(UserStatus.ACTIVE, pageable)
+    }
+}
+```
+
+```java
+// Java: repositories/UserRepository.java
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    // Paginated query with sorting
+    Page<User> findByStatus(UserStatus status, Pageable pageable);
+    
+    // Custom paginated query
+    @Query("SELECT u FROM User u WHERE u.createdAt >= :since")
+    Page<User> findUsersCreatedSince(
+        @Param("since") LocalDateTime since,
+        Pageable pageable
+    );
+}
+
+// Usage in service
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+    
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    
+    public Page<User> getActiveUsers(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(
+            page,
+            size,
+            Sort.by(Sort.Direction.DESC, sortBy)
+        );
+        return userRepository.findByStatus(UserStatus.ACTIVE, pageable);
+    }
+}
+```
 
 ### Projections
 
@@ -150,6 +287,32 @@ Projection handlers can fail: network issues, database constraints, or bugs can 
 ### V{version}__{description}.sql Naming
 
 Migration files must follow Flyway's naming convention: `V{version}__{description}.sql`. The version number determines execution order: `V1__create_users.sql` runs before `V2__add_email_index.sql`. Use descriptive names that explain the migration's purpose.
+
+```sql
+-- V1__create_users_table.sql
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_status ON users(status);
+
+-- V2__add_user_profile_table.sql
+CREATE TABLE user_profiles (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    bio TEXT,
+    avatar_url VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
+```
 
 ### Repeatable Migrations (R__)
 

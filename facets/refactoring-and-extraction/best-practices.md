@@ -73,6 +73,138 @@ Extracting after the first occurrence creates an abstraction based on speculatio
 
 Wait for patterns to emerge from actual usage. Don't anticipate patterns. Real patterns are based on evidence; anticipated patterns are based on speculation. Evidence-based abstractions are more likely to be correct.
 
+### Example: Before/After Refactoring
+
+**Before: Long Function with Multiple Responsibilities**
+
+```kotlin
+fun processOrder(order: Order): OrderResult {
+    // Validate order
+    if (order.items.isEmpty()) {
+        return OrderResult.Error("Order must contain at least one item")
+    }
+    if (order.customerId.isBlank()) {
+        return OrderResult.Error("Customer ID is required")
+    }
+    if (order.totalAmount <= 0) {
+        return OrderResult.Error("Total amount must be positive")
+    }
+    
+    // Calculate discounts
+    var discount = 0.0
+    if (order.totalAmount > 100) {
+        discount = order.totalAmount * 0.1
+    }
+    if (order.customer.isPremium) {
+        discount += order.totalAmount * 0.05
+    }
+    val finalAmount = order.totalAmount - discount
+    
+    // Apply tax
+    val taxRate = when (order.shippingAddress.country) {
+        "US" -> 0.08
+        "CA" -> 0.13
+        else -> 0.0
+    }
+    val tax = finalAmount * taxRate
+    val totalWithTax = finalAmount + tax
+    
+    // Process payment
+    val paymentResult = paymentService.charge(order.customerId, totalWithTax)
+    if (!paymentResult.success) {
+        return OrderResult.Error("Payment failed: ${paymentResult.message}")
+    }
+    
+    // Update inventory
+    order.items.forEach { item ->
+        inventoryService.decreaseStock(item.productId, item.quantity)
+    }
+    
+    // Send confirmation
+    emailService.sendConfirmation(order.customer.email, order.id)
+    
+    return OrderResult.Success(order.id, totalWithTax)
+}
+```
+
+**After: Extracted Functions with Single Responsibilities**
+
+```kotlin
+fun processOrder(order: Order): OrderResult {
+    val validationResult = validateOrder(order)
+    if (validationResult is ValidationResult.Invalid) {
+        return OrderResult.Error(validationResult.message)
+    }
+    
+    val pricing = calculatePricing(order)
+    val paymentResult = processPayment(order.customerId, pricing.total)
+    
+    if (!paymentResult.success) {
+        return OrderResult.Error("Payment failed: ${paymentResult.message}")
+    }
+    
+    updateInventory(order.items)
+    sendConfirmation(order)
+    
+    return OrderResult.Success(order.id, pricing.total)
+}
+
+private fun validateOrder(order: Order): ValidationResult {
+    return when {
+        order.items.isEmpty() -> 
+            ValidationResult.Invalid("Order must contain at least one item")
+        order.customerId.isBlank() -> 
+            ValidationResult.Invalid("Customer ID is required")
+        order.totalAmount <= 0 -> 
+            ValidationResult.Invalid("Total amount must be positive")
+        else -> ValidationResult.Valid
+    }
+}
+
+private fun calculatePricing(order: Order): Pricing {
+    val discount = calculateDiscount(order)
+    val finalAmount = order.totalAmount - discount
+    val tax = calculateTax(finalAmount, order.shippingAddress.country)
+    return Pricing(finalAmount, tax, finalAmount + tax)
+}
+
+private fun calculateDiscount(order: Order): Double {
+    var discount = 0.0
+    if (order.totalAmount > 100) {
+        discount += order.totalAmount * 0.1
+    }
+    if (order.customer.isPremium) {
+        discount += order.totalAmount * 0.05
+    }
+    return discount
+}
+
+private fun calculateTax(amount: Double, country: String): Double {
+    val taxRate = when (country) {
+        "US" -> 0.08
+        "CA" -> 0.13
+        else -> 0.0
+    }
+    return amount * taxRate
+}
+
+private fun processPayment(customerId: String, amount: Double): PaymentResult {
+    return paymentService.charge(customerId, amount)
+}
+
+private fun updateInventory(items: List<OrderItem>) {
+    items.forEach { item ->
+        inventoryService.decreaseStock(item.productId, item.quantity)
+    }
+}
+
+private fun sendConfirmation(order: Order) {
+    emailService.sendConfirmation(order.customer.email, order.id)
+}
+```
+
+The refactored version separates concerns into focused functions, making the code easier to understand, test, and maintain.
+
 ## Use Feature Flags for Risky Extractions
 
 When extracting a service or major module, use feature flags to route traffic between old and new implementations. This enables gradual migration and instant rollback.

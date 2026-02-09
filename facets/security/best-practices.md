@@ -21,6 +21,107 @@ Server-side validation should occur at the API boundary, before data enters appl
 
 Input validation failures should return clear error messages to help developers debug issues, but avoid exposing internal implementation details that could aid attackers. Return generic error messages for authentication failures to prevent username enumeration attacks. Log detailed validation failures server-side for debugging while returning user-friendly messages to clients.
 
+**Example: Input Validation with Bean Validation**
+
+```kotlin
+// Kotlin example
+import jakarta.validation.constraints.*
+import jakarta.validation.Valid
+
+data class CreateOrderRequest(
+    @field:NotBlank(message = "Order ID is required")
+    @field:Size(min = 1, max = 50, message = "Order ID must be between 1 and 50 characters")
+    val orderId: String,
+    
+    @field:NotBlank(message = "Customer ID is required")
+    @field:Pattern(regexp = "^[A-Z0-9-]+$", message = "Customer ID must be alphanumeric")
+    val customerId: String,
+    
+    @field:NotNull(message = "Total amount is required")
+    @field:DecimalMin(value = "0.01", message = "Total amount must be at least 0.01")
+    @field:DecimalMax(value = "999999.99", message = "Total amount must not exceed 999999.99")
+    val totalAmount: BigDecimal,
+    
+    @field:Valid
+    @field:NotEmpty(message = "At least one item is required")
+    val items: List<@Valid OrderItem>
+)
+
+data class OrderItem(
+    @field:NotBlank(message = "Product ID is required")
+    val productId: String,
+    
+    @field:Min(value = 1, message = "Quantity must be at least 1")
+    @field:Max(value = 100, message = "Quantity must not exceed 100")
+    val quantity: Int,
+    
+    @field:NotNull(message = "Price is required")
+    @field:DecimalMin(value = "0.01", message = "Price must be at least 0.01")
+    val price: BigDecimal
+)
+
+@RestController
+@RequestMapping("/api/orders")
+class OrderController {
+    @PostMapping
+    fun createOrder(@Valid @RequestBody request: CreateOrderRequest): ResponseEntity<Order> {
+        // Validation passed, process order
+        val order = orderService.createOrder(request)
+        return ResponseEntity.ok(order)
+    }
+}
+```
+
+```java
+// Java example
+import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
+
+public record CreateOrderRequest(
+    @NotBlank(message = "Order ID is required")
+    @Size(min = 1, max = 50, message = "Order ID must be between 1 and 50 characters")
+    String orderId,
+    
+    @NotBlank(message = "Customer ID is required")
+    @Pattern(regexp = "^[A-Z0-9-]+$", message = "Customer ID must be alphanumeric")
+    String customerId,
+    
+    @NotNull(message = "Total amount is required")
+    @DecimalMin(value = "0.01", message = "Total amount must be at least 0.01")
+    @DecimalMax(value = "999999.99", message = "Total amount must not exceed 999999.99")
+    BigDecimal totalAmount,
+    
+    @Valid
+    @NotEmpty(message = "At least one item is required")
+    List<@Valid OrderItem> items
+) {}
+
+public record OrderItem(
+    @NotBlank(message = "Product ID is required")
+    String productId,
+    
+    @Min(value = 1, message = "Quantity must be at least 1")
+    @Max(value = 100, message = "Quantity must not exceed 100")
+    Integer quantity,
+    
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.01", message = "Price must be at least 0.01")
+    BigDecimal price
+) {}
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+    @PostMapping
+    public ResponseEntity<Order> createOrder(
+            @Valid @RequestBody CreateOrderRequest request) {
+        // Validation passed, process order
+        Order order = orderService.createOrder(request);
+        return ResponseEntity.ok(order);
+    }
+}
+```
+
 ## Principle of Least Privilege
 
 Every user, service, and process should have the minimum permissions needed to perform their function. Don't grant admin access when read-only access suffices. Don't run applications as root when a non-privileged user works. Don't grant database users write access when read access is sufficient.
@@ -87,6 +188,110 @@ Use `@PreAuthorize` and `@PostAuthorize` annotations for method-level security, 
 
 Configure CORS using `CorsConfigurationSource` beans with explicit allowed origins, methods, and headers. Don't use `Access-Control-Allow-Origin: *` for authenticated APIs. Configure CORS at the security filter chain level to ensure consistent application across endpoints.
 
+**Example: CORS Configuration with Spring Security**
+
+```kotlin
+// Kotlin example
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+
+@Configuration
+@EnableWebSecurity
+class SecurityConfig {
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http
+            .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
+            .csrf { it.disable() } // Disable for stateless JWT APIs
+            .authorizeHttpRequests { auth ->
+                auth.requestMatchers("/api/public/**").permitAll()
+                    .anyRequest().authenticated()
+            }
+        
+        return http.build()
+    }
+    
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf(
+            "https://app.example.com",
+            "https://admin.example.com"
+        )
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        configuration.allowedHeaders = listOf(
+            "Authorization",
+            "Content-Type",
+            "X-Requested-With",
+            "X-Correlation-Id"
+        )
+        configuration.allowCredentials = true
+        configuration.maxAge = 3600L
+        
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/api/**", configuration)
+        return source
+    }
+}
+```
+
+```java
+// Java example
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable()) // Disable for stateless JWT APIs
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/public/**").permitAll()
+                .anyRequest().authenticated()
+            );
+        
+        return http.build();
+    }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(
+            "https://app.example.com",
+            "https://admin.example.com"
+        ));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of(
+            "Authorization",
+            "Content-Type",
+            "X-Requested-With",
+            "X-Correlation-Id"
+        ));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
+    }
+}
+```
+
 CSRF protection is essential for stateful session-based authentication but should be disabled for stateless JWT bearer token APIs. Understand why CSRF protection is needed (cookie-based authentication is vulnerable to CSRF) and why it's not needed (bearer tokens in headers are not vulnerable to CSRF) before disabling it.
 
 Use Spring Security's password encoding (BCrypt, Argon2) rather than implementing custom password hashing. Spring Security handles salt generation, iteration counts, and secure comparison automatically. Never store passwords in plain text or use weak hashing algorithms (MD5, SHA-1).
@@ -104,6 +309,89 @@ Be cautious with `inline` functions and reified type parameters when dealing wit
 Sanitize dynamic HTML content. Vue's `v-html` directive and React's `dangerouslySetInnerHTML` prop can introduce XSS vulnerabilities if content isn't sanitized. Use HTML sanitization libraries (DOMPurify) or avoid dynamic HTML entirely by using template-based rendering.
 
 Configure Content Security Policy (CSP) headers at the server or CDN level, not in client-side code. CSP headers restrict where resources can load from, preventing XSS attacks. Client-side code cannot reliably enforce CSP—it must be configured server-side.
+
+**Example: CSP Header Configuration with Spring Security**
+
+```kotlin
+// Kotlin example
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter
+
+@Configuration
+@EnableWebSecurity
+class SecurityConfig {
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http
+            .headers { headers ->
+                headers
+                    .contentSecurityPolicy { csp ->
+                        csp.policyDirectives(
+                            "default-src 'self'; " +
+                            "script-src 'self' 'unsafe-inline' https://cdn.example.com; " +
+                            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+                            "font-src 'self' https://fonts.gstatic.com; " +
+                            "img-src 'self' data: https:; " +
+                            "connect-src 'self' https://api.example.com; " +
+                            "frame-ancestors 'none'; " +
+                            "base-uri 'self'; " +
+                            "form-action 'self'"
+                        )
+                    }
+                    .referrerPolicy { policy ->
+                        policy.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+                    }
+                    .frameOptions { it.deny() }
+                    .xssProtection { it.block() }
+            }
+        
+        return http.build()
+    }
+}
+```
+
+```java
+// Java example
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp.policyDirectives(
+                    "default-src 'self'; " +
+                    "script-src 'self' 'unsafe-inline' https://cdn.example.com; " +
+                    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+                    "font-src 'self' https://fonts.gstatic.com; " +
+                    "img-src 'self' data: https:; " +
+                    "connect-src 'self' https://api.example.com; " +
+                    "frame-ancestors 'none'; " +
+                    "base-uri 'self'; " +
+                    "form-action 'self'"
+                ))
+                .referrerPolicy(policy -> policy
+                    .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+                )
+                .frameOptions(frameOptions -> frameOptions.deny())
+                .xssProtection(xss -> xss.block())
+            );
+        
+        return http.build();
+    }
+}
+```
 
 Store authentication tokens securely. `localStorage` is accessible to any JavaScript on the page, making it vulnerable to XSS attacks. Prefer `httpOnly` cookies for token storage, which are inaccessible to JavaScript. If `localStorage` must be used (e.g., for SPAs without backend cookie support), keep token lifetimes short and implement robust XSS prevention.
 
