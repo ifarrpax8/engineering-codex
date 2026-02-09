@@ -60,11 +60,14 @@ engineering-codex/
 ├── facets/                  # 21 engineering-focused deep dives
 ├── experiences/             # 17 user-centric UX perspectives
 ├── pax8-context/            # Pax8-specific ADR overlay (optional, for Pax8 projects)
+├── tech-radar.md            # Technology radar (industry-general)
+├── tech-radar-pax8.md       # Technology radar (Pax8 overlay)
+├── tech-radar.json          # Zalando-compatible radar export
 ├── reading-paths.md         # Role-based navigation guides
 ├── tag-index.md             # Auto-generated cross-reference of tags
 ├── stack-context.md         # Assumed technology landscape
 ├── glossary.md              # Shared terminology
-├── scripts/                 # Utility scripts (tag index generation)
+├── scripts/                 # Utility scripts (tag index, link validation)
 └── CHANGELOG.md             # Change history
 ```
 
@@ -129,6 +132,9 @@ engineering-codex/
 - **onboarding-guide** -- Generate a personalised reading path for a project
 - **generate-opportunity-brief** -- Draft a Pax8 Opportunity Brief informed by codex content
 - **generate-prd** -- Draft a Pax8 PRD from an approved Opportunity Brief
+- **sync-pax8-adrs** -- Diff ADR repo against standards map to surface new/changed/superseded ADRs
+- **content-freshness-audit** -- Check content age, technology references, and industry shifts
+- **refresh-tech-radar** -- Regenerate the tech radar from current codex and Pax8 content
 
 ### Commands (Quick Triggers)
 
@@ -137,6 +143,7 @@ engineering-codex/
 - **gotcha-check** -- Instantly surface gotchas for any facet or experience
 - **generate-checklist** -- Create a project-specific checklist tailored to your stack
 - **pax8-standard** -- Surface Pax8-specific standards and deprecated technologies for any facet
+- **validate-links** -- Scan for broken internal links and anchor references
 - **what-should-i-read** -- Map a task description to relevant codex content
 
 ## Related Resources

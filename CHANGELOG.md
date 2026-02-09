@@ -4,6 +4,22 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-09] - Tech Radar and Maintenance Skills
+
+### Added
+
+- **Tech Radar**: `tech-radar.md` with 129 classified technologies across 4 quadrants (Techniques, Platforms, Tools, Languages & Frameworks) and 4 rings (Adopt, Trial, Assess, Hold), each with Mermaid quadrant charts and rationale tables
+- **Pax8 Tech Radar Overlay**: `tech-radar-pax8.md` showing ring adjustments for Pax8 projects (13 promotions, 6 demotions, 10 Pax8-specific additions)
+- **Zalando JSON Export**: `tech-radar.json` for generating an interactive radar via Zalando's open-source tech radar tool
+- **3 maintenance skills**: `sync-pax8-adrs` (diffs ADR repo against standards map), `content-freshness-audit` (flags stale content with category-aware thresholds), `refresh-tech-radar` (regenerates radar from codex content)
+- **1 maintenance command**: `validate-links` with supporting Python script (`scripts/validate-links.py`) checking all internal markdown links and anchors
+
+### Fixed
+
+- 105 broken links across 30+ files: corrected path depths for experience-to-facet cross-references, fixed anchor slugs with special characters, removed references to nonexistent experiences, corrected relative paths
+
+---
+
 ## [2026-02-09] - Pax8 Context Overlay, New Facets, and Product Skills
 
 ### Added

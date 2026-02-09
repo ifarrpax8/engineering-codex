@@ -1,0 +1,779 @@
+[
+  {
+    "name": "Trunk-Based Development",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Fastest feedback loop, simplest branching model. Default for CI/CD-enabled teams."
+  },
+  {
+    "name": "CQRS",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Separates read/write concerns for complex domains."
+  },
+  {
+    "name": "Hexagonal Architecture",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Isolates domain from infrastructure for testability."
+  },
+  {
+    "name": "Event-Driven Architecture (Hybrid)",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Sync for queries, async for commands — best of both worlds."
+  },
+  {
+    "name": "Strangler Fig Pattern",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Safest path for incremental architectural extraction."
+  },
+  {
+    "name": "TDD for Business Logic",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Catches regressions early, drives clean design."
+  },
+  {
+    "name": "BDD for User-Facing Features",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Aligns tests with acceptance criteria."
+  },
+  {
+    "name": "RFC 7807 Problem Details",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Standard machine-readable error response format."
+  },
+  {
+    "name": "Cache-Aside with Redis",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Simple, effective caching with explicit invalidation."
+  },
+  {
+    "name": "Retry with Exponential Backoff",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Resilience without thundering herd."
+  },
+  {
+    "name": "Conventional Commits",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Consistent history, enables automated changelogs."
+  },
+  {
+    "name": "Contract Testing",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Catches integration breaks without full environment."
+  },
+  {
+    "name": "Component-Driven Development",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Build UIs from isolated, testable components."
+  },
+  {
+    "name": "Squash Merge",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Clean main branch history, atomic feature commits."
+  },
+  {
+    "name": "Modular Monolith (Modulith)",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Monolith benefits with clear module boundaries. Good stepping stone."
+  },
+  {
+    "name": "Microservices",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Independent deployment at scale. High operational cost — suits teams of 15+."
+  },
+  {
+    "name": "GraphQL",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Excellent for complex data relationships and mobile clients."
+  },
+  {
+    "name": "gRPC",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "High-performance internal service-to-service communication."
+  },
+  {
+    "name": "Cursor-Based Pagination",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Consistent results in real-time datasets. Preferred for infinite scroll."
+  },
+  {
+    "name": "Blue-Green Deployment",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Zero-downtime releases with instant rollback."
+  },
+  {
+    "name": "Canary Deployment",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Gradual rollout with real traffic validation."
+  },
+  {
+    "name": "Circuit Breaker",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Prevents cascade failures in distributed systems."
+  },
+  {
+    "name": "Server-Side Rendering",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "SEO-critical apps, faster first paint."
+  },
+  {
+    "name": "Module Federation (MFE)",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Runtime micro-frontend composition with shared dependencies."
+  },
+  {
+    "name": "Database-Backed Feature Toggles",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Simple, queryable, no vendor dependency."
+  },
+  {
+    "name": "Offset Pagination (Spring Pageable)",
+    "ring": "assess",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Familiar but problematic for large or real-time datasets."
+  },
+  {
+    "name": "Layered Architecture",
+    "ring": "assess",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Suitable for simple CRUD, not for complex domains."
+  },
+  {
+    "name": "Web Components for MFE",
+    "ring": "assess",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Framework-agnostic but limited ecosystem."
+  },
+  {
+    "name": "GitFlow",
+    "ring": "hold",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Unnecessary complexity for CI/CD-enabled teams."
+  },
+  {
+    "name": "Premature Abstraction",
+    "ring": "hold",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Wait for Rule of Three before abstracting."
+  },
+  {
+    "name": "Synchronous-Only Communication",
+    "ring": "hold",
+    "quadrant": "techniques",
+    "isNew": false,
+    "description": "Doesn't scale for high-throughput event processing."
+  },
+  {
+    "name": "PostgreSQL",
+    "ring": "adopt",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Default relational database, excellent ecosystem."
+  },
+  {
+    "name": "Redis",
+    "ring": "adopt",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Proven caching layer, pub/sub, session storage."
+  },
+  {
+    "name": "Kubernetes",
+    "ring": "adopt",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Standard container orchestration."
+  },
+  {
+    "name": "Docker",
+    "ring": "adopt",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Standard containerisation for all services."
+  },
+  {
+    "name": "Kafka",
+    "ring": "adopt",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Event streaming, replay capability, high throughput."
+  },
+  {
+    "name": "AWS Secrets Manager",
+    "ring": "adopt",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Managed secrets with rotation and audit."
+  },
+  {
+    "name": "RabbitMQ",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Task distribution, simpler than Kafka for basic messaging."
+  },
+  {
+    "name": "MongoDB",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Genuine schema flexibility use cases — not a default."
+  },
+  {
+    "name": "Axon Framework (no Axon Server)",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "CQRS/event sourcing with Kafka + PostgreSQL backend."
+  },
+  {
+    "name": "OpenSearch",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Full-text search, analytics, log aggregation."
+  },
+  {
+    "name": "HashiCorp Vault",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Advanced secrets management for complex setups."
+  },
+  {
+    "name": "Prometheus + Grafana",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Open-source observability stack."
+  },
+  {
+    "name": "Loki",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Log aggregation, pairs with Grafana."
+  },
+  {
+    "name": "Tempo / Jaeger",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Distributed tracing backends."
+  },
+  {
+    "name": "Unleash / Flagsmith",
+    "ring": "trial",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Open-source feature flag platforms."
+  },
+  {
+    "name": "CloudWatch / Azure Monitor",
+    "ring": "assess",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Cloud-native observability. Vendor-locked but low operational cost."
+  },
+  {
+    "name": "Spring Cloud Config Server",
+    "ring": "assess",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Runtime config for large microservice fleets."
+  },
+  {
+    "name": "Axon Server",
+    "ring": "hold",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Removed from recommended architecture — use Kafka + PostgreSQL."
+  },
+  {
+    "name": "NewRelic",
+    "ring": "hold",
+    "quadrant": "platforms",
+    "isNew": false,
+    "description": "Deprecated — migrate to OpenTelemetry-based alternatives."
+  },
+  {
+    "name": "GitHub Actions",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Default CI/CD for GitHub-hosted repositories."
+  },
+  {
+    "name": "OpenTelemetry",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Vendor-neutral instrumentation standard."
+  },
+  {
+    "name": "Vitest",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Fast, Vite-native unit testing for frontend."
+  },
+  {
+    "name": "Playwright",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Reliable cross-browser e2e testing."
+  },
+  {
+    "name": "JUnit 5",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Standard Java/Kotlin test framework."
+  },
+  {
+    "name": "MockK",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Idiomatic Kotlin mocking library."
+  },
+  {
+    "name": "Testcontainers",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Real dependencies in integration tests."
+  },
+  {
+    "name": "Gradle (Kotlin DSL)",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Type-safe build scripts with version catalogs."
+  },
+  {
+    "name": "Vite",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Fast frontend build tool with HMR."
+  },
+  {
+    "name": "ESLint",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Standard JavaScript/TypeScript linting."
+  },
+  {
+    "name": "ktlint",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Kotlin code formatting standard."
+  },
+  {
+    "name": "Terraform",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Infrastructure as code standard."
+  },
+  {
+    "name": "axe-core",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Automated accessibility testing."
+  },
+  {
+    "name": "Lighthouse CI",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Automated performance budgets in CI."
+  },
+  {
+    "name": "Sentry",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Frontend error tracking and performance monitoring."
+  },
+  {
+    "name": "GitHub Repository Rulesets",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Modern branch protection with granular control."
+  },
+  {
+    "name": "Atlantis",
+    "ring": "adopt",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Terraform plan/apply via pull requests."
+  },
+  {
+    "name": "Renovate",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Highly configurable automated dependency updates."
+  },
+  {
+    "name": "Dependabot",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Simpler automated dependency updates, GitHub-native."
+  },
+  {
+    "name": "k6",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "JavaScript-based load testing."
+  },
+  {
+    "name": "Gatling",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "JVM-based load testing."
+  },
+  {
+    "name": "Snyk",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Dependency vulnerability scanning."
+  },
+  {
+    "name": "OWASP Dependency-Check",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Free dependency vulnerability scanning."
+  },
+  {
+    "name": "SonarQube / Semgrep",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Static application security testing."
+  },
+  {
+    "name": "OWASP ZAP",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Dynamic application security testing."
+  },
+  {
+    "name": "LaunchDarkly",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Commercial feature flags with targeting."
+  },
+  {
+    "name": "OpenFeature",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Vendor-neutral feature flag standard."
+  },
+  {
+    "name": "Crowdin / Phrase / Lokalise",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Translation management systems."
+  },
+  {
+    "name": "Azure DevOps Pipelines",
+    "ring": "assess",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "CI/CD for Azure-centric organisations."
+  },
+  {
+    "name": "GitLab CI",
+    "ring": "assess",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "CI/CD for GitLab-hosted repositories."
+  },
+  {
+    "name": "Jenkins",
+    "ring": "assess",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Self-hosted CI/CD, high maintenance cost."
+  },
+  {
+    "name": "Moment.js",
+    "ring": "hold",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Maintenance mode — use DayJS as drop-in replacement."
+  },
+  {
+    "name": "Legacy Branch Protection",
+    "ring": "hold",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Superseded by GitHub Repository Rulesets."
+  },
+  {
+    "name": "Gradle ext Variables",
+    "ring": "hold",
+    "quadrant": "tools",
+    "isNew": false,
+    "description": "Superseded by version catalogs (libs.versions.toml)."
+  },
+  {
+    "name": "TypeScript",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Type safety for frontend and Node.js projects."
+  },
+  {
+    "name": "Kotlin",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Concise, null-safe, idiomatic JVM language."
+  },
+  {
+    "name": "Vue 3 (Composition API)",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Reactive, performant, strong ecosystem."
+  },
+  {
+    "name": "Spring Boot 3",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Standard Java/Kotlin web framework."
+  },
+  {
+    "name": "Pinia",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Lightweight Vue state management."
+  },
+  {
+    "name": "TanStack Query / VueQuery",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Server state management with caching."
+  },
+  {
+    "name": "Tailwind CSS",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Utility-first CSS with design system support."
+  },
+  {
+    "name": "DayJS",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Lightweight date/time manipulation."
+  },
+  {
+    "name": "Spring Security",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Standard authentication/authorization framework."
+  },
+  {
+    "name": "vue-i18n",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Vue 3 internationalisation library."
+  },
+  {
+    "name": "Spring Data JPA / Hibernate",
+    "ring": "adopt",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Standard ORM for Spring applications."
+  },
+  {
+    "name": "React 18+",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Strong ecosystem, component model, hooks."
+  },
+  {
+    "name": "Zustand",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Minimal React state management."
+  },
+  {
+    "name": "Java 21",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Virtual threads, pattern matching, records."
+  },
+  {
+    "name": "react-intl",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "React internationalisation library."
+  },
+  {
+    "name": "i18next",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Framework-agnostic internationalisation."
+  },
+  {
+    "name": "Resilience4j",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Circuit breakers, rate limiters for JVM."
+  },
+  {
+    "name": "JOOQ / Exposed",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Type-safe SQL query builders."
+  },
+  {
+    "name": "Headless UI / Radix / React Aria",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Unstyled accessible component primitives."
+  },
+  {
+    "name": "single-spa",
+    "ring": "trial",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Micro-frontend orchestration framework."
+  },
+  {
+    "name": "Apollo / urql",
+    "ring": "assess",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "GraphQL clients for complex data needs."
+  },
+  {
+    "name": "Spring JDBC / JdbcTemplate",
+    "ring": "assess",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Raw SQL when ORM is overkill."
+  },
+  {
+    "name": "Redux / Vuex",
+    "ring": "hold",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Overkill for most applications — use Pinia or Zustand."
+  },
+  {
+    "name": "Vue 2",
+    "ring": "hold",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "End of life — migrate to Vue 3."
+  },
+  {
+    "name": "Spring Boot 2.x",
+    "ring": "hold",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "End of maintenance — migrate to Spring Boot 3."
+  },
+  {
+    "name": "React Class Components",
+    "ring": "hold",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Superseded by hooks and function components."
+  },
+  {
+    "name": "Java 11",
+    "ring": "hold",
+    "quadrant": "languages-and-frameworks",
+    "isNew": false,
+    "description": "Upgrade to Java 17+ for LTS and language features."
+  }
+]
