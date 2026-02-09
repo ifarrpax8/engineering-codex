@@ -9,6 +9,8 @@ Architecture scaling journeys and inflection point guidance. These guides help y
 | [Monolith to Microservices](monolith-to-microservices.md) | Backend evolution from monolith through modulith to microservices |
 | [SPA to MFE](spa-to-mfe.md) | Frontend evolution from single-page application to micro-frontends |
 | [Scaling Triggers](scaling-triggers.md) | Universal inflection point triggers that apply across all facets |
+| [Manual to Automated Testing](manual-to-automated-testing.md) | Testing maturity from manual-only to continuous testing |
+| [Component Library to Design System](component-library-to-design-system.md) | From shared components to a governed design system |
 
 ## How to Use
 

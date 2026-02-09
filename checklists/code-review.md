@@ -11,8 +11,8 @@ Use this checklist when reviewing a pull request. Focus on the items relevant to
 
 ## Architecture & Design
 
-- [ ] **Follows existing patterns** -- Consistent with codebase conventions → [Refactoring](../facets/refactoring/best-practices.md)
-- [ ] **Appropriate level of abstraction** -- Not over-engineered, not under-designed → [Refactoring](../facets/refactoring/best-practices.md)
+- [ ] **Follows existing patterns** -- Consistent with codebase conventions → [Refactoring](../facets/refactoring-and-extraction/best-practices.md)
+- [ ] **Appropriate level of abstraction** -- Not over-engineered, not under-designed → [Refactoring](../facets/refactoring-and-extraction/best-practices.md)
 - [ ] **Single responsibility** -- Each class/function has a clear purpose
 - [ ] **API design consistent** -- Naming, structure, error responses follow conventions → [API Design](../facets/api-design/best-practices.md)
 - [ ] **State management appropriate** -- Right tool for the scope (local vs global) → [State Management](../facets/state-management/best-practices.md)

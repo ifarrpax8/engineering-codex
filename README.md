@@ -13,6 +13,10 @@ The Engineering Codex provides a faceted, deep-dive reference for every major co
 
 ## How to Use This Codex
 
+### By Role
+
+New to the codex? Start with [Reading Paths](reading-paths.md) for a curated route based on your role: developer, QA engineer, architect, product manager, DevOps engineer, or tech lead.
+
 ### Quick Reference
 
 Need a fast answer? Start with [checklists](checklists/) for actionable lists that link to deeper content.

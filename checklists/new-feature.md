@@ -5,7 +5,7 @@ Use this checklist when adding a significant feature to an existing project. Not
 ## Before Starting
 
 - [ ] **Requirements clear** -- Acceptance criteria defined and understood
-- [ ] **Architecture approach decided** -- Does this feature fit existing patterns or need something new? → [Refactoring](../facets/refactoring/best-practices.md)
+- [ ] **Architecture approach decided** -- Does this feature fit existing patterns or need something new? → [Refactoring](../facets/refactoring-and-extraction/best-practices.md)
 - [ ] **Cross-facet impacts identified** -- Does this feature touch authentication, permissions, i18n, etc.?
 
 ## Authentication & Permissions
@@ -54,6 +54,6 @@ Use this checklist when adding a significant feature to an existing project. Not
 
 ## Code Quality
 
-- [ ] **Follows existing codebase patterns** → [Refactoring](../facets/refactoring/best-practices.md)
-- [ ] **No premature abstraction** -- Extracted only what's proven to be reusable → [Refactoring](../facets/refactoring/best-practices.md)
+- [ ] **Follows existing codebase patterns** → [Refactoring](../facets/refactoring-and-extraction/best-practices.md)
+- [ ] **No premature abstraction** -- Extracted only what's proven to be reusable → [Refactoring](../facets/refactoring-and-extraction/best-practices.md)
 - [ ] **State management follows established patterns** → [State Management](../facets/state-management/best-practices.md)

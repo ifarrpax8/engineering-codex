@@ -4,6 +4,23 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-09] - Checklists, Evolution Guides, and Reading Paths
+
+### Added
+
+- **Security Review Checklist** — auth, input validation, secrets, data protection, browser security, dependencies, multi-tenancy
+- **Accessibility Audit Checklist** — WCAG 2.1 AA compliance covering perceivable, operable, understandable, robust, automated and manual testing
+- **API Design Review Checklist** — naming, request/response, security, documentation, performance, backwards compatibility
+- **Evolution: Manual to Automated Testing** — 5-stage testing maturity model with triggers, transitions, and anti-patterns
+- **Evolution: Component Library to Design System** — 5-stage design system maturity model from no system to platform-level governance
+- **Reading Paths** — role-based navigation guides for new developers, QA engineers, architects, product managers, DevOps engineers, and tech leads
+
+### Fixed
+
+- Stale links in code-review and new-feature checklists pointing to old `facets/refactoring/` (now `facets/refactoring-and-extraction/`)
+
+---
+
 ## [2026-02-09] - Full Content Population
 
 ### Added

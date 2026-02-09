@@ -11,6 +11,9 @@ Quick-reference checklists for common development scenarios. Each item links to 
 | [New Feature](new-feature.md) | Adding a significant feature to an existing project |
 | [Code Review](code-review.md) | Reviewing a pull request or conducting a code review |
 | [Incident Response](incident-response.md) | Responding to a production incident |
+| [Security Review](security-review.md) | Before deploying features with auth, secrets, or user data |
+| [Accessibility Audit](accessibility-audit.md) | Verifying WCAG 2.1 AA compliance before release |
+| [API Design Review](api-design-review.md) | Before publishing a new API or making breaking changes |
 
 ## How to Use
 
