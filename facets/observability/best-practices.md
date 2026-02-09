@@ -17,7 +17,40 @@ Observability best practices ensure that telemetry data is useful, actionable, a
 
 Use JSON-formatted logs with consistent field names across all services. Structured logs enable querying and aggregation—finding all logs for a specific user ID, filtering by error type, correlating events across services. Free-form text logs cannot be queried effectively.
 
+**Required Fields in Every Log Entry:**
+
+Every log entry must include these standard fields for correlation and debugging:
+
+- **`timestamp`**: ISO 8601 format with millisecond precision (e.g., `2026-02-09T14:23:45.123Z`). Use UTC to avoid timezone confusion.
+- **`level`**: `ERROR`, `WARN`, `INFO`, `DEBUG`. Use consistent casing across all services.
+- **`service`**: Service name (e.g., `payment-service`, `order-service`). Use kebab-case for consistency.
+- **`traceId`**: Distributed trace ID (W3C Trace Context format: 32 hex characters). Enables correlating logs with traces.
+- **`spanId`**: Current span ID (16 hex characters). Identifies the specific operation within a trace.
+- **`message`**: Human-readable log message describing the event. Keep messages concise but descriptive.
+- **`correlationId`**: Business-level identifier (order ID, user ID, request ID) that enables tracking a business operation across services. Different from traceId—traceId is technical, correlationId is business.
+- **`userId`**: User identifier when applicable. Enables filtering logs by user. Use consistent format (UUID, email, numeric ID) across services.
+- **`tenantId`**: Tenant identifier in multi-tenant systems. Enables filtering logs by tenant.
+- **`environment`**: Deployment environment (`production`, `staging`, `development`). Helps distinguish logs from different environments.
+
+**Optional but Recommended Fields:**
+
+- **`requestId`**: HTTP request ID or message ID. Enables correlating logs for a specific request.
+- **`httpMethod`**: HTTP method for HTTP requests (`GET`, `POST`, etc.).
+- **`httpPath`**: HTTP path template (e.g., `/users/{id}`, not `/users/12345`) to avoid high cardinality.
+- **`httpStatusCode`**: HTTP status code for HTTP requests.
+- **`duration`**: Operation duration in milliseconds. Enables performance analysis.
+- **`errorType`**: Error type or exception class name for error logs.
+- **`errorMessage`**: Error message for error logs.
+- **`stackTrace`**: Stack trace for error logs (truncated in production to avoid log volume).
+
 Include trace ID, span ID, service name, and business context in every log line. Trace IDs enable correlating logs with traces. Business context (user ID, order ID, tenant ID) enables filtering logs by business entity. Without this context, logs are difficult to use for debugging.
+
+**Field Naming Standards:**
+
+- Use `camelCase` for field names (e.g., `traceId`, `userId`, `tenantId`).
+- Use consistent field names across all services—don't mix `userId` and `user_id`.
+- Avoid nested objects when possible—flatten structure for easier querying (e.g., `user.id` instead of `user: { id: ... }`).
+- Use bounded values for fields used in queries—avoid high-cardinality values like full URLs or user emails as top-level fields.
 
 Never log sensitive data. Passwords, tokens, credit card numbers, and PII must be excluded or masked. Configure log scrubbing rules to automatically remove sensitive patterns. Review log output during code review to catch accidental sensitive data logging.
 
@@ -146,9 +179,44 @@ Include business metrics alongside technical metrics. A service dashboard showin
 
 Alert when users are affected (high error rate, high latency), not when infrastructure is busy (high CPU). High CPU is not a problem if users aren't affected. Alerting on infrastructure metrics creates noise and misses user-impacting issues.
 
-SLO-based alerting focuses on user impact. "Error budget burning 10x faster than expected" indicates users are affected. "CPU usage above 80%" might not indicate a problem if latency and error rate are normal.
+**SLO-Based Alerting**
 
-Alert on error rate, not error count. A service handling 1000 requests per second with 10 errors has a 1% error rate. A service handling 10 requests per second with 5 errors has a 50% error rate. Error rate provides context that error count cannot.
+SLO-based alerting focuses on user impact, not technical metrics. Instead of alerting on "error rate > 1%", alert on "error budget burning 10x faster than expected". This indicates users are affected and requires immediate attention.
+
+**Error Budget Burn Rate Calculation:**
+
+```
+Error budget = 1 - SLO (e.g., 99.9% availability = 0.1% error budget)
+Burn rate = error budget consumed / time window
+Alert threshold = burn rate exceeds expected consumption rate
+```
+
+Example: If SLO is 99.9% availability (43 minutes downtime per month), and 20 minutes of downtime occur in 6 hours, the burn rate is 20/43 = 46% of monthly budget consumed in 6 hours. Expected consumption is 6/720 = 0.83% per 6 hours. Actual consumption (46%) is 55x faster than expected—this warrants an alert.
+
+**Alert Thresholds:**
+
+- **Critical alert:** Error budget burning 10x faster than expected. Users are significantly affected. Requires immediate response.
+- **Warning alert:** Error budget burning 2x faster than expected. Degradation detected. Should be addressed during business hours.
+- **Info alert:** Error budget consumption normal but approaching limits. Monitor but no action required.
+
+**Alert Fatigue Prevention:**
+
+Alert fatigue occurs when too many alerts desensitize the team. Prevent alert fatigue through:
+
+1. **Alert consolidation:** Instead of separate alerts for error rate, latency, and throughput, create a single "service degradation" alert that considers all metrics.
+2. **Alert grouping:** Group related alerts (e.g., all database-related alerts) to reduce notification volume.
+3. **Alert deduplication:** Prevent duplicate alerts for the same issue within a time window.
+4. **Alert suppression:** Suppress alerts during known maintenance windows or expected degradation periods.
+5. **Regular alert review:** Quarterly review of all alerts. Remove alerts that haven't required action in 30 days. Tune thresholds for alerts that fire frequently but never require action.
+6. **Alert runbooks:** Every alert must have a runbook describing what the alert means, how to investigate, and how to resolve. Alerts without runbooks are noise.
+
+**Alert Severity Guidelines:**
+
+- **Critical:** User-facing impact requiring immediate response. Wakes someone up at 2 AM. Examples: error budget burning 10x faster, payment processing failures, authentication service down.
+- **Warning:** Degradation that should be addressed during business hours. Examples: error budget burning 2x faster, latency increase within acceptable bounds, capacity approaching limits.
+- **Info:** Anomalies worth investigating when convenient. Examples: unusual traffic patterns, new error types appearing, performance regression in non-critical paths.
+
+**Alert on error rate, not error count.** A service handling 1000 requests per second with 10 errors has a 1% error rate. A service handling 10 requests per second with 5 errors has a 50% error rate. Error rate provides context that error count cannot. Always include request volume in alert context to enable proper triage.
 
 ## Keep Metric Cardinality Under Control
 
@@ -276,9 +344,140 @@ public class OrderMetricsService {
 
 Spring Boot Actuator provides health checks and metrics endpoints (/actuator/health, /actuator/metrics). Customize health checks to include dependency checks (database connectivity, message broker connectivity). Don't expose actuator endpoints publicly—use authentication or network restrictions.
 
-Spring Cloud Sleuth (deprecated) and Micrometer Tracing provide distributed tracing. Prefer Micrometer Tracing with OpenTelemetry exporter for vendor-neutral tracing. Verify that trace context propagates through @Async methods and message listeners.
+**Spring Cloud Sleuth (deprecated) and Micrometer Tracing** provide distributed tracing. Prefer Micrometer Tracing with OpenTelemetry exporter for vendor-neutral tracing. Verify that trace context propagates through @Async methods and message listeners.
 
-Logback with LogstashEncoder produces JSON-formatted logs. Configure MDC to automatically include trace IDs and correlation IDs. Use logback-spring.xml for environment-specific configuration (different log levels per environment).
+**Trace Context Propagation in Spring Boot:**
+
+```kotlin
+// Configure OpenTelemetry for Spring Boot
+@Configuration
+class ObservabilityConfig {
+    @Bean
+    fun openTelemetry(): OpenTelemetry {
+        return OpenTelemetrySdk.builder()
+            .setTracerProvider(
+                SdkTracerProvider.builder()
+                    .addSpanProcessor(BatchSpanProcessor.builder(
+                        OtlpGrpcSpanExporter.builder()
+                            .setEndpoint("http://collector:4317")
+                            .build()
+                    ).build())
+                    .setResource(Resource.getDefault()
+                        .merge(Resource.builder()
+                            .put("service.name", "order-service")
+                            .put("service.version", "1.0.0")
+                            .build()))
+                    .build()
+            )
+            .build()
+    }
+}
+
+// Trace context propagation through @Async
+@Service
+class OrderService {
+    @Async
+    fun processOrderAsync(order: Order) {
+        // Trace context is automatically propagated with @Async
+        // if configured correctly
+        processOrder(order)
+    }
+}
+
+// Manual trace context propagation for custom async operations
+@Service
+class CustomAsyncService(
+    private val tracer: Tracer
+) {
+    fun processAsync(data: Data) {
+        val span = tracer.nextSpan().name("process-async").start()
+        val context = tracer.currentTraceContext().context()
+        
+        executorService.submit {
+            // Restore trace context in worker thread
+            tracer.currentTraceContext().with(context).use {
+                try {
+                    process(data)
+                } finally {
+                    span.end()
+                }
+            }
+        }
+    }
+}
+```
+
+**Spring Boot Actuator** provides health checks and metrics endpoints (/actuator/health, /actuator/metrics). Customize health checks to include dependency checks (database connectivity, message broker connectivity). Don't expose actuator endpoints publicly—use authentication or network restrictions.
+
+**Custom Health Indicators:**
+
+```kotlin
+@Component
+class DatabaseHealthIndicator(
+    private val dataSource: DataSource
+) : HealthIndicator {
+    override fun health(): Health {
+        return try {
+            dataSource.connection.use { conn ->
+                conn.isValid(1)
+            }
+            Health.up()
+                .withDetail("database", "available")
+                .build()
+        } catch (e: Exception) {
+            Health.down()
+                .withDetail("database", "unavailable")
+                .withException(e)
+                .build()
+        }
+    }
+}
+```
+
+**Logback with LogstashEncoder** produces JSON-formatted logs. Configure MDC to automatically include trace IDs and correlation IDs. Use logback-spring.xml for environment-specific configuration (different log levels per environment).
+
+**Logback Configuration Example:**
+
+```xml
+<configuration>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"order-service","environment":"${ENV:production}"}</customFields>
+            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <includeMdcKeyName>spanId</includeMdcKeyName>
+            <includeMdcKeyName>correlationId</includeMdcKeyName>
+            <includeMdcKeyName>userId</includeMdcKeyName>
+        </encoder>
+    </appender>
+    
+    <root level="INFO">
+        <appender-ref ref="JSON" />
+    </root>
+</configuration>
+```
+
+**MDC Configuration for Automatic Context Propagation:**
+
+```kotlin
+@Component
+class TraceContextFilter : Filter {
+    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+        val traceId = tracer.currentTraceContext().context()?.traceId()
+        val spanId = tracer.currentTraceContext().context()?.spanId()
+        val correlationId = request.getHeader("X-Correlation-ID") ?: UUID.randomUUID().toString()
+        
+        MDC.put("traceId", traceId)
+        MDC.put("spanId", spanId)
+        MDC.put("correlationId", correlationId)
+        
+        try {
+            chain.doFilter(request, response)
+        } finally {
+            MDC.clear()
+        }
+    }
+}
+```
 
 ### Kotlin
 
@@ -430,3 +629,186 @@ Performance Observer API provides access to Core Web Vitals and custom timing ma
 Sentry SDK or similar error tracking service provides error capture with source maps. Configure source maps for production builds to enable readable stack traces. Include user context (user ID, email if available) and custom tags (feature flag values, A/B test variants) to enable filtering and correlation.
 
 Frontend errors should include trace IDs from backend requests. When a frontend error occurs, include the trace ID from the most recent backend request in the error report. This enables correlating frontend errors with backend operations.
+
+**Frontend Observability Patterns:**
+
+**Core Web Vitals Monitoring:**
+
+```typescript
+// Monitor Core Web Vitals
+import { onCLS, onFID, onLCP, onFCP, onTTFB } from 'web-vitals'
+
+function sendToAnalytics(metric: Metric) {
+  // Send to observability backend
+  fetch('/api/metrics', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: metric.name,
+      value: metric.value,
+      id: metric.id,
+      delta: metric.delta,
+      rating: metric.rating,
+      navigationType: metric.navigationType
+    })
+  })
+}
+
+onCLS(sendToAnalytics)
+onFID(sendToAnalytics)
+onLCP(sendToAnalytics)
+onFCP(sendToAnalytics)
+onTTFB(sendToAnalytics)
+```
+
+**Custom Performance Marks:**
+
+```typescript
+// Measure specific user flows
+function measureCheckoutFlow() {
+  performance.mark('checkout-start')
+  
+  // ... checkout logic ...
+  
+  performance.mark('checkout-end')
+  performance.measure('checkout-duration', 'checkout-start', 'checkout-end')
+  
+  const measure = performance.getEntriesByName('checkout-duration')[0]
+  sendMetric('checkout.duration', measure.duration)
+}
+```
+
+**User Session Replay:**
+
+```typescript
+// Configure session replay (example with Sentry)
+import * as Sentry from '@sentry/vue'
+
+Sentry.init({
+  integrations: [
+    new Sentry.Replay({
+      maskAllText: true, // Mask sensitive text
+      blockAllMedia: true, // Block media for privacy
+      maskAllInputs: true // Mask all inputs
+    })
+  ],
+  beforeSend(event) {
+    // Filter sensitive data before sending
+    if (event.request?.cookies) {
+      delete event.request.cookies
+    }
+    return event
+  }
+})
+```
+
+**Frontend Error Tracking with Context:**
+
+```typescript
+// Enhanced error tracking
+try {
+  await apiCall()
+} catch (error) {
+  Sentry.captureException(error, {
+    tags: {
+      feature: 'checkout',
+      step: 'payment-processing',
+      traceId: getCurrentTraceId() // From backend request
+    },
+    contexts: {
+      user: {
+        id: getCurrentUserId(),
+        email: getCurrentUserEmail()
+      },
+      browser: {
+        name: navigator.userAgent,
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      }
+    },
+    extra: {
+      url: window.location.href,
+      referrer: document.referrer,
+      userAgent: navigator.userAgent
+    }
+  })
+}
+```
+
+**Frontend Performance Monitoring:**
+
+```typescript
+// Monitor resource loading performance
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.entryType === 'resource') {
+      sendMetric('resource.load.time', {
+        name: entry.name,
+        duration: entry.duration,
+        size: entry.transferSize,
+        type: entry.initiatorType
+      })
+    }
+  }
+})
+
+observer.observe({ entryTypes: ['resource', 'navigation'] })
+```
+
+**Vue-Specific Observability:**
+
+```vue
+<!-- Vue error boundary with observability -->
+<script setup lang="ts">
+import { onErrorCaptured } from 'vue'
+import * as Sentry from '@sentry/vue'
+
+onErrorCaptured((err, instance, info) => {
+  Sentry.captureException(err, {
+    tags: {
+      component: instance?.$options.name || 'Unknown',
+      errorInfo: info
+    },
+    contexts: {
+      vue: {
+        componentName: instance?.$options.name,
+        propsData: instance?.$props
+      }
+    }
+  })
+  
+  return false // Prevent error propagation
+})
+</script>
+```
+
+**React-Specific Observability:**
+
+```tsx
+// React error boundary with observability
+import React, { Component, ErrorInfo, ReactNode } from 'react'
+import * as Sentry from '@sentry/react'
+
+class ErrorBoundary extends Component<Props, State> {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    Sentry.captureException(error, {
+      tags: {
+        componentStack: errorInfo.componentStack
+      },
+      contexts: {
+        react: {
+          componentStack: errorInfo.componentStack
+        }
+      }
+    })
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback />
+    }
+    return this.props.children
+  }
+}
+```

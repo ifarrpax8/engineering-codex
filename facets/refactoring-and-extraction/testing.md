@@ -25,7 +25,41 @@ If test coverage is inadequate, write tests before refactoring. These tests capt
 
 When you inherit code without tests, write characterization tests. These tests capture current behavior, even if that behavior is imperfect. The goal is to document what the code does, not what it should do.
 
+**Example: Characterizing Legacy Payment Processing**
+
+```kotlin
+// Legacy code - no tests, complex logic
+fun processPayment(amount: Double, paymentMethod: String): PaymentResult {
+    // 200 lines of complex logic
+    // Unknown edge cases, unclear behavior
+}
+
+// Characterization test - captures current behavior
+@Test
+fun `characterize payment processing - valid credit card`() {
+    val result = processPayment(100.0, "credit_card")
+    // Assert what actually happens, not what should happen
+    assertEquals(PaymentStatus.SUCCESS, result.status)
+    assertEquals(100.0, result.amount, 0.01)
+    // Capture actual behavior, even if it seems wrong
+}
+
+@Test
+fun `characterize payment processing - invalid amount`() {
+    val result = processPayment(-10.0, "credit_card")
+    // Document actual behavior - might return error, might throw exception
+    // Test reveals current behavior, enabling safe refactoring
+}
+```
+
 Write characterization tests by running the code and observing the output. Write a test that asserts that output. The test may assert behavior that seems wrong, but that's acceptable for characterization tests. They document current behavior, enabling safe refactoring.
+
+**Test scenarios for characterization:**
+- **Happy path:** Normal inputs produce expected outputs
+- **Edge cases:** Boundary values (zero, negative, very large)
+- **Error cases:** Invalid inputs, missing data, null values
+- **Business rules:** Discount calculations, tax applications, fee structures
+- **Integration points:** Database interactions, external API calls, message queue operations
 
 After refactoring, characterization tests should still pass. If they fail, either the refactoring changed behavior (it shouldn't) or the tests were testing implementation details (they shouldn't). Good tests test behavior, not implementation.
 
@@ -45,7 +79,74 @@ Tests that are too coupled to implementation make refactoring difficult. They br
 
 When extracting a module or service, test the boundary thoroughly. The boundary is the API or interface that clients depend on. This contract must remain stable: clients should not need to change when internals are refactored.
 
+**Example: Testing Extracted Payment Service Boundary**
+
+```kotlin
+// Extracted PaymentService interface
+interface PaymentService {
+    fun processPayment(request: PaymentRequest): PaymentResult
+    fun refundPayment(paymentId: String): RefundResult
+}
+
+// Boundary tests - test from client perspective
+class PaymentServiceBoundaryTest {
+    @Test
+    fun `processPayment - valid request returns success`() {
+        val service = PaymentService()
+        val request = PaymentRequest(amount = 100.0, method = "credit_card")
+        
+        val result = service.processPayment(request)
+        
+        assertEquals(PaymentStatus.SUCCESS, result.status)
+        assertNotNull(result.transactionId)
+    }
+    
+    @Test
+    fun `processPayment - invalid amount returns error`() {
+        val service = PaymentService()
+        val request = PaymentRequest(amount = -10.0, method = "credit_card")
+        
+        val result = service.processPayment(request)
+        
+        assertEquals(PaymentStatus.ERROR, result.status)
+        assertNotNull(result.errorMessage)
+    }
+    
+    @Test
+    fun `processPayment - missing payment method returns error`() {
+        val service = PaymentService()
+        val request = PaymentRequest(amount = 100.0, method = "")
+        
+        val result = service.processPayment(request)
+        
+        assertEquals(PaymentStatus.ERROR, result.status)
+    }
+    
+    // Test side effects - verify database updates, message publishing
+    @Test
+    fun `processPayment - successful payment creates database record`() {
+        val service = PaymentService()
+        val request = PaymentRequest(amount = 100.0, method = "credit_card")
+        
+        service.processPayment(request)
+        
+        // Verify side effect - database record created
+        val record = paymentRepository.findByTransactionId(result.transactionId)
+        assertNotNull(record)
+    }
+}
+```
+
 Test the boundary from the client's perspective. Write tests that use the boundary API as clients would. These tests verify that the boundary contract is satisfied. They don't test internal implementation details.
+
+**Test scenarios for extraction boundaries:**
+- **Valid inputs:** All valid input combinations produce expected outputs
+- **Invalid inputs:** All invalid inputs produce appropriate errors
+- **Edge cases:** Boundary values, null inputs, empty inputs
+- **Error handling:** Network failures, database failures, external service failures
+- **Side effects:** Database updates, message publishing, cache invalidation
+- **Concurrency:** Multiple concurrent requests, race conditions
+- **Performance:** Response time under load, resource usage
 
 The boundary contract includes inputs, outputs, error cases, and side effects. Test all of these. Verify that valid inputs produce expected outputs. Verify that invalid inputs produce appropriate errors. Verify that side effects occur as expected.
 
@@ -100,3 +201,67 @@ Refactor test code using the same techniques as production code. Extract test se
 However, test refactoring has different priorities than production refactoring. Test code should prioritize clarity over performance. It's okay for test code to be slower or more verbose if it's clearer. Tests are read more often than they're written, so clarity is paramount.
 
 Test refactoring should preserve test behavior, just like production refactoring. Tests should still verify the same behavior after refactoring. If test behavior changes, ensure it's intentional and documented.
+
+## QA and Test Engineer Perspective
+
+**Risk-Based Testing Priorities**
+
+Prioritize refactoring testing based on change impact and business risk. Critical paths requiring immediate coverage include:
+
+**High-Risk Refactorings:**
+- **Payment processing:** Any refactoring affecting payment logic requires comprehensive testing. Test all payment methods, error scenarios, and edge cases. Verify transaction integrity and audit trail preservation.
+- **Authentication and authorization:** Security-critical refactorings require extensive testing. Test all authentication flows, session management, token validation, and permission checks. Verify no security regressions.
+- **Data migration:** Refactorings that change data structures require migration testing. Test data integrity, backward compatibility, and rollback procedures.
+
+**Medium-Risk Refactorings:**
+- **API endpoints:** Refactorings affecting API contracts require contract testing. Verify request/response formats, error codes, and backward compatibility.
+- **Business logic:** Refactorings affecting core business rules require business logic testing. Verify calculations, validations, and workflows remain correct.
+
+**Low-Risk Refactorings:**
+- **UI components:** Refactorings affecting presentation logic require visual regression testing. Verify UI appearance and behavior remain consistent.
+- **Utility functions:** Refactorings affecting helper functions require unit testing. Verify function behavior remains unchanged.
+
+**Test Scenarios for Refactoring**
+
+**Before Refactoring:**
+1. **Baseline testing:** Establish test coverage baseline. Run full test suite and document current behavior.
+2. **Characterization testing:** Write tests capturing current behavior, especially for untested code.
+3. **Integration testing:** Verify end-to-end flows work correctly before refactoring.
+
+**During Refactoring:**
+1. **Incremental testing:** After each refactoring step, run tests to verify behavior preserved.
+2. **Regression testing:** Run full test suite after each significant change.
+3. **Smoke testing:** Quick validation that critical paths still work.
+
+**After Refactoring:**
+1. **Comprehensive testing:** Full test suite execution to verify no regressions.
+2. **Performance testing:** Verify refactoring didn't introduce performance regressions.
+3. **Exploratory testing:** Manual testing to discover edge cases automated tests might miss.
+
+**Specific Test Scenarios**
+
+**Extract Method Refactoring:**
+- Verify extracted method produces same output as original code
+- Test extracted method independently
+- Verify all callers still work correctly
+- Test edge cases that might be affected by extraction
+
+**Extract Class Refactoring:**
+- Verify extracted class maintains same behavior
+- Test extracted class independently
+- Verify original class delegates correctly
+- Test interaction between original and extracted classes
+
+**Extract Service Refactoring:**
+- Verify service API matches original functionality
+- Test service independently with mocked dependencies
+- Verify all clients still work correctly
+- Test service error handling and failure scenarios
+- Verify data consistency across service boundaries
+
+**Strangler Fig Pattern Testing:**
+- Test both old and new implementations produce equivalent results
+- Verify feature flags route correctly
+- Test gradual migration scenarios
+- Verify rollback procedures work correctly
+- Test monitoring and alerting for both implementations

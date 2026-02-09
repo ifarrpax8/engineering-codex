@@ -19,11 +19,52 @@ Common pitfalls in observability implementation lead to alert fatigue, excessive
 
 Too many alerts, too many false positives, and the team starts ignoring alerts. Then a real incident goes unnoticed because alerts have become noise. Every alert must be actionable. If an alert fires and the response is "ignore it," the alert should be removed or tuned.
 
+**Real-world scenario:** A team sets up 50 alerts across their microservices—CPU usage, memory usage, disk usage, error count, latency, request rate for each service. During peak traffic, 30 alerts fire simultaneously. The on-call engineer can't determine which alerts are critical. They start ignoring alerts, assuming they're false positives. One night, a real payment processing failure occurs, but the alert is lost in the noise. The incident goes undetected for 2 hours, affecting 500 transactions.
+
 Alert fatigue often starts with alerting on every metric. CPU usage, memory usage, disk usage, request rate, error count—each gets its own alert. Most of these alerts fire during normal operations, creating constant noise. The solution is to alert on symptoms (user impact) not causes (infrastructure metrics).
+
+**When alert fatigue bites:** A team has 100+ alerts configured. During a deployment, 20 alerts fire. The team ignores them, assuming they're deployment-related noise. The deployment introduces a bug that causes 5% error rate increase. The error rate alert fires, but it's ignored along with the other 19 alerts. The bug goes undetected for 6 hours, affecting thousands of users.
 
 Review and prune alerts regularly. If an alert hasn't required action in 30 days, consider removing it. If an alert fires frequently but never requires action, tune the threshold or remove it. A few high-quality alerts are more valuable than many low-quality ones.
 
 Consolidate related alerts. Instead of separate alerts for "error rate high" and "latency high," create a single alert for "service degradation" that considers both metrics. This reduces noise while maintaining coverage.
+
+**Prevention strategies:**
+- Start with 5-10 critical alerts, add more only when needed
+- Every alert must have a runbook describing investigation and resolution steps
+- Quarterly alert review: remove unused alerts, tune thresholds, consolidate duplicates
+- Use alert grouping to reduce notification volume
+- Implement alert deduplication to prevent duplicate notifications
+
+**SLO-Based Alerting to Prevent Fatigue:**
+
+Replace metric-based alerts with SLO-based alerts. Instead of "error rate > 1%" (fires constantly), use "error budget burning 10x faster than expected" (fires only when users are affected).
+
+**Alert consolidation example:**
+- **Before:** 15 separate alerts (CPU high, memory high, disk high, error rate high, latency high, request rate low, etc.)
+- **After:** 3 SLO-based alerts (availability SLO burn rate, latency SLO burn rate, error rate SLO burn rate)
+- **Result:** 80% reduction in alert volume, all alerts are actionable
+
+**Alert runbook requirement:** Every alert must have a runbook. If you can't write a runbook describing how to investigate and resolve the alert, the alert isn't actionable and should be removed. Runbooks should include:
+- What the alert means (in business terms, not just technical)
+- How to investigate (which dashboards to check, which logs to search)
+- How to resolve (step-by-step resolution procedures)
+- When to escalate (if resolution isn't possible within time limits)
+
+**Alert review process:** Quarterly alert review meeting:
+1. List all alerts that fired in the past quarter
+2. For each alert, ask: "Did this alert require action?" If no action was taken, remove or tune the alert
+3. For alerts that fired frequently but never required action, significantly tune thresholds or remove
+4. For alerts that required action, verify runbooks are up-to-date
+5. Document new alerts added and rationale
+
+**Real-world example:** A team has 50 alerts. During quarterly review, they discover:
+- 20 alerts never fired (removed)
+- 15 alerts fired but never required action (removed or tuned)
+- 10 alerts fired and required action (kept, updated runbooks)
+- 5 alerts are new and need runbooks (assigned owners)
+
+Result: 50 alerts → 15 actionable alerts. Alert fatigue eliminated, team responds faster to real incidents.
 
 ## Logging Sensitive Data
 
@@ -39,23 +80,72 @@ Test log scrubbing in staging environments. Inject test data containing sensitiv
 
 Using user ID or request path as a metric label creates millions of time series. With millions of users, you create millions of time series. Prometheus runs out of memory, query performance degrades, and costs escalate.
 
+**Real-world scenario:** A team adds user ID as a label to track API request metrics: `http_requests_total{user_id="12345", endpoint="/api/orders"}`. With 1 million users, this creates 1 million time series per endpoint. With 10 endpoints, that's 10 million time series. Prometheus runs out of memory, queries timeout, and the metrics backend becomes unusable. The team spends 2 days identifying and fixing the cardinality explosion, losing observability during that time.
+
 High-cardinality labels are unbounded. User ID, request ID, full URLs, email addresses—these can have millions of unique values. Each unique combination of label values creates a new time series.
+
+**When cardinality explosion causes outages:** A service adds request ID as a metric label to track individual request performance. During peak traffic (1000 requests/second), this creates 1000 new time series per second. After 1 hour, Prometheus has 3.6 million time series. Prometheus crashes, all dashboards break, and alerts stop firing. The team loses observability during a critical period.
 
 Use bounded label values. HTTP method (GET, POST, PUT, DELETE) is bounded—only a few possible values. HTTP status code (200, 404, 500) is bounded. Endpoint template ("/users/{id}") is bounded. User ID is not bounded.
 
+**Correct approach:** Use endpoint templates, not full paths:
+```kotlin
+// Wrong - high cardinality
+meterRegistry.counter("http.requests", "path", "/users/12345").increment()
+
+// Correct - bounded cardinality
+meterRegistry.counter("http.requests", "path", "/users/{id}", "method", "GET").increment()
+```
+
 If you need to track metrics per user, use a different approach. Log user IDs in structured logs and aggregate in log analysis. Or use a separate metrics system designed for high cardinality (though this adds complexity). Don't use Prometheus-style metrics for high-cardinality data.
 
-Test metric cardinality under load. Run load tests and verify that the number of time series remains manageable. If cardinality explodes, identify the high-cardinality labels and replace them with bounded values.
+Test metric cardinality under load. Run load tests and verify that the number of time series remains manageable. If cardinality explodes, identify the high-cardinality labels and replace them with bounded values. Monitor Prometheus cardinality metrics (`prometheus_tsdb_head_series`) to detect cardinality growth early.
 
 ## Missing Trace Context in Async Flows
 
 Trace context propagates automatically for synchronous HTTP calls but can be lost in message queues, thread pool hand-offs, and async operations. Without trace context, async operations appear as orphaned spans with no connection to the originating request.
 
+**Real-world scenario:** A team implements an order processing flow: HTTP request → message queue → background worker → database update. Trace context propagates through HTTP but is lost at the message queue. When an error occurs in the background worker, the trace shows only the worker span with no connection to the original HTTP request. Debugging takes hours because engineers can't trace the complete flow. They must manually correlate logs across services using timestamps and correlation IDs.
+
 Message queue consumers must extract trace context from message metadata (Kafka headers, AMQP properties) and create child spans. If trace context is not included in message metadata, consumer spans cannot be linked to producer spans.
+
+**When missing trace context causes debugging delays:** A payment processing service publishes payment events to Kafka. The consumer processes payments asynchronously. When a payment fails, the trace shows only the consumer span. Engineers can't see the original HTTP request that triggered the payment. They spend 4 hours manually correlating logs to understand the complete flow. With proper trace context propagation, debugging would take 10 minutes.
 
 Thread pool hand-offs require explicit trace context propagation. When submitting work to an ExecutorService, capture the current trace context and restore it in the worker thread. OpenTelemetry provides context propagation utilities for this.
 
+**Example of correct trace context propagation:**
+
+```kotlin
+// Wrong - trace context lost
+executorService.submit {
+    processOrder(order) // New trace, not linked to original
+}
+
+// Correct - trace context preserved
+val context = tracer.currentTraceContext().context()
+executorService.submit {
+    tracer.currentTraceContext().with(context).use {
+        processOrder(order) // Same trace, linked to original
+    }
+}
+```
+
 Coroutines in Kotlin require explicit trace context propagation. Launch coroutines with the current trace context, or configure OpenTelemetry coroutine context propagation. Without this, coroutine operations appear as separate traces.
+
+**Coroutine trace context propagation:**
+
+```kotlin
+// Wrong - trace context lost
+launch {
+    processOrder(order) // New trace
+}
+
+// Correct - trace context preserved
+val context = tracer.currentTraceContext().context()
+launch(context.asContextElement()) {
+    processOrder(order) // Same trace
+}
+```
 
 Test trace context propagation through async boundaries. Make a request that triggers async operations (message publishing, scheduled tasks, coroutines) and verify that all operations appear in the same trace. This validation catches missing context propagation.
 

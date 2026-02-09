@@ -67,3 +67,65 @@ Time to implement features in refactored areas should decrease. If a refactoring
 Code review time should decrease for refactored areas. Well-structured code is easier to review. Reviewers spend less time understanding the code and more time evaluating the logic. Track code review duration and number of review rounds. If these metrics improve after refactoring, the refactoring improved code clarity.
 
 Technical debt interest payments should decrease. Time spent fixing bugs, working around limitations, and understanding complex code should decrease in refactored areas. Track these metrics over time. If they're not decreasing, the refactoring may not have addressed the root causes of complexity.
+
+## User Stories and Flows
+
+### Story 1: Developer Adding a Feature Hits a Wall
+
+**As a** developer implementing a new payment method  
+**I need to** modify the payment processing code  
+**But** the code is a 500-line method with nested conditionals handling all payment types  
+**So** I spend 2 days understanding the code before making a 10-line change  
+**And** I'm afraid I'll break existing payment methods
+
+**Refactoring solution:** Extract payment method handlers into separate classes (`StripeHandler`, `PayPalHandler`, `CreditCardHandler`). Each handler implements a `PaymentHandler` interface. The main method becomes a simple dispatcher. Adding a new payment method now requires creating a new handler class, not modifying the existing 500-line method.
+
+**Business value:** Feature delivery time decreases from 2 days to 4 hours. Risk of breaking existing payment methods decreases. New developers can understand the code structure immediately.
+
+### Story 2: Bug Fix Requires Understanding Entire System
+
+**As a** developer fixing a discount calculation bug  
+**I need to** understand how discounts are applied  
+**But** discount logic is scattered across 8 files in 3 different modules  
+**So** I spend 3 days tracing code paths and reading related code  
+**And** I'm not confident I've found all the places that need fixing
+
+**Refactoring solution:** Extract discount calculation into a `DiscountService` with a single `calculateDiscount()` method. All discount logic is in one place. The service is tested with comprehensive unit tests. Fixing the bug requires changing one method and running tests.
+
+**Business value:** Bug fix time decreases from 3 days to 2 hours. Confidence in the fix increases because tests verify all discount scenarios. Future discount changes are easier and safer.
+
+### Story 3: New Team Member Struggles to Contribute
+
+**As a** new team member  
+**I need to** understand the codebase to contribute  
+**But** the codebase has inconsistent patterns, unclear naming, and no clear structure  
+**So** I ask many questions, make mistakes, and take 3 months to become productive  
+**And** I'm frustrated and consider leaving
+
+**Refactoring solution:** Apply Boy Scout Rule consistently—each developer improves code they touch. Over 6 months, naming becomes consistent, patterns emerge, and structure becomes clear. New developers can understand the codebase in weeks, not months.
+
+**Business value:** Onboarding time decreases from 3 months to 3 weeks. Developer retention improves. Team velocity increases as more developers can contribute effectively.
+
+### Story 4: Feature Request Requires Duplicated Changes
+
+**As a** product manager  
+**I need** to add email notifications to order confirmation  
+**But** order confirmation logic is duplicated in 4 places (web checkout, mobile checkout, admin order creation, API order creation)  
+**So** developers must modify 4 places, risking inconsistencies  
+**And** the feature takes 2 weeks instead of 2 days
+
+**Refactoring solution:** Extract order confirmation logic into an `OrderConfirmationService`. All order creation paths use the same service. Adding email notifications requires changing one service, not four places.
+
+**Business value:** Feature delivery time decreases from 2 weeks to 2 days. Consistency improves—all order confirmations behave the same. Future changes are faster and safer.
+
+### Story 5: System Performance Degrades Under Load
+
+**As a** site reliability engineer  
+**I need to** optimize the checkout flow for performance  
+**But** the checkout code is a monolithic 1000-line function doing everything sequentially  
+**So** I can't identify bottlenecks or optimize specific parts  
+**And** performance improvements require rewriting the entire function
+
+**Refactoring solution:** Extract checkout steps into separate services (`CartValidationService`, `PricingService`, `InventoryService`, `PaymentService`). Each service can be optimized independently. Performance bottlenecks become obvious—slow services are identified through profiling. Optimizations are targeted and low-risk.
+
+**Business value:** Performance optimization time decreases from weeks to days. Targeted optimizations improve performance without risking functionality. System scales better under load.

@@ -286,21 +286,206 @@ For form-level errors (like "Please correct the errors above"), provide a summar
 
 Use `<Teleport>` to render modals and dialogs outside the component tree. This ensures proper DOM order for screen reader navigation and prevents focus management issues. Teleported content renders at the end of the body, making it easier to trap focus within dialogs.
 
+**Focus Management in SFCs**:
+```vue
+<script setup lang="ts">
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
+
+const isOpen = ref(false)
+const dialogRef = ref<HTMLElement>()
+let triggerElement: HTMLElement | null = null
+
+watch(isOpen, async (open) => {
+  if (open) {
+    triggerElement = document.activeElement as HTMLElement
+    await nextTick()
+    dialogRef.value?.focus()
+  } else {
+    triggerElement?.focus()
+  }
+})
+
+onMounted(() => {
+  // Focus management on mount
+})
+
+onUnmounted(() => {
+  // Cleanup focus management
+})
+</script>
+```
+
 Manage focus with template refs and lifecycle hooks. Use `ref()` to create references to focusable elements, and use `onMounted()` and `onUnmounted()` to manage focus when components mount and unmount. When dialogs open, move focus to the dialog using `focus()` on the template ref.
 
-Use vue-announcer or similar libraries for screen reader announcements. These libraries provide a simple API for announcing dynamic content changes to screen reader users via aria-live regions.
+**vue-announcer for Dynamic Content**:
+```vue
+<script setup lang="ts">
+import { useAnnouncer } from '@vue-a11y/announcer'
 
-Vue's reactivity system makes it easy to update ARIA attributes dynamically. Use computed properties or reactive data to manage ARIA states like `aria-expanded` and `aria-selected` based on component state.
+const announcer = useAnnouncer()
+
+function handleSearch() {
+  announcer.set('Searching...', 'polite')
+  // Perform search
+  announcer.set('Found 5 results', 'polite')
+}
+
+function handleError() {
+  announcer.set('Error: Unable to save changes', 'assertive')
+}
+</script>
+```
+
+Use vue-announcer or similar libraries for screen reader announcements. These libraries provide a simple API for announcing dynamic content changes to screen reader users via aria-live regions. The `@vue-a11y/announcer` package provides a composable that manages aria-live regions automatically.
+
+**ARIA State Management**:
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+
+const isExpanded = ref(false)
+const selectedTab = ref('tab1')
+
+// Computed ARIA attributes
+const ariaExpanded = computed(() => isExpanded.value.toString())
+const ariaSelected = computed(() => (id: string) => 
+  selectedTab.value === id ? 'true' : 'false'
+)
+</script>
+
+<template>
+  <button
+    :aria-expanded="ariaExpanded"
+    @click="isExpanded = !isExpanded"
+  >
+    Toggle
+  </button>
+</template>
+```
+
+Vue's reactivity system makes it easy to update ARIA attributes dynamically. Use computed properties or reactive data to manage ARIA states like `aria-expanded` and `aria-selected` based on component state. This ensures ARIA attributes stay in sync with component state automatically.
+
+**Vue 3 Accessibility Libraries**:
+- **@vue-a11y/announcer**: Screen reader announcements
+- **@headlessui/vue**: Accessible component primitives (modals, dropdowns, tabs)
+- **vue-accessible-components**: Collection of accessible Vue components
 
 ### React
 
 Use Portals for modals and dialogs to render outside the component tree. This ensures proper DOM order and focus management, similar to Vue's Teleport. React's `createPortal` renders content at a different DOM location while maintaining React's component hierarchy.
 
+**Focus Management with useRef and useEffect**:
+```tsx
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+
+function Modal({ isOpen, onClose, children }: ModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+  const triggerElementRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      triggerElementRef.current = document.activeElement as HTMLElement
+      modalRef.current?.focus()
+    } else {
+      triggerElementRef.current?.focus()
+    }
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  return createPortal(
+    <div ref={modalRef} role="dialog" tabIndex={-1}>
+      {children}
+    </div>,
+    document.body
+  )
+}
+```
+
 Use `useRef` and `useEffect` for focus management. Create refs for focusable elements and use effects to manage focus when components mount, update, or unmount. When dialogs open, move focus to the dialog in a `useEffect` that runs when the dialog's open state changes.
 
-Consider using react-aria or similar libraries for accessible component patterns. These libraries provide hooks and components that handle keyboard navigation, ARIA attributes, and focus management automatically.
+**react-aria for Accessible Components**:
+```tsx
+import { useButton } from '@react-aria/button'
+import { useTabList, useTab, useTabPanel } from '@react-aria/tabs'
+import { useTabListState } from '@react-stately/tabs'
+
+function AccessibleTabs() {
+  const state = useTabListState({ items })
+  const ref = useRef<HTMLDivElement>(null)
+  const { tabListProps } = useTabList({}, state, ref)
+
+  return (
+    <div {...tabListProps} ref={ref}>
+      {[...state.collection].map((item) => (
+        <Tab key={item.key} item={item} state={state} />
+      ))}
+    </div>
+  )
+}
+```
+
+Consider using react-aria or similar libraries for accessible component patterns. These libraries provide hooks and components that handle keyboard navigation, ARIA attributes, and focus management automatically. **react-aria** provides unstyled, accessible primitives that you style yourself. **Radix UI** provides styled, accessible components out of the box.
+
+**Radix UI Example**:
+```tsx
+import * as Dialog from '@radix-ui/react-dialog'
+import * as Tabs from '@radix-ui/react-tabs'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+
+// Radix components handle accessibility automatically
+<Dialog.Root>
+  <Dialog.Trigger>Open</Dialog.Trigger>
+  <Dialog.Portal>
+    <Dialog.Overlay />
+    <Dialog.Content>
+      <Dialog.Title>Title</Dialog.Title>
+      <Dialog.Description>Description</Dialog.Description>
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+**React Accessibility Libraries**:
+- **react-aria**: Unstyled accessible primitives (modals, dropdowns, tabs, etc.)
+- **Radix UI**: Styled accessible components (Dialog, DropdownMenu, Tabs, etc.)
+- **Reach UI**: Accessible component library (now maintained by Radix)
+- **react-aria-components**: Higher-level components built on react-aria
 
 Use ErrorBoundary with accessible fallback UI. When errors occur, ErrorBoundary can render accessible error messages that screen reader users can understand. Ensure error messages are announced via aria-live regions.
+
+**Accessible Error Boundary**:
+```tsx
+class AccessibleErrorBoundary extends React.Component {
+  state = { hasError: false, error: null }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // Announce error to screen readers
+    const announcer = document.getElementById('error-announcer')
+    if (announcer) {
+      announcer.textContent = `Error: ${error.message}`
+      announcer.setAttribute('aria-live', 'assertive')
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div role="alert" aria-live="assertive">
+          <h2>Something went wrong</h2>
+          <p>{this.state.error?.message}</p>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+```
 
 ### Tailwind CSS
 

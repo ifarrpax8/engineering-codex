@@ -189,17 +189,154 @@ Consider full-text search requirements. If users need to search content in multi
 
 ## Translation Workflow
 
-The translation workflow spans from development through release. It involves extracting translatable strings, sending them to translators, reviewing translations, integrating them back into the codebase, and validating completeness.
+The translation workflow spans from development through release. Understanding the complete workflow helps teams plan translation efforts, estimate timelines, and ensure quality. The workflow involves multiple stakeholders: developers who write code, translators who create translations, reviewers who validate quality, and release managers who coordinate deployment.
 
-Extraction is the process of identifying all translatable strings in code and generating message catalogs. Use tooling specific to your framework: vue-i18n-extract for Vue, FormatJS CLI for React, message extraction plugins for Spring. These tools scan code for i18n function calls and generate or update message files with keys and default text.
+### Extraction Phase
 
-Translation can happen through various channels. Professional translation services provide high quality but at high cost. Translation Management Systems (TMS) like Crowdin, Phrase, or Lokalise provide platforms for managing translations with translator interfaces, context screenshots, and workflow management. Manual file editing works for small projects or community translation efforts.
+Extraction is the process of identifying all translatable strings in code and generating message catalogs. This phase happens during development and before translation begins.
 
-Review ensures translation quality. Native speakers or subject matter experts review translations for accuracy, consistency, and cultural appropriateness. Review catches errors, ensures terminology consistency, and verifies that translations match the application's tone and style. Automated checks can catch some issues, but human review is essential for quality.
+**How Extraction Works**:
+1. **Code Scanning**: Tools scan source code for i18n function calls (`$t()`, `<FormattedMessage>`, `t()`)
+2. **Key Identification**: Tools identify message keys and extract default text (typically English)
+3. **Catalog Generation**: Tools generate or update message files (JSON, properties) with keys and default text
+4. **Context Collection**: Advanced tools capture context: file location, component usage, screenshots
 
-Integration merges translated files back into the codebase. This may happen through git commits, CI/CD pipelines, or TMS integrations that automatically sync translations. Validate that all keys have translations before merging—missing translations should block releases or trigger fallback to default locale.
+**Extraction Tools**:
+- **Vue**: `vue-i18n-extract` scans `.vue` files for `$t()` calls and `useI18n()` usage
+- **React**: `FormatJS CLI` scans JSX for `<FormattedMessage>` and `formatMessage()` calls
+- **Spring Boot**: Message extraction plugins scan Java/Kotlin code for `MessageSource.getMessage()` calls
 
-Release deploys updated translations with application code. Consider translation versioning—if translations change independently of code, version them separately. Some applications support A/B testing of translations to measure impact on user engagement.
+**Extraction Best Practices**:
+- Run extraction regularly (daily or per feature) to catch new strings early
+- Include context comments in message files to help translators understand usage
+- Validate extraction completeness—missing strings create gaps in translations
+- Track extraction metrics: new keys per release, total keys, keys without translations
+
+**Common Extraction Issues**:
+- **Dynamic keys**: Keys constructed at runtime aren't detected (`$t('msg.' + type)`)
+- **Conditional usage**: Keys used conditionally may be missed if conditions aren't met during scanning
+- **Template strings**: Keys in template literals may require special handling
+- **Third-party components**: Strings in library components may not be extractable
+
+### Translation Phase
+
+Translation converts source language strings into target languages. This phase involves professional translators, translation agencies, or community contributors.
+
+**Translation Channels**:
+
+**Professional Translation Services**: 
+- **Process**: Send message files to translation agency, receive translated files
+- **Timeline**: 1-2 weeks for initial translation, 2-3 days for updates
+- **Cost**: $0.10-$0.30 per word depending on language pair and complexity
+- **Quality**: High quality with subject matter expertise
+- **Best For**: Critical content, legal text, marketing copy, initial translations
+
+**Translation Management Systems (TMS)**:
+- **Process**: Upload message files to TMS platform, translators work in web interface, download translated files
+- **Timeline**: Similar to professional services but with better workflow management
+- **Cost**: TMS subscription ($50-$500/month) plus translation costs
+- **Quality**: High quality with built-in quality assurance tools
+- **Best For**: Ongoing translation needs, multiple languages, teams with dedicated translators
+
+**TMS Workflow Example** (Crowdin/Phrase/Lokalise):
+1. Developer pushes code, CI extracts strings and uploads to TMS
+2. TMS notifies translators of new/updated strings
+3. Translators work in TMS interface with context screenshots and glossary
+4. Reviewers validate translations for accuracy and consistency
+5. Approved translations are downloaded and committed to codebase
+6. CI validates completeness and deploys with code
+
+**Manual File Editing**:
+- **Process**: Translators edit JSON/properties files directly or via pull requests
+- **Timeline**: Varies based on translator availability
+- **Cost**: Low (no platform costs) but higher coordination overhead
+- **Quality**: Varies based on translator expertise
+- **Best For**: Small projects, community translations, technical teams comfortable with file editing
+
+**Machine Translation + Human Review**:
+- **Process**: Generate initial translations with GPT/DeepL/Google Translate, human reviewers edit
+- **Timeline**: Fast initial generation (hours), review adds 1-2 days
+- **Cost**: Lower than full human translation ($0.01-$0.05 per word)
+- **Quality**: Good for straightforward content, requires review for technical/cultural content
+- **Best For**: Rapid expansion to many languages, non-critical content, technical documentation
+
+### Review Phase
+
+Review ensures translation quality through human validation. Automated checks catch some issues, but human review is essential for accuracy, consistency, and cultural appropriateness.
+
+**Review Types**:
+
+**Accuracy Review**: Native speakers verify that translations accurately convey the source meaning. This catches mistranslations, missing nuances, and incorrect technical terminology.
+
+**Consistency Review**: Reviewers ensure consistent terminology across the application. Glossary management helps maintain consistency—terms like "invoice," "subscription," and "billing" should translate consistently everywhere.
+
+**Cultural Appropriateness Review**: Reviewers verify that translations are culturally appropriate. This includes tone (formal vs. casual), imagery references, and cultural sensitivities. What works in one culture may be inappropriate in another.
+
+**Automated Review Checks**:
+- **Missing translations**: Ensure all keys have translations
+- **Placeholder validation**: Verify interpolation placeholders match (`{name}` in all locales)
+- **Length validation**: Flag translations significantly longer than source (may break layouts)
+- **Terminology consistency**: Check glossary compliance
+- **HTML/formatting validation**: Ensure HTML tags and formatting are preserved correctly
+
+**Review Workflow**:
+1. **Initial Review**: Native speaker reviews all new translations
+2. **Consistency Check**: Terminology reviewer verifies glossary compliance
+3. **Final Approval**: Subject matter expert or product owner approves for release
+4. **Post-Release Review**: Monitor user feedback and update translations as needed
+
+### Integration Phase
+
+Integration merges translated files back into the codebase and validates completeness before release.
+
+**Integration Methods**:
+
+**Git-Based Integration**:
+- Translators commit translated files via pull requests
+- CI validates completeness and formatting
+- Merge after review approval
+- **Pros**: Full version control, code review process
+- **Cons**: Requires technical knowledge, merge conflicts possible
+
+**TMS Auto-Sync**:
+- TMS platform commits translated files automatically via webhook
+- CI validates and deploys
+- **Pros**: Automated, no manual git work
+- **Cons**: Less control, potential for automated commits to break things
+
+**CI/CD Pipeline Integration**:
+- Translations downloaded from TMS as part of build process
+- Validated during CI, deployed with application code
+- **Pros**: Always up-to-date, no manual sync needed
+- **Cons**: Requires TMS API access, network dependency
+
+**Completeness Validation**:
+Before release, validate that all keys have translations:
+- **Blocking**: Fail build if any key missing translation (strict)
+- **Warning**: Warn but allow release with fallback to default locale (lenient)
+- **Per-Locale**: Some locales may be incomplete while others are ready
+
+**Missing Translation Handling**:
+- **Display Key**: Show the message key (e.g., `common.save`) — visible but not user-friendly
+- **Fallback Locale**: Use default locale (typically English) — better UX but may confuse users
+- **Placeholder**: Show placeholder text ("Translation missing") — clear but unprofessional
+- **Block Release**: Don't deploy until complete — safest but delays releases
+
+### Release Phase
+
+Release deploys updated translations with application code. Translation updates may happen independently of code releases or bundled together.
+
+**Release Strategies**:
+
+**Bundled Releases**: Translations deploy with code changes. This ensures translations match code features but requires coordinating translation completion with code releases.
+
+**Independent Translation Releases**: Translations update independently via feature flags or hot-reload. This allows faster translation iteration but requires code to handle missing translations gracefully.
+
+**Translation Versioning**: Version translations separately from code if they update independently. This enables tracking translation changes and rolling back translation updates without code changes.
+
+**A/B Testing Translations**: Some applications test different translations to measure impact on user engagement. This requires infrastructure to serve different translations to different user segments and measure outcomes.
+
+**Post-Release Monitoring**: Monitor user feedback, support tickets, and analytics to identify translation issues. Update translations based on feedback in subsequent releases.
 
 ## RTL Support
 
@@ -207,11 +344,327 @@ Right-to-left (RTL) languages like Arabic and Hebrew require special layout hand
 
 CSS logical properties are the foundation of RTL support. Use `margin-inline-start` instead of `margin-left`, `padding-inline-end` instead of `padding-right`. These properties automatically adapt to text direction—they become left margins/padding for LTR and right margins/padding for RTL. Physical properties like `left` and `right` don't adapt and break RTL layouts.
 
+**Component-Level RTL Concerns**:
+
+RTL support requires attention at the component level, not just CSS. Components must handle direction-aware positioning, icon mirroring, and interaction patterns that differ between LTR and RTL.
+
+**Why Component-Level RTL Matters**: CSS `direction: rtl` alone doesn't solve all RTL issues. Components with JavaScript positioning logic, directional icons, and complex layouts need explicit RTL handling. Without component-level support, RTL layouts break in subtle ways that CSS alone cannot fix.
+
+**Navigation Menus**:
+
+Navigation menus must align to the start edge (left in LTR, right in RTL) and flow in the correct direction.
+
+```css
+/* Bad: Physical properties break RTL */
+.nav-menu {
+  float: left; /* Always floats left, even in RTL */
+  margin-left: 1rem; /* Always left margin */
+  padding-right: 1rem; /* Always right padding */
+}
+
+/* Good: Logical properties adapt */
+.nav-menu {
+  float: inline-start; /* Left in LTR, right in RTL */
+  margin-inline-start: 1rem; /* Start margin adapts */
+  padding-inline-end: 1rem; /* End padding adapts */
+}
+
+/* Navigation item alignment */
+.nav-item {
+  text-align: start; /* Not 'left' - adapts to direction */
+  margin-inline-end: 1rem; /* Space between items */
+}
+
+/* Dropdown menu positioning */
+.nav-dropdown {
+  /* Menu should align to start edge of trigger */
+  position: absolute;
+  inset-inline-start: 0; /* Not 'left: 0' */
+}
+```
+
+**Common Navigation RTL Issues**:
+- **Logo positioning**: Logos typically appear at the start edge. Use `margin-inline-start: 0` not `margin-left: 0`
+- **Menu item order**: Visual order should reverse, but DOM order typically stays the same (CSS handles visual reversal)
+- **Active indicator**: Underlines or highlights should appear on the start edge, not always the left
+- **Mobile menu**: Hamburger menu typically appears at start edge, menu slides in from start edge
+
+**Form Layouts**:
+```css
+/* Form labels and inputs need RTL-aware alignment */
+.form-group {
+  display: flex;
+  flex-direction: row;
+  /* Labels should align to start (left in LTR, right in RTL) */
+  label {
+    text-align: start; /* Not 'left' */
+    margin-inline-end: 0.5rem; /* Not 'margin-right' */
+  }
+}
+```
+
+**Icons and Images**:
+```css
+/* Directional icons should mirror in RTL */
+.chevron-right {
+  transform: scaleX(1);
+}
+
+[dir="rtl"] .chevron-right {
+  transform: scaleX(-1); /* Mirror horizontally */
+}
+
+/* Or use CSS logical properties for positioning */
+.icon {
+  margin-inline-start: 0.5rem; /* Adapts to direction */
+}
+```
+
+**Component-Level RTL Patterns**:
+
+**Vue 3 RTL Component**:
+```vue
+<template>
+  <div :dir="localeDirection">
+    <nav class="navigation">
+      <ul>
+        <li v-for="item in navItems" :key="item.id">
+          <a :href="item.href">{{ item.label }}</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { locale } = useI18n()
+
+const rtlLocales = ['ar', 'he', 'fa', 'ur']
+const localeDirection = computed(() => 
+  rtlLocales.includes(locale.value) ? 'rtl' : 'ltr'
+)
+</script>
+
+<style scoped>
+.navigation {
+  /* Use logical properties */
+  padding-inline-start: 1rem;
+  margin-inline-end: auto;
+}
+
+.navigation ul {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.navigation a {
+  text-align: start; /* Adapts to direction */
+}
+</style>
+```
+
+**React RTL Component**:
+```tsx
+import { useLocale } from 'react-intl'
+
+function Navigation() {
+  const { locale } = useLocale()
+  const isRTL = ['ar', 'he', 'fa', 'ur'].includes(locale)
+
+  return (
+    <nav dir={isRTL ? 'rtl' : 'ltr'}>
+      <ul>
+        {items.map(item => (
+          <li key={item.id}>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+```
+
+**Common RTL Component Issues**:
+
+**Modals/Dialogs**: Close buttons and content alignment must adapt to RTL.
+
+```css
+/* Modal close button positioning */
+.modal-close {
+  position: absolute;
+  inset-inline-end: 1rem; /* Right in LTR, left in RTL */
+  inset-block-start: 1rem; /* Top in both directions */
+}
+
+/* Modal content alignment */
+.modal-content {
+  text-align: start; /* Adapts to direction */
+  padding-inline-start: 2rem;
+  padding-inline-end: 2rem;
+}
+
+/* Modal footer button order */
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end; /* Buttons align to end */
+  gap: 1rem;
+}
+
+/* In RTL, flex-direction: row-reverse may be needed for button order */
+[dir="rtl"] .modal-footer {
+  flex-direction: row-reverse; /* Primary button on right in RTL */
+}
+```
+
+**Why This Matters**: Users expect close buttons in the top-right corner in LTR, but top-left in RTL. Misplaced close buttons confuse users and violate cultural expectations. Button order in footers also matters—primary actions typically appear on the right in LTR but left in RTL.
+
+**Dropdowns**: Menu positioning logic must account for RTL to prevent menus from appearing off-screen.
+
+```typescript
+// Bad: Hardcoded left positioning
+function positionDropdown(trigger: HTMLElement, menu: HTMLElement) {
+  const rect = trigger.getBoundingClientRect()
+  menu.style.left = `${rect.left}px` // Breaks in RTL
+}
+
+// Good: Direction-aware positioning
+function positionDropdown(trigger: HTMLElement, menu: HTMLElement) {
+  const rect = trigger.getBoundingClientRect()
+  const isRTL = document.documentElement.dir === 'rtl'
+  
+  if (isRTL) {
+    // Align to right edge of trigger in RTL
+    menu.style.right = `${window.innerWidth - rect.right}px`
+    menu.style.left = 'auto'
+  } else {
+    // Align to left edge of trigger in LTR
+    menu.style.left = `${rect.left}px`
+    menu.style.right = 'auto'
+  }
+  
+  // Or use logical properties in CSS
+  menu.style.insetInlineStart = `${rect.left}px`
+}
+```
+
+**Tooltips**: Tooltip positioning must mirror for RTL to prevent tooltips from appearing off-screen or overlapping content incorrectly.
+
+```typescript
+// Tooltip positioning library (Popper.js, Floating UI) should handle RTL automatically
+// But custom positioning logic must account for direction
+function positionTooltip(trigger: HTMLElement, tooltip: HTMLElement, placement: string) {
+  const isRTL = document.documentElement.dir === 'rtl'
+  
+  // Mirror placement in RTL
+  const rtlPlacement = isRTL ? {
+    'left': 'right',
+    'right': 'left',
+    'start': 'end',
+    'end': 'start'
+  }[placement] || placement : placement
+  
+  // Use rtlPlacement for positioning logic
+}
+```
+
+**Carousels**: Swipe direction should feel natural in RTL—swiping right should go to the next item in LTR, but previous item in RTL.
+
+```typescript
+// Carousel swipe handling
+function handleSwipe(direction: 'left' | 'right', currentIndex: number, items: any[]) {
+  const isRTL = document.documentElement.dir === 'rtl'
+  
+  // Reverse swipe direction interpretation in RTL
+  const effectiveDirection = isRTL 
+    ? (direction === 'left' ? 'right' : 'left')
+    : direction
+    
+  if (effectiveDirection === 'right') {
+    return Math.min(currentIndex + 1, items.length - 1)
+  } else {
+    return Math.max(currentIndex - 1, 0)
+  }
+}
+```
+
+**Breadcrumbs**: Arrow direction should point in the reading direction—right in LTR, left in RTL.
+
+```css
+/* Breadcrumb separator */
+.breadcrumb-separator::after {
+  content: '→'; /* Right arrow in LTR */
+}
+
+[dir="rtl"] .breadcrumb-separator::after {
+  content: '←'; /* Left arrow in RTL */
+}
+
+/* Or use CSS transform to mirror */
+.breadcrumb-separator {
+  display: inline-block;
+}
+
+[dir="rtl"] .breadcrumb-separator {
+  transform: scaleX(-1); /* Mirror horizontally */
+}
+```
+
+**Why These Details Matter**: RTL users have cultural expectations about interface behavior. Components that don't adapt feel broken and unprofessional. These adaptations aren't optional—they're essential for usable RTL interfaces.
+
 Set the `dir` attribute on the HTML element based on the current locale. For RTL languages, set `dir="rtl"`. For LTR languages, set `dir="ltr"` or omit it (LTR is the default). The direction attribute affects text flow, layout, and interactive elements automatically when combined with logical properties.
+
+**Setting Direction Dynamically**:
+```typescript
+// Vue 3
+watch(locale, (newLocale) => {
+  const isRTL = ['ar', 'he', 'fa', 'ur'].includes(newLocale)
+  document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
+  document.documentElement.lang = newLocale
+})
+
+// React
+useEffect(() => {
+  const isRTL = ['ar', 'he', 'fa', 'ur'].includes(locale)
+  document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
+  document.documentElement.lang = locale
+}, [locale])
+```
 
 CSS frameworks like Tailwind CSS support RTL variants. Use classes like `rtl:ml-4` for RTL-specific styles. However, prefer logical properties over RTL variants—logical properties work for both directions without duplication.
 
+**Tailwind RTL Support**:
+```html
+<!-- Use logical properties when possible -->
+<div class="ms-4 me-2"> <!-- margin-start, margin-end -->
+  Content
+</div>
+
+<!-- RTL variants when logical properties aren't available -->
+<div class="rtl:ml-4 ltr:mr-4">
+  Content
+</div>
+```
+
 Bidirectional text occurs when LTR and RTL content mix in the same string. The Unicode bidirectional algorithm handles most cases automatically, but complex scenarios may require explicit directional markers. Use Unicode directional marks sparingly—they're usually unnecessary if the overall text direction is set correctly.
+
+**Bidirectional Text Handling**:
+```typescript
+// Arabic text with English product name
+const message = t('product.name', { 
+  name: 'iPhone' // English name in Arabic text
+})
+
+// Unicode directional marks (use sparingly)
+const mixedText = '\u202B' + arabicText + '\u202C' + englishText
+// \u202B = Right-to-left embedding
+// \u202C = Pop directional formatting
+```
 
 Test RTL support with actual RTL content, not just `dir="rtl"` on English text. English text in RTL mode doesn't reveal layout issues the same way Arabic or Hebrew text does. Use real translations or pseudo-localization that includes RTL characters to properly test RTL support.
 

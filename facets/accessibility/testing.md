@@ -57,6 +57,210 @@ Keyboard testing should be part of the QA process for every feature. Create keyb
 
 Screen reader testing validates that content is announced correctly and that semantic HTML and ARIA are properly implemented. Test with at least one screen reader—VoiceOver on macOS/iOS is free and widely used, NVDA on Windows is free and open source, JAWS on Windows is commercial but widely used in enterprise.
 
+### VoiceOver (macOS/iOS) Testing
+
+**Getting Started**: Enable VoiceOver with `Cmd + F5` or System Preferences → Accessibility → VoiceOver. Learn basic navigation:
+- `VO + Right Arrow`: Move to next element
+- `VO + Left Arrow`: Move to previous element
+- `VO + U`: Open rotor (quick navigation menu)
+- `VO + H`: Navigate by headings
+- `VO + L`: Navigate by links
+- `VO + R`: Navigate by regions/landmarks
+- `VO + Space`: Activate focused element
+- `VO + Control + H`: Read from current position to end
+- `VO + Shift + Down Arrow`: Enter a group (like a form or table)
+- `VO + Shift + Up Arrow`: Exit a group
+
+**Specific Things to Check**:
+
+1. **Landmark Navigation**: Use `VO + U` → Landmarks. Verify all major page regions are announced (navigation, main, search, complementary). When multiple nav elements exist, each should have an `aria-label` to distinguish them.
+
+2. **Heading Navigation**: Use `VO + H` to jump between headings. Verify logical hierarchy (no skipped levels) and descriptive headings. The rotor shows all headings—verify the list makes sense and headings describe their sections.
+
+3. **Form Navigation**: Tab through forms. Verify:
+   - Labels are announced before inputs ("Email address, edit text")
+   - Required fields are indicated ("Email address, required, edit text")
+   - Error messages are associated and announced when fields are invalid
+   - Fieldset/legend provides context for grouped inputs
+   - Placeholder text is NOT relied upon as the label
+
+4. **Dynamic Content**: Watch for announcements when content changes:
+   - Route changes in SPAs should be announced (use `aria-live` or update `document.title`)
+   - Loading states should be announced ("Loading search results...")
+   - Search results should announce when they load ("5 results found")
+   - Error messages should be announced immediately (use `aria-live="assertive"`)
+   - Success messages should be announced (use `aria-live="polite"`)
+
+5. **Button Labels**: Icon-only buttons must have `aria-label`. Verify "button, [label]" is announced, not just "button". Test with `VO + B` to navigate by buttons—all should have meaningful names.
+
+6. **Link Context**: Links should make sense out of context. Use `VO + L` to navigate by links. "Click here" is meaningless—verify descriptive link text. Links should indicate their destination or action.
+
+7. **Table Navigation**: Use `VO + Command + Arrow` to navigate tables:
+   - Headers should be announced for each cell ("Name, column 1, row 2, John")
+   - Complex tables should use `headers` attribute to associate cells with multiple headers
+   - Tables should have captions or `aria-label` describing their purpose
+
+8. **Modal/Dialog Testing**:
+   - When a modal opens, focus should move to the modal
+   - Background content should be hidden from screen readers (`aria-hidden="true"`)
+   - Modal should be announced ("Dialog, [title]")
+   - Escape key should close the modal
+   - Focus should return to trigger element when modal closes
+
+9. **Dropdown/Menu Testing**:
+   - Dropdown trigger should announce state ("Menu button, collapsed" or "expanded")
+   - Arrow keys should navigate menu items
+   - Selected items should be announced ("Option 1, selected")
+   - Escape should close the menu
+   - Focus should return to trigger when menu closes
+
+10. **Accordion Testing**:
+    - Accordion headers should announce expanded/collapsed state
+    - Arrow keys should expand/collapse (not navigate between accordions)
+    - Panel content should be hidden when collapsed (`aria-hidden="true"`)
+    - Multiple accordions should be independently controllable
+
+**Common VoiceOver Issues**:
+- Missing landmark labels when multiple nav elements exist
+- Buttons announced as "button" without accessible name
+- Form fields announced without labels
+- Dynamic content changes not announced (SPA route changes, async loading)
+- Tables without proper header associations
+- Modals not trapping focus or hiding background content
+- Dropdowns not announcing state changes
+- Accordions not updating `aria-expanded` when toggled
+
+### NVDA (Windows) Testing
+
+**Getting Started**: Download NVDA from nvaccess.org (free, open source). Basic navigation:
+- `Insert + N`: Toggle NVDA on/off
+- `Insert + F7`: Open elements list
+- `H`: Navigate by headings
+- `L`: Navigate by links
+- `R`: Navigate by regions
+- `D`: Navigate by landmarks
+- `B`: Navigate by buttons
+- `F`: Navigate by form fields
+- `T`: Navigate by tables
+- `Insert + Space`: Toggle between browse mode and focus mode
+- `Insert + Q`: Read current line
+- `Insert + Up Arrow`: Read from current position to end
+
+**Specific Things to Check**:
+
+1. **Elements List**: Use `Insert + F7` to see all headings, links, form fields, landmarks. Verify:
+   - Completeness (all interactive elements are listed)
+   - Proper labeling (no "button" without name, no "link" without text)
+   - Logical grouping and organization
+
+2. **Browse Mode vs Focus Mode**: NVDA switches between browse mode (reading) and focus mode (interacting):
+   - Browse mode: Use arrow keys to read content, H/L/B to navigate by element type
+   - Focus mode: Automatically activates for form fields, comboboxes, and other interactive elements
+   - Verify mode switches correctly—entering a text input should switch to focus mode
+   - Verify you can return to browse mode with `Insert + Space` when needed
+
+3. **Table Navigation**: Use `T` to navigate tables:
+   - Headers should be announced with cell content ("Name, column 1, row 2, John")
+   - Use `Insert + Ctrl + Arrow` to navigate cell by cell
+   - Verify headers are associated correctly (use `headers` attribute for complex tables)
+   - Table purpose should be clear from caption or `aria-label`
+
+4. **ARIA Live Regions**: NVDA announces aria-live changes:
+   - Test with `aria-live="polite"` (waits for natural pause)
+   - Test with `aria-live="assertive"` (interrupts immediately)
+   - Verify timing matches urgency—errors should interrupt, status updates should wait
+   - Multiple announcements should not cut each other off
+
+5. **Form Validation**: Tab through forms and verify:
+   - Error messages are announced when fields become invalid
+   - Errors are associated with fields (`aria-describedby`)
+   - Required fields are indicated (`aria-required` or visual indicator)
+   - Fieldset/legend provides context for grouped inputs
+   - Validation occurs at appropriate times (on blur, not every keystroke)
+
+6. **Focus Indicators**: Verify focus is visible and announced correctly:
+   - Focus should be clearly visible (not just announced)
+   - Focus order should follow logical reading order
+   - Custom focus styles should meet 3:1 contrast requirement
+   - Focus should not jump unexpectedly
+
+7. **Dynamic Content in SPAs**:
+   - Route changes should be announced (update `document.title` or use `aria-live`)
+   - Async content loading should be announced ("Loading...", "5 results found")
+   - Search results should announce when they appear
+   - Infinite scroll should announce new content
+
+8. **Modal/Dialog Testing**:
+   - When modal opens, NVDA should announce "Dialog, [title]"
+   - Background should be hidden (`aria-hidden="true"` on backdrop)
+   - Focus should be trapped within modal
+   - Escape should close modal
+   - Focus should return to trigger when modal closes
+
+9. **Dropdown/Menu Testing**:
+   - Trigger should announce state ("Menu button, collapsed" or "Menu button, expanded")
+   - Arrow keys should navigate menu items
+   - `aria-activedescendant` should update as you navigate
+   - Selected items should be announced
+   - Escape should close menu
+
+**Common NVDA Issues**:
+- ARIA attributes not announced correctly (check role, state, properties)
+- Form fields missing labels or descriptions
+- Dynamic content not announced via aria-live (especially SPA route changes)
+- Focus management issues in modals/dialogs (not trapped, not restored)
+- Missing skip links or landmarks
+- Browse mode not switching to focus mode for interactive elements
+- Tables without proper header associations
+
+### Testing Checklist
+
+**Page Structure**:
+- [ ] Page title is descriptive and unique
+- [ ] One `<h1>` per page, representing main content
+- [ ] Heading hierarchy is logical (no skipped levels)
+- [ ] Landmarks are properly labeled (especially when multiple exist)
+- [ ] Skip links work and are the first focusable element
+
+**Navigation**:
+- [ ] All navigation links are keyboard accessible
+- [ ] Focus order follows visual layout
+- [ ] Focus indicators are visible
+- [ ] Current page is indicated in navigation (aria-current or visually)
+
+**Forms**:
+- [ ] All inputs have associated labels
+- [ ] Required fields are indicated (aria-required or visually)
+- [ ] Error messages are associated with fields (aria-describedby)
+- [ ] Errors are announced when they appear (aria-live)
+- [ ] Fieldset/legend used for grouped inputs
+
+**Interactive Components**:
+- [ ] Buttons have accessible names (text content or aria-label)
+- [ ] Links have descriptive text (not "click here")
+- [ ] Modals trap focus and restore focus on close
+- [ ] Dropdowns announce state (aria-expanded)
+- [ ] Tabs announce selected state (aria-selected)
+- [ ] Accordions announce expanded state (aria-expanded)
+
+**Dynamic Content**:
+- [ ] Loading states are announced
+- [ ] Error messages are announced (aria-live="assertive")
+- [ ] Success messages are announced (aria-live="polite")
+- [ ] Search results are announced when they load
+- [ ] Route changes are communicated (SPA navigation)
+
+**Tables**:
+- [ ] Tables have captions or aria-label
+- [ ] Headers have scope attributes
+- [ ] Complex tables use headers attribute on cells
+- [ ] Table navigation works correctly
+
+**Images**:
+- [ ] All images have alt text (empty for decorative)
+- [ ] Alt text is descriptive and contextual
+- [ ] Complex images have longer descriptions
+
 Test that content is announced in a logical order that matches the visual layout. Screen readers read content linearly, so the DOM order matters. Use CSS for visual layout, not DOM order manipulation.
 
 Verify that labels are descriptive and provide sufficient context. Screen reader users rely on labels to understand form fields, buttons, and links. "Click here" links are meaningless—use descriptive link text. Icon-only buttons need aria-label to describe their purpose.

@@ -154,6 +154,121 @@ sequenceDiagram
 
 Sampling is essential in high-throughput systems. Tracing every request generates massive volumes of data. Head-based sampling decides at request start whether to trace the request. Tail-based sampling decides after seeing all spans, keeping interesting traces (errors, slow requests) while sampling successful ones. Tail-based sampling is more sophisticated but requires buffering spans, which adds latency.
 
+**Distributed Tracing Across Microservices and MFEs**
+
+Distributed tracing enables end-to-end visibility across service boundaries. In microservices architectures, a single user request may traverse multiple services. Distributed tracing captures the complete request flow, showing which services are involved, how long each service takes, and where failures occur.
+
+**Trace Context Propagation:**
+
+Trace context (trace ID and span ID) must propagate across service boundaries:
+
+- **HTTP requests:** Include `traceparent` header (W3C Trace Context standard) in all HTTP requests. Format: `00-<trace-id>-<parent-id>-<trace-flags>`.
+- **Message queues:** Include trace context in message metadata (Kafka headers, AMQP properties). Extract trace context in consumers to link producer and consumer spans.
+- **Async operations:** Capture trace context before async operations (thread pool submissions, coroutine launches) and restore it in worker threads/coroutines.
+- **Frontend requests:** Include trace ID in frontend error reports to enable correlating frontend errors with backend traces.
+
+**Example: Trace Context Propagation in Spring Boot**
+
+```kotlin
+// Producer - include trace context in Kafka message
+@Service
+class OrderService(
+    private val kafkaTemplate: KafkaTemplate<String, OrderEvent>
+) {
+    fun createOrder(order: Order) {
+        val span = tracer.nextSpan().name("create-order").start()
+        try {
+            val event = OrderEvent(order.id, order.status)
+            
+            // Include trace context in Kafka headers
+            val headers = kafkaHeaders()
+            tracer.inject(span.context(), Format.Builtin.TEXT_MAP, 
+                object : TextMap {
+                    override fun iterator(): MutableIterator<MutableMap.MutableEntry<String, String>> {
+                        return headers.entries.iterator()
+                    }
+                    override fun put(key: String, value: String) {
+                        headers.add(key, value.toByteArray())
+                    }
+                })
+            
+            kafkaTemplate.send("orders", event, headers)
+        } finally {
+            span.end()
+        }
+    }
+}
+
+// Consumer - extract trace context from Kafka message
+@KafkaListener(topics = ["orders"])
+fun handleOrderEvent(
+    event: OrderEvent,
+    @Header headers: Map<String, Any>
+) {
+    val span = tracer.nextSpan().name("process-order-event").start()
+    try {
+        // Extract trace context from headers
+        val extractedContext = tracer.extract(
+            Format.Builtin.TEXT_MAP,
+            object : TextMap {
+                override fun iterator(): Iterator<Map.Entry<String, String>> {
+                    return headers.entries.map { 
+                        it.key to it.value.toString() 
+                    }.iterator()
+                }
+            }
+        )
+        
+        if (extractedContext != null) {
+            span = tracer.nextSpan(extractedContext).name("process-order-event").start()
+        }
+        
+        processOrder(event)
+    } finally {
+        span.end()
+    }
+}
+```
+
+**Frontend-Backend Trace Correlation:**
+
+Frontend applications should include trace IDs in error reports and performance metrics:
+
+```typescript
+// Frontend error tracking with trace ID
+try {
+  const response = await fetch('/api/orders', {
+    headers: {
+      'traceparent': getCurrentTraceId() // Include trace ID
+    }
+  })
+} catch (error) {
+  Sentry.captureException(error, {
+    tags: {
+      traceId: getCurrentTraceId() // Include trace ID in error report
+    }
+  })
+}
+```
+
+This enables correlating frontend errors with backend traces, providing complete visibility into user-impacting issues.
+
+**Micro-Frontend (MFE) Tracing:**
+
+In micro-frontend architectures, each MFE should generate its own trace spans and include trace context in API calls:
+
+- **MFE initialization:** Create a trace span for MFE load and initialization.
+- **API calls:** Include trace context in all API calls to backend services.
+- **User interactions:** Create spans for significant user interactions (button clicks, form submissions, navigation).
+- **Error boundaries:** Include trace ID in error reports to enable correlating frontend errors with backend operations.
+
+**Trace Sampling Strategies:**
+
+- **Head-based sampling:** Decide at request start. Simple but may miss interesting traces (errors, slow requests) if sampling rate is too low.
+- **Tail-based sampling:** Decide after seeing all spans. Keep all error traces and slow traces, sample successful ones. More sophisticated but requires buffering spans.
+- **Adaptive sampling:** Adjust sampling rate based on traffic volume. High-traffic services use lower rates (1-5%), low-traffic services use higher rates (50-100%).
+- **Error sampling:** Always sample error traces (100%), sample successful traces at lower rate (1-10%). Ensures error visibility while managing volume.
+
 ## Frontend Observability
 
 Frontend observability captures user experience from the browser. JavaScript error tracking captures exceptions with stack traces, browser information, and user context. Error tracking services (Sentry, Datadog RUM) provide source map support, enabling readable stack traces from minified production code.
@@ -227,13 +342,45 @@ PagerDuty or Opsgenie integration provides on-call routing, escalation policies,
 
 Dashboards visualize telemetry data for monitoring and analysis. Different dashboard types serve different purposes:
 
-**Service Dashboards**: RED metrics per service—request rate, error rate, latency percentiles, throughput. These dashboards show service health at a glance. Include deployment markers to correlate deployments with metric changes.
+**Dashboard Design Principles**
 
-**Business Dashboards**: Orders per minute, revenue, conversion rates, user signups. These dashboards show business health, enabling product and business stakeholders to monitor outcomes. Business dashboards are more valuable than technical dashboards for understanding user satisfaction.
+**RED Method (Rate, Errors, Duration):** Apply to every service dashboard. These three metrics provide comprehensive service health visibility:
 
-**Infrastructure Dashboards**: CPU, memory, disk, network utilization, container health. These dashboards show infrastructure health, enabling capacity planning and identifying resource constraints.
+- **Rate:** Requests per second, measuring throughput. Shows service load and identifies traffic spikes or drops.
+- **Errors:** Error rate as a percentage of total requests. Shows service reliability and identifies failure patterns.
+- **Duration:** Latency distribution (p50, p95, p99). Shows service performance and identifies slow operations.
 
-**Incident Dashboards**: Error spike correlation, deployment markers, change events. These dashboards are designed for incident response, showing all relevant data in one place to enable rapid root cause analysis.
+**USE Method (Utilization, Saturation, Errors):** Apply to infrastructure resources (CPU, memory, disk, network):
+
+- **Utilization:** Percentage of resource capacity used. Shows resource consumption and identifies capacity constraints.
+- **Saturation:** Degree of queuing or contention. Shows resource pressure and identifies bottlenecks.
+- **Errors:** Error rate for the resource. Shows resource failures and identifies hardware issues.
+
+**Four Golden Signals:** Comprehensive observability requires monitoring four signals:
+
+1. **Latency:** Time to serve a request. Monitor p50, p95, p99 percentiles. p95 and p99 reveal tail latency affecting user experience.
+2. **Traffic:** Demand placed on the system. Requests per second, concurrent users, message queue depth.
+3. **Errors:** Rate of requests that fail. HTTP 5xx errors, application exceptions, business logic failures.
+4. **Saturation:** How "full" the service is. CPU utilization, memory usage, queue depth, connection pool exhaustion.
+
+**Dashboard Types:**
+
+**Service Dashboards**: RED metrics per service—request rate, error rate, latency percentiles, throughput. These dashboards show service health at a glance. Include deployment markers to correlate deployments with metric changes. Organize panels by signal: Rate panel showing requests/sec over time, Errors panel showing error rate and error types, Duration panel showing latency percentiles. Add business metrics (orders processed, payments completed) to provide business context.
+
+**Business Dashboards**: Orders per minute, revenue, conversion rates, user signups. These dashboards show business health, enabling product and business stakeholders to monitor outcomes. Business dashboards are more valuable than technical dashboards for understanding user satisfaction. Include trend lines, comparisons to previous periods, and goal lines to show progress.
+
+**Infrastructure Dashboards**: USE metrics for infrastructure resources—CPU, memory, disk, network utilization, container health. These dashboards show infrastructure health, enabling capacity planning and identifying resource constraints. Group by resource type (compute, storage, network) and by service to enable correlation.
+
+**Incident Dashboards**: Error spike correlation, deployment markers, change events. These dashboards are designed for incident response, showing all relevant data in one place to enable rapid root cause analysis. Include: error rate timeline, affected services, recent deployments, related traces, and relevant logs. Design for 2 AM debugging—clear, focused, actionable.
+
+**Dashboard Best Practices:**
+
+- **One question per dashboard:** Each dashboard should answer a specific question. "Is the payment service healthy?" is a good question. "Show me all metrics" is not.
+- **Top-to-bottom information hierarchy:** Most important metrics at the top, detailed metrics below. Critical alerts visible immediately.
+- **Consistent time ranges:** Use consistent time ranges across panels (last hour, last 24 hours) to enable correlation.
+- **Color coding:** Use consistent colors (red for errors, green for success, yellow for warnings) across all dashboards.
+- **Annotations:** Include deployment markers, incident markers, and change events as annotations on timeline graphs.
+- **Drill-down capability:** Enable clicking on metrics to drill down into detailed views or related traces.
 
 Dashboards must be owned and maintained. Unmaintained dashboards accumulate broken queries, stale data, and outdated visualizations. Assign dashboard ownership, review quarterly, and delete unused dashboards. A few high-quality dashboards are more valuable than many low-quality ones.
 

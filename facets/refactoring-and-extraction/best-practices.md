@@ -23,6 +23,10 @@ Commit frequently to preserve working states. If a refactoring goes wrong, you c
 
 Separate refactoring commits from feature commits. This makes it clear what changed for the feature versus what was cleaned up. It also makes reverts safer: if a feature has issues, you can revert the feature commit without reverting refactoring improvements.
 
+**When to apply:** Always. Small steps are the foundation of safe refactoring. If a refactoring step takes more than 30 minutes, break it into smaller steps. If you can't commit after each step, the steps are too large.
+
+**Real-world example:** A developer refactors a 200-line method by extracting 5 smaller methods. Instead of one large commit, they make 5 commits: one for each extracted method. Each commit passes tests and can be reviewed independently. If the third extraction introduces a bug, they can revert just that commit without losing the first two improvements.
+
 ## Boy Scout Rule
 
 Leave the code better than you found it. When you touch a file to add a feature, clean up small issues: rename unclear variables, extract a method, add missing types. This prevents debt accumulation.
@@ -32,6 +36,23 @@ The Boy Scout Rule applies to small improvements, not large refactorings. When a
 Small improvements compound over time. Each developer makes small improvements, and the codebase gradually improves. This prevents debt accumulation without requiring dedicated refactoring sprints.
 
 The Boy Scout Rule requires judgment. Some improvements are too large for a feature commit. If an improvement would require significant changes or testing, create a separate task. Small improvements are safe; large improvements should be planned.
+
+**When to apply:** Every time you modify code for a feature. However, limit improvements to code you're already changing. Don't refactor unrelated code in the same file.
+
+**What counts as "small improvement":**
+- Renaming unclear variables or methods (< 5 minutes)
+- Extracting an obvious method (< 15 minutes)
+- Adding missing type annotations (< 5 minutes)
+- Fixing obvious code smells in the code you're modifying (< 15 minutes)
+- Adding a missing null check or validation (< 10 minutes)
+
+**What doesn't count as "small improvement":**
+- Refactoring the entire file (> 1 hour)
+- Extracting multiple classes (> 30 minutes)
+- Changing architecture patterns (> 1 hour)
+- Refactoring code you're not modifying for the feature
+
+**Real-world example:** A developer adds a new payment method. They notice the payment processing method has an unclear variable name `amt`. They rename it to `amount` as part of their feature commit. This is appropriate—it's a small improvement to code they're already modifying. However, if they also refactored the entire payment service (200 lines) because they noticed code smells, that would be inappropriate—it's too large and unrelated to the feature.
 
 ## Refactor What You're Working In
 
@@ -72,6 +93,16 @@ The Rule of Three helps decide when to extract. Tolerate duplication twice. On t
 Extracting after the first occurrence creates an abstraction based on speculation. The abstraction may not fit the second use case, requiring special cases and workarounds. This is more expensive than duplication.
 
 Wait for patterns to emerge from actual usage. Don't anticipate patterns. Real patterns are based on evidence; anticipated patterns are based on speculation. Evidence-based abstractions are more likely to be correct.
+
+**When to apply:** Always wait for the third occurrence before extracting. However, there are exceptions:
+
+**Exception 1: Duplication blocks a feature.** If you need to add a feature that requires modifying duplicated code in multiple places, and modifying all copies is error-prone, extraction may be justified after two occurrences. However, extract conservatively—create a minimal abstraction that fits both current uses, not a general-purpose abstraction.
+
+**Exception 2: Security or critical bug fix.** If duplicated code has a security vulnerability or critical bug, extract immediately to ensure the fix is applied everywhere. However, this is rare—usually you can fix all copies, then extract later.
+
+**Exception 3: Clear domain concept.** If the duplication represents a clear domain concept (e.g., `Money`, `EmailAddress`, `UserId`), extraction after two occurrences may be justified. Domain concepts are stable and unlikely to diverge.
+
+**Real-world example:** A developer sees similar validation logic in two places: user registration and password reset. They wait. A third occurrence appears in email verification. Now they extract a `validateUserInput()` function. The abstraction fits all three use cases naturally because it's based on real patterns, not speculation. Six months later, a fourth use case (OAuth registration) appears. The abstraction fits perfectly because it was designed for the actual pattern, not anticipated needs.
 
 ### Example: Before/After Refactoring
 
@@ -227,27 +258,80 @@ Data class copy() enables immutable transformations. Instead of modifying object
 
 ### Spring Boot
 
-Spring Modulith enforces module boundaries during extraction. It verifies that modules don't access each other's internals, except through defined APIs. This prevents boundary violations and enables safe module extraction.
+**Extracting Services from God Controllers:** Large REST controllers that handle multiple responsibilities violate Single Responsibility Principle. Extract service classes by domain responsibility. For example, a `UserController` handling registration, authentication, profile updates, and password resets should delegate to `UserRegistrationService`, `AuthenticationService`, `UserProfileService`, and `PasswordResetService`. Controllers become thin—they handle HTTP concerns (request/response mapping, validation) while services handle business logic.
 
-@ConditionalOnProperty toggles between old and new implementations. Use feature flags to control which implementation is active. This enables gradual migration and instant rollback.
+**Extracting Domain Services:** When business logic accumulates in entity classes or repositories, extract domain services. For example, if `Order` entity has methods for `calculateTax()`, `applyDiscount()`, and `validateInventory()`, extract an `OrderPricingService` that encapsulates pricing logic. This improves testability—services can be tested independently without database setup.
 
-Spring's dependency injection makes extraction easier. Dependencies are injected, not hardcoded. This enables swapping implementations without changing client code. Extract interfaces to enable implementation swapping.
+**Breaking Up Large Services:** Services that handle multiple domains should be split. A `UserService` handling user management, authentication, authorization, and notifications should be split into `UserManagementService`, `AuthenticationService`, `AuthorizationService`, and `NotificationService`. Each service has a single responsibility and can evolve independently.
+
+**Spring Modulith enforces module boundaries during extraction.** It verifies that modules don't access each other's internals, except through defined APIs. This prevents boundary violations and enables safe module extraction. Use `@ApplicationModule` to define module boundaries and `@PublishedAPI` to expose module APIs.
+
+**@ConditionalOnProperty toggles between old and new implementations.** Use feature flags to control which implementation is active. This enables gradual migration and instant rollback. For example:
+```kotlin
+@ConditionalOnProperty(name = "feature.payment-service-v2.enabled", havingValue = "true")
+@Service
+class PaymentServiceV2 : PaymentService { ... }
+
+@ConditionalOnProperty(name = "feature.payment-service-v2.enabled", havingValue = "false", matchIfMissing = true)
+@Service
+class PaymentServiceV1 : PaymentService { ... }
+```
+
+**Spring's dependency injection makes extraction easier.** Dependencies are injected, not hardcoded. This enables swapping implementations without changing client code. Extract interfaces to enable implementation swapping. For example, extract `PaymentService` interface, then provide `StripePaymentService` and `PayPalPaymentService` implementations.
+
+**Extracting Configuration Classes:** When `@Configuration` classes grow large, extract configuration by concern. A configuration class handling database, messaging, and security should be split into `DatabaseConfig`, `MessagingConfig`, and `SecurityConfig`. This improves maintainability and makes configuration easier to understand.
+
+**Refactoring Repository Methods:** When repository methods contain complex query logic, extract query methods to separate interfaces or use `@Query` annotations. For example, instead of a `UserRepository` with `findActiveUsersWithRecentOrders()`, extract a `UserQueryRepository` that handles complex queries, keeping the main repository focused on CRUD operations.
 
 ### Vue 3
 
-Extract component logic into composables before extracting components. Composables encapsulate reusable logic, making it easier to extract into separate components. Composables can be tested independently and reused across components.
+**Extracting Composables from Monolithic Components:** Large components with multiple responsibilities should be refactored by extracting composables. For example, a `UserProfile` component handling form validation, API calls, file uploads, and state management should extract `useUserForm()`, `useUserApi()`, `useFileUpload()`, and `useUserState()` composables. Each composable handles one concern and can be tested independently.
 
-defineAsyncComponent enables lazy-loaded extracted features. Large features can be extracted into separate components that load on demand. This improves initial load time and enables independent deployment of features.
+**Breaking Up Large Components:** Components over 300 lines should be split. Extract sub-components by visual boundaries (header, body, footer) or logical boundaries (form sections, data tables, modals). For example, a `CheckoutPage` component should extract `CartSummary`, `ShippingForm`, `PaymentForm`, and `OrderConfirmation` components. Each component owns its template, styles, and logic.
 
-Vue's reactivity system makes refactoring safer. Reactive dependencies are tracked automatically, so refactoring reactive code is less error-prone. However, be careful with refactoring reactive code: ensure reactivity is preserved.
+**Extracting Reusable UI Components:** When the same UI pattern appears in multiple places, extract a reusable component. For example, if multiple forms use the same input field with validation, extract a `ValidatedInput` component. However, wait until you see the pattern 3+ times—premature extraction creates components that don't fit all use cases.
+
+**defineAsyncComponent enables lazy-loaded extracted features.** Large features can be extracted into separate components that load on demand. This improves initial load time and enables independent deployment of features. For example:
+```vue
+<script setup>
+import { defineAsyncComponent } from 'vue'
+
+const HeavyFeature = defineAsyncComponent(() => import('./HeavyFeature.vue'))
+</script>
+```
+
+**Refactoring Props and Events:** When components have many props (5+), consider extracting a props object or using `v-bind` with an object. When components emit many events, consider using a single event with a payload object. This reduces prop drilling and makes component interfaces clearer.
+
+**Extracting Store Logic:** When Vuex/Pinia stores grow large, extract modules by domain. A store handling user, orders, and products should be split into `userStore`, `orderStore`, and `productStore`. Each store module owns its state, actions, and getters, improving maintainability.
+
+**Vue's reactivity system makes refactoring safer.** Reactive dependencies are tracked automatically, so refactoring reactive code is less error-prone. However, be careful with refactoring reactive code: ensure reactivity is preserved. When extracting computed properties or methods, verify that reactive dependencies are maintained.
 
 ### React
 
-Extract component logic into custom hooks before extracting components. Hooks encapsulate reusable logic, making it easier to extract into separate components. Hooks can be tested independently and reused across components.
+**Extracting Custom Hooks from Large Components:** Components with complex logic should extract custom hooks. For example, a `UserProfile` component handling form state, API calls, validation, and error handling should extract `useUserForm()`, `useUserApi()`, `useFormValidation()`, and `useErrorHandler()` hooks. Each hook handles one concern and can be tested independently.
 
-React.lazy enables lazy-loaded extracted features. Large features can be extracted into separate components that load on demand. This improves initial load time and enables independent deployment of features.
+**Breaking Up Monolithic Components:** Components over 300 lines should be split. Extract sub-components by visual boundaries (header, body, footer) or logical boundaries (form sections, data tables, modals). For example, a `CheckoutPage` component should extract `CartSummary`, `ShippingForm`, `PaymentForm`, and `OrderConfirmation` components. Each component owns its JSX, styles, and logic.
 
-React's component model makes extraction easier. Components are composable, so extracting a component is straightforward. However, be careful with prop drilling: extracted components may need access to data from parent components.
+**Extracting Reusable UI Components:** When the same UI pattern appears in multiple places, extract a reusable component. For example, if multiple forms use the same input field with validation, extract a `ValidatedInput` component. However, wait until you see the pattern 3+ times—premature extraction creates components that don't fit all use cases.
+
+**React.lazy enables lazy-loaded extracted features.** Large features can be extracted into separate components that load on demand. This improves initial load time and enables independent deployment of features. For example:
+```tsx
+const HeavyFeature = React.lazy(() => import('./HeavyFeature'))
+
+function App() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <HeavyFeature />
+    </Suspense>
+  )
+}
+```
+
+**Refactoring Props and Context:** When components have many props (5+), consider using a props object or Context API. When prop drilling becomes deep (3+ levels), consider Context API or state management library. However, don't overuse Context—it makes components harder to understand and test.
+
+**Extracting State Logic:** When components have complex state management, extract state logic into custom hooks or state machines. For example, a form component with multiple validation states should use `useFormState()` hook or a state machine library. This separates state logic from UI logic, improving testability.
+
+**React's component model makes extraction easier.** Components are composable, so extracting a component is straightforward. However, be careful with prop drilling: extracted components may need access to data from parent components. Consider Context API or state management for deeply nested data needs.
 
 ## Refactoring Tools and Automation
 
