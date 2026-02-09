@@ -4,6 +4,28 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-09] - V1 Improvements: Diagrams, Code, Quality, Tagging
+
+### Added
+
+- **Mermaid diagrams** in all 36 architecture.md files (19 facets + 17 experiences) — sequence diagrams, flowcharts, state diagrams, and component diagrams
+- **Code examples** (Vue 3, React, Kotlin, Java) in 12 facet best-practices.md files — auth guards, stores, repositories, migrations, event handlers, logging, validation, accessibility, i18n, CI/CD, and more
+- **3 new decision criteria**: security, accessibility, team-familiarity
+- **Tagging system**: frontmatter tags on all 36 facet/experience READMEs, auto-generated tag-index.md with 271 cross-referenced tags, generation script
+- **Filled-in examples**: 2 complete ADRs (JWT auth, Kafka event bus) and 1 decision log with 7 entries
+- **Reading paths** for 6 personas (new developer, QA, architect, PM, DevOps, tech lead)
+
+### Changed
+
+- **Content quality pass** on 8 entries: deepened refactoring-and-extraction, observability, accessibility, internationalization, ci-cd (facets) and onboarding, design-consistency, search-and-discovery (experiences) with nuanced trade-offs, real-world scenarios, and practical guidance
+
+### Fixed
+
+- 6 broken links across 4 files (stale refactoring/ and developer-experience/ paths)
+- CONTRIBUTING.md updated with tagging conventions
+
+---
+
 ## [2026-02-09] - New Skills and Commands
 
 ### Added

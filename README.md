@@ -59,8 +59,11 @@ engineering-codex/
 ├── evolution/               # Architecture scaling journeys and inflection points
 ├── facets/                  # 19 engineering-focused deep dives
 ├── experiences/             # 17 user-centric UX perspectives
+├── reading-paths.md         # Role-based navigation guides
+├── tag-index.md             # Auto-generated cross-reference of tags
 ├── stack-context.md         # Assumed technology landscape
 ├── glossary.md              # Shared terminology
+├── scripts/                 # Utility scripts (tag index generation)
 └── CHANGELOG.md             # Change history
 ```
 
