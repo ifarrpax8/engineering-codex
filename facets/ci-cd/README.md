@@ -6,7 +6,7 @@ last_updated: 2026-02-09
 
 # CI/CD
 
-Pipelines, deployment strategies, feature flags, environment management
+Pipelines, build automation, deployment strategies, quality gates, artifact management.
 
 ## Perspectives
 
@@ -14,12 +14,18 @@ Pipelines, deployment strategies, feature flags, environment management
 - [Architecture](architecture.md) -- Patterns, diagrams, trade-offs
 - [Testing](testing.md) -- Test strategies, tooling categories
 - [Best Practices](best-practices.md) -- Language-agnostic principles
+- [Gotchas](gotchas.md) -- Common pitfalls and traps
 - [Options](options.md) -- Decision matrix or recommended practice
 
 ## Related Facets
 
-<!-- Add cross-references to related facets and experiences -->
+- [Testing](../testing/) -- Test pyramid integration with CI stages
+- [Security](../security/) -- SAST/DAST, dependency scanning, secret scanning in pipelines
+- [Observability](../observability/) -- Deployment markers, canary monitoring
+- [Performance](../performance/) -- Performance budgets enforced in CI
+- [Configuration Management](../configuration-management/) -- Environment-specific configuration
+- [Feature Toggles](../feature-toggles/) -- Feature flags enabling trunk-based development
 
 ## Related Experiences
 
-<!-- Add cross-references to related experiences -->
+- [Loading & Perceived Performance](../../experiences/loading-and-perceived-performance/) -- Bundle size checks in CI
