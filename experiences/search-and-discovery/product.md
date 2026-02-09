@@ -1,5 +1,15 @@
 # Search & Discovery -- Product Perspective
 
+## Contents
+
+- [Why Search Matters](#why-search-matters)
+- [Finding vs. Discovering](#finding-vs-discovering)
+- [User Expectations](#user-expectations)
+- [Search Personas](#search-personas)
+- [Success Metrics](#success-metrics)
+- [Common Product Mistakes](#common-product-mistakes)
+- [Business Value](#business-value)
+
 ## Why Search Matters
 
 Users have been trained by Google, Amazon, and other modern applications to expect instant, intelligent search. When search fails or feels clunky, users lose trust in the entire application. Search is not a "nice-to-have" feature—it's a core navigation mechanism that directly impacts user satisfaction, task completion rates, and business metrics.

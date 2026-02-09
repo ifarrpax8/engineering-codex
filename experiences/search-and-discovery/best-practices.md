@@ -1,5 +1,21 @@
 # Search & Discovery -- Best Practices
 
+## Contents
+
+- [Don't Make Users Think About Search Syntax](#dont-make-users-think-about-search-syntax)
+- [Show Results as Users Type](#show-results-as-users-type)
+- [Handle Typos Gracefully](#handle-typos-gracefully)
+- [Show Meaningful Zero-Result States](#show-meaningful-zero-result-states)
+- [Highlight Matched Terms in Results](#highlight-matched-terms-in-results)
+- [Remember Recent Searches](#remember-recent-searches)
+- [Provide Clear Filter/Sort Controls](#provide-clear-filtersort-controls)
+- [Distinguish Filtering from Searching](#distinguish-filtering-from-searching)
+- [Performance Best Practices](#performance-best-practices)
+- [Accessibility](#accessibility)
+- [Mobile Considerations](#mobile-considerations)
+- [Stack-Specific Guidance](#stack-specific-guidance)
+- [Common Anti-Patterns to Avoid](#common-anti-patterns-to-avoid)
+
 ## Don't Make Users Think About Search Syntax
 
 Most users expect a simple text box that "just works." They shouldn't need to learn special syntax, boolean operators, or field-specific queries.

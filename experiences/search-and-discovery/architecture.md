@@ -1,5 +1,17 @@
 # Search & Discovery -- Architecture
 
+## Contents
+
+- [The Search Implementation Spectrum](#the-search-implementation-spectrum)
+- [Data Synchronization Patterns](#data-synchronization-patterns)
+- [Search Architecture Patterns](#search-architecture-patterns)
+- [Autocomplete/Type-Ahead Architecture](#autocompletetype-ahead-architecture)
+- [Faceted Search](#faceted-search)
+- [Cross-Service Search](#cross-service-search)
+- [Performance Considerations](#performance-considerations)
+- [Integration with API Design](#integration-with-api-design)
+- [Integration with Data Persistence](#integration-with-data-persistence)
+
 ## The Search Implementation Spectrum
 
 Search capabilities exist on a spectrum from simple database queries to dedicated search infrastructure. Choose the right level based on your requirements, data volume, and user expectations.

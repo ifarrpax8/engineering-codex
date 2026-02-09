@@ -4,6 +4,14 @@ recommendation_type: decision-matrix
 
 # Search & Discovery -- Options
 
+## Contents
+
+- [Options](#options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Decision Framework](#decision-framework)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Options
 
 ### Option 1: Database Filtering Only

@@ -1,8 +1,8 @@
 # User Experiences
 
-16 user-centric perspectives on modern application development. While [facets](../facets/) focus on engineering concerns (how things are built), experiences focus on what users see, feel, and interact with.
+17 user-centric perspectives on modern application development. While [facets](../facets/) focus on engineering concerns (how things are built), experiences focus on what users see, feel, and interact with.
 
-Every experience provides the same five perspectives as facets: product, architecture, testing, best practices, and options.
+Every experience provides seven perspectives: product, architecture, testing, best practices, gotchas, and options.
 
 ## Experience Index
 
@@ -24,6 +24,7 @@ Every experience provides the same five perspectives as facets: product, archite
 | 14 | [Permissions UX](permissions-ux/) | Access control communication, disabled states, request access | Security |
 | 15 | [Real-Time & Collaboration](real-time-and-collaboration/) | Live updates, presence indicators, WebSocket UX, conflict resolution | Interaction |
 | 16 | [Loading & Perceived Performance](loading-and-perceived-performance/) | Skeleton screens, optimistic UI, progressive loading | Performance |
+| 17 | [Design Consistency & Visual Identity](design-consistency-and-visual-identity/) | Design tokens, component libraries, theming, UI cohesion | Design |
 
 ## How Experiences Differ from Facets
 
@@ -33,6 +34,17 @@ Every experience provides the same five perspectives as facets: product, archite
 | Perspective | Engineering | User-centric |
 | Example | "Use JWT for authentication" | "Show a clear login flow with password recovery" |
 | Primary audience | Developers, architects | Developers, designers, product |
+
+## Each Experience Contains
+
+| File | Perspective | Focus |
+|------|------------|-------|
+| `product.md` | Product | Business value, user flows, personas, success metrics |
+| `architecture.md` | Architecture | Implementation patterns, component design, data flow |
+| `testing.md` | Testing | Strategies, usability testing, accessibility testing |
+| `best-practices.md` | Best Practices | UX principles, anti-patterns, stack-specific callouts |
+| `gotchas.md` | Gotchas | Common pitfalls, traps, and lessons learned |
+| `options.md` | Options | Decision matrix or recommended practice with alternatives |
 
 ## Cross-References
 
