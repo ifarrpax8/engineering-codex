@@ -6,7 +6,8 @@ Backend architecture encompasses both deployment architecture (how code is packa
 
 - [Deployment Architectures](#deployment-architectures)
 - [Internal Architecture Patterns](#internal-architecture-patterns)
-- [Domain-Driven Design Tactical Patterns](#domain-driven-design-tactical-patterns)
+- [Domain-Driven Design](#domain-driven-design)
+- [Vertical Slice Architecture](#vertical-slice-architecture)
 - [Architecture Evolution](#architecture-evolution)
 
 ## Deployment Architectures
@@ -325,23 +326,584 @@ class UserAggregate {
 }
 ```
 
-## Domain-Driven Design Tactical Patterns
+## Domain-Driven Design
 
-These patterns help model complex domains effectively:
+Domain-Driven Design (DDD) provides both strategic and tactical patterns for modeling complex business domains. Strategic DDD helps identify boundaries and relationships between different parts of a system, while tactical DDD provides concrete patterns for implementing domain models.
 
-**Aggregates**: Clusters of entities and value objects with a single aggregate root that enforces invariants. Aggregates are consistency boundaries—transactions should not span aggregates.
+### Strategic DDD
 
-**Entities**: Objects with identity (e.g., User with userId). Two entities are equal if their IDs match, even if other attributes differ.
+#### Bounded Contexts
 
-**Value Objects**: Immutable objects defined by their attributes (e.g., Email, Money). Two value objects are equal if all attributes match.
+A bounded context is an explicit boundary within which a domain model applies. Inside a bounded context, all terms have a specific meaning defined by the ubiquitous language. Outside the boundary, the same term might mean something different.
 
-**Domain Events**: Events that represent something that happened in the domain. Other aggregates or bounded contexts react to events.
+**Identifying Bounded Contexts**: Look for:
+- Different teams using different terminology for the same concept
+- Different data models for the same entity (e.g., "Customer" in Sales vs "Customer" in Shipping)
+- Independent lifecycles (one context can change without affecting another)
+- Different business capabilities
 
-**Repositories**: Abstractions for aggregate persistence. Domain defines repository interfaces (ports), infrastructure provides implementations (adapters).
+**Mapping to Microservices/Modules**: Each bounded context typically maps to:
+- A microservice (in microservices architecture)
+- A module (in modular monolith)
+- A package/namespace (in monolith)
 
-**Domain Services**: Operations that don't naturally belong to a single aggregate. Stateless services that operate on domain objects.
+**Example**: An e-commerce system might have bounded contexts for:
+- **Catalog**: Product information, categories, pricing
+- **Order Management**: Order creation, order state, order history
+- **Inventory**: Stock levels, reservations, fulfillment
+- **Payment**: Payment processing, refunds, payment methods
+- **Shipping**: Shipment tracking, delivery addresses, carriers
 
-These patterns work together: aggregates contain entities and value objects, emit domain events, and are persisted through repositories. Domain services handle cross-aggregate operations.
+Each context has its own model of "Product" or "Order" tailored to its specific needs.
+
+#### Context Mapping
+
+Context mapping describes relationships between bounded contexts. Understanding these relationships helps design integration strategies and identify coupling points.
+
+**Relationship Types**:
+
+- **Shared Kernel**: Two contexts share a subset of the domain model. Changes require coordination. Use sparingly—only when the shared model is stable and small.
+
+- **Customer-Supplier**: One context (supplier) provides services/data to another (customer). The customer depends on the supplier, but the supplier is independent. The supplier may prioritize customer needs.
+
+- **Conformist**: One context conforms to another's model without influence. Often occurs when integrating with external systems or legacy systems where you can't change the model.
+
+- **Anti-Corruption Layer (ACL)**: A translation layer between two contexts that prevents one context's model from corrupting another. The ACL translates between the two models, isolating the downstream context from upstream changes.
+
+- **Open Host Service**: A context publishes a well-defined protocol/API that multiple other contexts consume. The protocol becomes a published language.
+
+- **Published Language**: A well-documented, shared language (often a schema or API contract) used for communication between contexts. Reduces coupling by standardizing integration points.
+
+**Context Map Diagram**:
+
+```mermaid
+graph TB
+    subgraph Catalog["Catalog Context"]
+        CatalogModel[Product Model]
+    end
+    
+    subgraph Order["Order Context"]
+        OrderModel[Order Model]
+        ACL[Anti-Corruption Layer]
+    end
+    
+    subgraph Payment["Payment Context"]
+        PaymentModel[Payment Model]
+    end
+    
+    subgraph Shipping["Shipping Context"]
+        ShippingModel[Shipment Model]
+    end
+    
+    subgraph External["External ERP"]
+        ERPModel[ERP Model]
+    end
+    
+    Catalog -->|Customer-Supplier| Order
+    Order -->|Open Host Service| Payment
+    Order -->|Open Host Service| Shipping
+    External -->|Conformist| Order
+    Order -.->|ACL| ERPModel
+    
+    style ACL fill:#ffcccc
+    style Catalog fill:#ccffcc
+    style Order fill:#ccccff
+```
+
+#### Ubiquitous Language
+
+The ubiquitous language is a shared vocabulary used by developers and domain experts within a bounded context. It should flow directly into code: class names, method names, event names, and variable names should use domain terms.
+
+**Principles**:
+- Use domain terms, not technical terms (e.g., `Order` not `OrderEntity`, `ShipOrder` not `ProcessOrder`)
+- Avoid translation layers between domain experts and code
+- When domain experts use a term, use that exact term in code
+- If domain experts change terminology, update the code to match
+
+**Example**: If domain experts say "we ship an order," the code should have a `ship()` method on `Order`, not `process()` or `fulfill()`. Domain events should be named `OrderShipped`, not `OrderProcessed`.
+
+### Tactical DDD
+
+#### Aggregates
+
+An aggregate is a cluster of entities and value objects treated as a single unit. It has a single aggregate root (an entity) that serves as the entry point. The aggregate root enforces invariants and controls access to internal entities.
+
+**Sizing Rules**:
+- **Keep aggregates small**: Large aggregates lead to contention (multiple transactions trying to modify the same aggregate) and performance issues (loading entire aggregates into memory).
+- **One aggregate per transaction**: Transactions should not span multiple aggregates. Use domain events for cross-aggregate coordination.
+- **Reference by ID, not object**: Aggregates should reference other aggregates by ID, not by direct object reference. This prevents loading entire object graphs and maintains aggregate boundaries.
+
+**Enforcing Invariants**: The aggregate root is responsible for ensuring business rules (invariants) are never violated. All modifications go through the aggregate root, which validates before applying changes.
+
+**Example** (Kotlin):
+```kotlin
+@Aggregate
+class Order private constructor() {
+    @AggregateIdentifier
+    private lateinit var orderId: OrderId
+    
+    private val items = mutableListOf<OrderItem>()
+    private var status: OrderStatus = OrderStatus.DRAFT
+    
+    companion object {
+        fun create(orderId: OrderId, customerId: CustomerId): Order {
+            return Order().apply {
+                this.orderId = orderId
+                // Enforce invariant: order must have customer
+                require(customerId != null) { "Order must have a customer" }
+            }
+        }
+    }
+    
+    fun addItem(productId: ProductId, quantity: Int, price: Money) {
+        require(status == OrderStatus.DRAFT) { "Can only add items to draft orders" }
+        require(quantity > 0) { "Quantity must be positive" }
+        
+        items.add(OrderItem(productId, quantity, price))
+        // Enforce invariant: order total must not exceed limit
+        require(calculateTotal() <= Money(10000)) { "Order total exceeds limit" }
+    }
+    
+    fun ship(shippingAddress: Address) {
+        require(status == OrderStatus.CONFIRMED) { "Only confirmed orders can be shipped" }
+        require(items.isNotEmpty()) { "Cannot ship empty order" }
+        
+        status = OrderStatus.SHIPPED
+        // Emit domain event for other aggregates to react
+        AggregateLifecycle.apply(OrderShippedEvent(orderId, shippingAddress))
+    }
+    
+    private fun calculateTotal(): Money = items.sumOf { it.totalPrice }
+}
+```
+
+#### Entities vs Value Objects
+
+**Entities** have identity that persists over time, even if attributes change. Two entities are equal if their IDs match.
+
+**Value Objects** are defined entirely by their attributes. They are immutable—changing an attribute creates a new value object. Two value objects are equal if all attributes match.
+
+**When to Use Each**:
+- Use **entities** for objects that have a lifecycle and identity (User, Order, Product).
+- Use **value objects** for descriptive attributes (Email, Money, Address, DateRange).
+
+**Immutability Patterns**:
+
+**Kotlin** - Use `data class` for value objects:
+```kotlin
+data class Email(val value: String) {
+    init {
+        require(value.matches(EMAIL_REGEX)) { "Invalid email format" }
+    }
+}
+
+data class Money(val amount: BigDecimal, val currency: Currency) {
+    init {
+        require(amount >= BigDecimal.ZERO) { "Amount cannot be negative" }
+    }
+    
+    operator fun plus(other: Money): Money {
+        require(currency == other.currency) { "Cannot add different currencies" }
+        return Money(amount + other.amount, currency)
+    }
+}
+```
+
+**Java** - Use `record` for value objects (Java 14+):
+```java
+public record Email(String value) {
+    public Email {
+        if (!value.matches(EMAIL_REGEX)) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+    }
+}
+
+public record Money(BigDecimal amount, Currency currency) {
+    public Money {
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+    }
+}
+```
+
+#### Domain Events
+
+Domain events represent something that happened in the domain that other parts of the system might care about. They are named in past tense (e.g., `OrderShipped`, `PaymentProcessed`, `InventoryReserved`).
+
+**Naming Conventions**:
+- Use past tense: `OrderShipped` not `ShipOrder`
+- Include enough context: `OrderShipped` should include order ID, shipping address, timestamp
+- Use domain language: `OrderShipped` not `OrderStatusChangedToShipped`
+
+**Integration Events vs Domain Events**:
+- **Domain Events**: Internal to a bounded context, used for aggregate coordination
+- **Integration Events**: Published outside the bounded context, used for inter-service communication. May be derived from domain events.
+
+**Example**:
+```kotlin
+data class OrderShippedEvent(
+    val orderId: OrderId,
+    val customerId: CustomerId,
+    val shippingAddress: Address,
+    val shippedAt: Instant
+) : DomainEvent
+
+// Integration event (published to other services)
+data class OrderShippedIntegrationEvent(
+    val orderId: String,
+    val customerId: String,
+    val trackingNumber: String,
+    val estimatedDelivery: LocalDate
+)
+```
+
+#### Repositories
+
+Repositories provide an abstraction for aggregate persistence. They hide the details of data access behind a domain-oriented interface.
+
+**Principles**:
+- One repository per aggregate root, not per entity
+- Repository interface is defined in the domain layer
+- Repository implementation is in the infrastructure layer
+- Repository methods work with aggregates, not entities or value objects
+
+**Example**:
+```kotlin
+// Domain layer - interface
+interface OrderRepository {
+    fun findById(orderId: OrderId): Order?
+    fun save(order: Order)
+    fun findByCustomerId(customerId: CustomerId): List<Order>
+}
+
+// Infrastructure layer - implementation
+@Repository
+class JpaOrderRepository(
+    private val jpaRepository: SpringDataOrderRepository
+) : OrderRepository {
+    override fun findById(orderId: OrderId): Order? {
+        return jpaRepository.findById(orderId.value)
+            ?.toDomain()
+    }
+    
+    override fun save(order: Order) {
+        val entity = order.toEntity()
+        jpaRepository.save(entity)
+    }
+}
+```
+
+#### Domain Services
+
+Domain services contain operations that don't naturally belong to a single aggregate. They are stateless and operate on domain objects.
+
+**When to Use**:
+- Cross-aggregate logic that doesn't fit in any single aggregate
+- Complex calculations that involve multiple aggregates
+- Domain logic that requires infrastructure (e.g., checking uniqueness across aggregates)
+
+**Keep Stateless**: Domain services should not maintain state between calls. They receive domain objects, perform operations, and return results.
+
+**Example**:
+```kotlin
+class OrderPricingService {
+    fun calculateTotal(order: Order, customer: Customer, promotions: List<Promotion>): Money {
+        var total = order.calculateSubtotal()
+        
+        // Apply customer-specific discounts
+        total = total - customer.getDiscountAmount(total)
+        
+        // Apply applicable promotions
+        promotions.forEach { promotion ->
+            if (promotion.isApplicableTo(order)) {
+                total = total - promotion.calculateDiscount(order)
+            }
+        }
+        
+        return total
+    }
+}
+```
+
+#### Application Services
+
+Application services orchestrate use cases. They coordinate domain objects, manage transactions, and handle cross-cutting concerns (logging, authorization, event publishing).
+
+**Responsibilities**:
+- Load aggregates from repositories
+- Invoke domain logic
+- Manage transaction boundaries
+- Publish domain events
+- Handle application-level concerns (not business logic)
+
+**Do NOT contain business logic**: Business rules belong in aggregates or domain services, not application services.
+
+**Example**:
+```kotlin
+@Service
+@Transactional
+class OrderApplicationService(
+    private val orderRepository: OrderRepository,
+    private val customerRepository: CustomerRepository,
+    private val eventPublisher: DomainEventPublisher
+) {
+    fun shipOrder(orderId: OrderId, shippingAddress: Address) {
+        // Load aggregate
+        val order = orderRepository.findById(orderId)
+            ?: throw OrderNotFoundException(orderId)
+        
+        // Invoke domain logic (business rules are in Order.ship())
+        order.ship(shippingAddress)
+        
+        // Persist changes
+        orderRepository.save(order)
+        
+        // Publish events (infrastructure concern)
+        order.domainEvents.forEach { eventPublisher.publish(it) }
+        order.clearDomainEvents()
+    }
+}
+```
+
+#### Factories
+
+Factories encapsulate complex aggregate creation logic. Use factories when aggregate construction involves multiple steps, validation, or coordination with other aggregates.
+
+**Example**:
+```kotlin
+class OrderFactory(
+    private val productRepository: ProductRepository,
+    private val pricingService: OrderPricingService
+) {
+    fun createOrder(
+        orderId: OrderId,
+        customerId: CustomerId,
+        items: List<OrderItemRequest>
+    ): Order {
+        // Validate products exist
+        val products = items.map { item ->
+            productRepository.findById(item.productId)
+                ?: throw ProductNotFoundException(item.productId)
+        }
+        
+        // Create order
+        val order = Order.create(orderId, customerId)
+        
+        // Add items with pricing
+        items.forEachIndexed { index, item ->
+            val product = products[index]
+            val price = pricingService.getPrice(product, customerId)
+            order.addItem(product.id, item.quantity, price)
+        }
+        
+        return order
+    }
+}
+```
+
+## Vertical Slice Architecture
+
+Vertical Slice Architecture organizes code by feature or use case rather than by technical layer or pattern. Each vertical slice handles one request end-to-end: HTTP handler, validation, business logic, data access, and response mapping—all co-located in a single feature module.
+
+### Core Concept
+
+Instead of organizing code horizontally (all controllers together, all services together, all repositories together), vertical slice architecture groups everything needed for a feature together. A single request flows through a cohesive slice without crossing multiple layers or shared services.
+
+**Layered Architecture Request Flow**:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Controller as All Controllers
+    participant Service as Shared Service Layer
+    participant Repository as Shared Repository Layer
+    participant DB as Database
+    
+    Client->>Controller: HTTP Request
+    Controller->>Service: Call Service Method
+    Service->>Service: Business Logic
+    Service->>Repository: Data Access
+    Repository->>DB: Query
+    DB-->>Repository: Results
+    Repository-->>Service: Domain Objects
+    Service->>Service: More Logic
+    Service-->>Controller: DTOs
+    Controller-->>Client: Response
+```
+
+**Vertical Slice Request Flow**:
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Slice as Feature Slice
+    participant DB as Database
+    
+    Client->>Slice: HTTP Request
+    Slice->>Slice: Handler Logic
+    Slice->>Slice: Validation
+    Slice->>Slice: Business Logic
+    Slice->>DB: Direct Data Access
+    DB-->>Slice: Results
+    Slice->>Slice: Response Mapping
+    Slice-->>Client: Response
+```
+
+### Key Characteristics
+
+**No Shared Service Layer**: Each slice contains its own logic. There's no `UserService` that multiple controllers call—each feature has its own handler with its own logic.
+
+**No Shared Repository Interfaces**: Slices access data directly (through repositories, but each slice may have its own repository implementation or query methods).
+
+**Feature Isolation**: Features are isolated from each other. Changes to one feature don't affect others. Features can be deleted by deleting a single directory.
+
+**Minimal Cross-Cutting Coupling**: Slices don't depend on each other. Shared concerns (authentication, logging) are handled through middleware or cross-cutting aspects, not through shared service classes.
+
+### Benefits
+
+- **Easy to Understand**: All code for a feature is in one place. A developer can understand a feature by reading one directory.
+- **Easy to Delete**: Removing a feature means deleting one directory. No shared services to untangle.
+- **Minimal Coupling**: Features don't share code, so changes are isolated.
+- **Fast Development**: No need to navigate across multiple layers. Everything is co-located.
+- **Natural Boundaries**: Each slice is naturally bounded, making it easier to extract to a microservice later.
+
+### Trade-offs
+
+- **Code Duplication**: Similar logic may be duplicated across slices. This is intentional—duplication is cheaper than wrong abstraction.
+- **Harder Cross-Cutting Concerns**: Features like "audit all writes" require aspect-oriented programming or middleware rather than shared service methods.
+- **Less Reuse**: Can't easily share business logic between features. This forces explicit decisions about what should be shared.
+
+### When to Use
+
+- **CRUD-Heavy Applications**: When most features are independent CRUD operations, vertical slices provide clear organization without unnecessary abstraction.
+- **Feature Independence**: When features are largely independent and don't share complex business logic.
+- **Rapid Feature Development**: When speed of feature delivery is more important than code reuse.
+- **Simple Domains**: When domain logic is straightforward and doesn't require complex modeling (DDD/hexagonal may be over-engineering).
+
+### When NOT to Use
+
+- **Complex Shared Domain Logic**: When business rules are shared across many features, DDD with aggregates and domain services is better.
+- **Need for Strong Domain Modeling**: When the domain is complex and requires careful modeling, hexagonal architecture with rich domain models is preferable.
+- **Heavy Code Reuse Requirements**: When features share significant logic that must be consistent, layered or hexagonal architecture provides better reuse mechanisms.
+
+### Example: Kotlin Vertical Slice
+
+A complete vertical slice in a single file:
+
+```kotlin
+// Feature: CreateOrder
+// File: features/order/CreateOrder.kt
+
+@RestController
+@RequestMapping("/api/orders")
+class CreateOrderHandler(
+    private val orderRepository: OrderRepository,
+    private val customerRepository: CustomerRepository,
+    private val productRepository: ProductRepository
+) {
+    @PostMapping
+    fun createOrder(@RequestBody request: CreateOrderRequest): OrderResponse {
+        // Validation
+        require(request.customerId != null) { "Customer ID is required" }
+        require(request.items.isNotEmpty()) { "Order must have at least one item" }
+        
+        // Load dependencies
+        val customer = customerRepository.findById(request.customerId)
+            ?: throw CustomerNotFoundException(request.customerId)
+        
+        // Business logic (simple, feature-specific)
+        val orderId = OrderId.generate()
+        val orderItems = request.items.map { item ->
+            val product = productRepository.findById(item.productId)
+                ?: throw ProductNotFoundException(item.productId)
+            
+            OrderItem(
+                productId = product.id,
+                quantity = item.quantity,
+                price = product.price
+            )
+        }
+        
+        val total = orderItems.sumOf { it.price * it.quantity }
+        
+        // Persist
+        val order = Order(
+            id = orderId,
+            customerId = customer.id,
+            items = orderItems,
+            total = total,
+            status = OrderStatus.DRAFT,
+            createdAt = Instant.now()
+        )
+        
+        orderRepository.save(order)
+        
+        // Response mapping
+        return OrderResponse(
+            id = order.id.value,
+            customerId = order.customerId.value,
+            total = order.total.amount,
+            status = order.status.name,
+            items = order.items.map { item ->
+                OrderItemResponse(
+                    productId = item.productId.value,
+                    quantity = item.quantity,
+                    price = item.price.amount
+                )
+            }
+        )
+    }
+}
+
+// Request/Response DTOs in the same file or adjacent
+data class CreateOrderRequest(
+    val customerId: String,
+    val items: List<OrderItemRequest>
+)
+
+data class OrderItemRequest(
+    val productId: String,
+    val quantity: Int
+)
+
+data class OrderResponse(
+    val id: String,
+    val customerId: String,
+    val total: BigDecimal,
+    val status: String,
+    val items: List<OrderItemResponse>
+)
+```
+
+### Spring Boot Package Structure
+
+```
+com.company.product/
+├── features/
+│   ├── order/
+│   │   ├── CreateOrder.kt          // Handler + DTOs
+│   │   ├── GetOrder.kt
+│   │   ├── CancelOrder.kt
+│   │   └── OrderRepository.kt      // Feature-specific repository
+│   ├── customer/
+│   │   ├── CreateCustomer.kt
+│   │   ├── UpdateCustomer.kt
+│   │   └── CustomerRepository.kt
+│   └── product/
+│       ├── CreateProduct.kt
+│       ├── ListProducts.kt
+│       └── ProductRepository.kt
+├── shared/                          // Only truly shared code
+│   ├── domain/                      // Shared value objects, if any
+│   │   └── Money.kt
+│   └── infrastructure/              // Database config, etc.
+│       └── DatabaseConfig.kt
+└── Application.kt
+```
+
+Each feature package is self-contained. The `shared` package should be minimal—only code that is genuinely shared and stable.
 
 ## Architecture Evolution
 

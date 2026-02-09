@@ -8,6 +8,7 @@ recommendation_type: decision-matrix
 
 - [Testing Strategy Options](#testing-strategy-options)
 - [Test Distribution Options](#test-distribution-options)
+- [Testing Infrastructure Options](#testing-infrastructure-options)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)
@@ -217,6 +218,42 @@ recommendation_type: decision-matrix
 - When static analysis catches many bugs
 - When unit testing framework internals provides limited value
 - Frontend applications
+
+## Testing Infrastructure Options
+
+### Cloud Service Testing
+
+#### 1. LocalStack
+
+**Position**: Trial (Adopt if you're AWS-heavy)
+
+**Description**: Local emulation environment for AWS services. Enables integration tests against AWS services without real infrastructure.
+
+**Comparison**:
+
+| Approach | Speed | Cost | Realism | Setup Complexity |
+|----------|-------|------|---------|------------------|
+| **Real AWS in CI** | ⭐⭐ Slow (network latency) | ⭐ Expensive | ⭐⭐⭐⭐⭐ Perfect | ⭐⭐⭐ Medium |
+| **Mocking AWS Clients** | ⭐⭐⭐⭐⭐ Fast | ⭐⭐⭐⭐⭐ Free | ⭐⭐ Limited (only method calls) | ⭐⭐⭐⭐⭐ Easy |
+| **LocalStack** | ⭐⭐⭐⭐ Fast (local) | ⭐⭐⭐⭐⭐ Free | ⭐⭐⭐⭐ High (real API behavior) | ⭐⭐⭐ Medium |
+
+**Decision Criteria**:
+- **AWS Service Coverage Needed**: LocalStack supports many AWS services (S3, SQS, SNS, DynamoDB, Lambda, Secrets Manager, etc.). Check LocalStack's coverage matrix for your specific services.
+- **CI Speed Requirements**: LocalStack is faster than real AWS (no network latency) but slower than mocking. Suitable for integration tests that need realistic behavior.
+- **Test Fidelity**: LocalStack provides realistic API behavior, testing serialization, error handling, and configuration. Mocking only tests that you called the right method.
+
+**When to Use**:
+- ✅ AWS-heavy applications requiring integration tests
+- ✅ Need to test AWS service interactions (S3 uploads, SQS messages, etc.)
+- ✅ Want realistic behavior without cloud costs
+- ✅ CI/CD pipelines need fast, isolated tests
+
+**When to Avoid**:
+- ❌ Not using AWS services
+- ❌ Only need simple unit tests (mocking is sufficient)
+- ❌ Need 100% AWS feature parity (use real AWS for smoke tests)
+
+**Best Practice**: Use LocalStack + Testcontainers for integration tests. Keep LocalStack containers shared across test classes for speed (singleton pattern). Use real AWS only for smoke tests in staging environments.
 
 ## Evaluation Criteria
 

@@ -193,6 +193,37 @@ These patterns apply within each service or module, regardless of deployment arc
 - Using event sourcing (CQRS becomes natural)
 - High read-to-write ratio or vice versa
 
+### Vertical Slice Architecture
+
+**Description**: Organize code by feature/use case rather than by layer. Each vertical slice handles one request end-to-end: handler, validation, business logic, data access, and response—all co-located.
+
+**Strengths**:
+- Easy to understand—all code for a feature is in one place
+- Easy to delete—removing a feature means deleting one directory
+- Minimal coupling between features
+- Fast feature development—no navigation across layers
+- Natural boundaries make extraction to microservices easier
+- Works well for CRUD-heavy applications
+
+**Weaknesses**:
+- Code duplication across slices (intentional, but can be a concern)
+- Harder to enforce cross-cutting concerns (requires AOP or middleware)
+- Less code reuse—can't easily share business logic
+- May not scale well for complex domains requiring shared domain logic
+
+**When to Use**:
+- CRUD-heavy applications with independent features
+- Simple domains where DDD/hexagonal feels like over-engineering
+- Rapid feature development is priority over code reuse
+- Features are largely independent with minimal shared logic
+- Team prefers explicit duplication over wrong abstractions
+
+**When NOT to Use**:
+- Complex shared domain logic across many features
+- Need for strong domain modeling (use DDD/hexagonal instead)
+- Heavy code reuse requirements
+- Domain complexity requires careful modeling
+
 ## Evaluation Criteria
 
 | Criteria | Weight | Monolith | Modulith | Microservices |
@@ -220,9 +251,11 @@ These patterns apply within each service or module, regardless of deployment arc
 
 ### By Domain Complexity
 
-**Simple CRUD**: Layered architecture. Straightforward business logic doesn't need complex patterns.
+**Simple CRUD**: Vertical Slice or Layered architecture. Vertical Slice provides better feature isolation for independent CRUD operations. Layered is simpler if team prefers traditional structure.
 
-**Complex Domain**: Hexagonal architecture. Rich domain models require careful separation from infrastructure.
+**Moderate Complexity**: Vertical Slice or Layered architecture. When features are independent but have some business logic, vertical slices keep features isolated while layered provides more structure.
+
+**Complex Domain**: Hexagonal architecture. Rich domain models require careful separation from infrastructure. DDD patterns (aggregates, domain services) work best with hexagonal structure.
 
 **Different Read/Write Patterns**: CQRS. When reads and writes have different requirements, separate models enable optimization.
 
@@ -277,6 +310,18 @@ Move from modulith to microservices when:
 - Different modules require different technologies
 - Domain boundaries are stable and clear
 
+Move from layered to vertical slice when:
+- Features are becoming independent
+- Want better feature isolation
+- Code reuse is less important than feature independence
+- CRUD-heavy application with minimal shared logic
+
+Move from vertical slice to hexagonal when:
+- Domain logic is becoming complex and shared
+- Need for strong domain modeling
+- Features require shared business logic
+- Long-term maintainability requires domain encapsulation
+
 Move from layered to hexagonal when:
 - Domain logic is becoming complex
 - Need for framework independence
@@ -292,10 +337,11 @@ Move from traditional to CQRS when:
 ## Decision Framework
 
 1. **Assess Team Size**: < 5 → Monolith, 5-15 → Modulith, 15+ → Microservices
-2. **Evaluate Domain Complexity**: Simple → Layered, Complex → Hexagonal
-3. **Consider Read/Write Patterns**: Similar → Traditional, Different → CQRS
-4. **Check Operational Maturity**: Early → Simpler patterns, Mature → Complex patterns
-5. **Review Synergies**: Align with frontend, data persistence, and API design choices
-6. **Plan Evolution**: Start simple, evolve when triggers are reached
+2. **Evaluate Domain Complexity**: Simple CRUD → Vertical Slice or Layered, Moderate → Vertical Slice or Layered, Complex → Hexagonal
+3. **Consider Feature Independence**: Independent features → Vertical Slice, Shared logic → Layered or Hexagonal
+4. **Consider Read/Write Patterns**: Similar → Traditional, Different → CQRS
+5. **Check Operational Maturity**: Early → Simpler patterns, Mature → Complex patterns
+6. **Review Synergies**: Align with frontend, data persistence, and API design choices
+7. **Plan Evolution**: Start simple, evolve when triggers are reached
 
 The goal is not perfect architecture from day one, but architecture that supports current needs and enables future growth. Start with the simplest pattern that meets current requirements, enforce boundaries early, and evolve when scaling triggers are reached.

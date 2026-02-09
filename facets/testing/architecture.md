@@ -9,6 +9,11 @@
 - [Test Data Management](#test-data-management)
 - [Contract Testing](#contract-testing)
 - [Test Infrastructure](#test-infrastructure)
+  - [CI Parallelization Strategies](#ci-parallelization-strategies)
+  - [Cloud Service Emulation](#cloud-service-emulation)
+  - [Test Environment Management](#test-environment-management)
+  - [Shared vs Isolated Test Databases](#shared-vs-isolated-test-databases)
+  - [Test Reporting and Trend Analysis](#test-reporting-and-trend-analysis)
 - [Test Boundaries](#test-boundaries)
 
 ## Test Pyramid
@@ -419,6 +424,115 @@ sequenceDiagram
         end
     end
 ```
+
+### Cloud Service Emulation
+
+**LocalStack** provides a local emulation environment for AWS services, enabling integration tests against cloud services without requiring real infrastructure.
+
+**Why It Matters**:
+- Enables integration tests against AWS services without real infrastructure
+- Faster feedback loops (no network latency to real AWS)
+- No cloud costs in CI/CD pipelines
+- Tests can run offline and in isolated environments
+- Provides realistic behavior compared to mocking SDK clients
+
+**How It Works**:
+- Docker container that implements AWS API endpoints locally
+- Supports many AWS services: S3, SQS, SNS, DynamoDB, Lambda, Secrets Manager, Kinesis, and more
+- Applications connect to LocalStack endpoints instead of real AWS endpoints
+- Configuration overrides point AWS SDK clients to LocalStack endpoints
+
+**Use Cases**:
+- **S3**: Testing file uploads, downloads, bucket operations, presigned URLs
+- **SQS**: Testing message publishing, queue consumption, dead-letter queues
+- **SNS**: Testing topic subscriptions, message publishing, notifications
+- **DynamoDB**: Testing table operations, queries, scans, transactions
+- **Secrets Manager**: Testing secret retrieval, rotation, versioning
+- **Lambda**: Testing function invocations, event processing
+- **Kinesis**: Testing stream operations, record processing
+
+**Testcontainers + LocalStack**: The recommended approach uses Testcontainers to manage LocalStack lifecycle in tests, ensuring proper startup, shutdown, and isolation.
+
+**Configuration**: Override AWS endpoint URLs in Spring Boot test configuration to point to LocalStack endpoints.
+
+**Example**:
+```kotlin
+@Testcontainers
+@SpringBootTest
+class S3UploadServiceTest {
+    companion object {
+        @Container
+        val localStack = LocalStackContainer(DockerImageName.parse("localstack/localstack:latest"))
+            .withServices(LocalStackContainer.Service.S3)
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun properties(registry: DynamicPropertyRegistry) {
+            registry.add("aws.s3.endpoint") { localStack.getEndpointOverride(LocalStackContainer.Service.S3) }
+            registry.add("aws.credentials.access-key") { localStack.accessKey }
+            registry.add("aws.credentials.secret-key") { localStack.secretKey }
+            registry.add("aws.region") { localStack.region }
+        }
+    }
+
+    @Autowired
+    lateinit var s3UploadService: S3UploadService
+
+    @Test
+    fun `should upload file to S3`() {
+        val fileContent = "test content".toByteArray()
+        val key = s3UploadService.upload("test-bucket", "test-key", fileContent)
+        
+        assertNotNull(key)
+        // Verify file exists in LocalStack S3
+    }
+}
+```
+
+**Limitations**:
+- Not all AWS services are fully emulated (check LocalStack's coverage matrix)
+- Some services have behavioral differences from real AWS
+- Performance characteristics may differ from production
+- Advanced features may not be supported (e.g., advanced S3 features, complex DynamoDB operations)
+
+**Alternatives**:
+- **Moto**: Python-focused AWS mocking library (good for Python projects)
+- **WireMock**: Generic HTTP API mocking (can mock AWS APIs but less realistic)
+- **Real AWS**: Use real AWS for smoke tests in staging environments (slower, costs money, requires network access)
+
+**Test Infrastructure Stack**:
+
+```mermaid
+graph TB
+    subgraph "Test Infrastructure"
+        TC[Testcontainers]
+        LS[LocalStack]
+        DB[(PostgreSQL)]
+        REDIS[(Redis)]
+        KAFKA[Kafka]
+    end
+    
+    subgraph "Application Under Test"
+        APP[Spring Boot App]
+        SDK[AWS SDK]
+    end
+    
+    TC --> LS
+    TC --> DB
+    TC --> REDIS
+    TC --> KAFKA
+    APP --> SDK
+    SDK --> LS
+    APP --> DB
+    APP --> REDIS
+    APP --> KAFKA
+    
+    style LS fill:#e1f5ff
+    style TC fill:#b3e5fc
+    style APP fill:#81d4fa
+```
+
+**Best Practice**: Use LocalStack + Testcontainers for integration tests that need AWS service behavior. Prefer LocalStack over mocking AWS SDK clients—you want to test your serialization, error handling, and configuration, not just that you called the right method.
 
 ### Test Environment Management
 

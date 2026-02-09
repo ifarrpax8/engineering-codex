@@ -40,7 +40,9 @@ quadrantChart
     RFC 7807 Errors: [0.68, 0.85]
     Cache-Aside: [0.82, 0.88]
     Retry + Backoff: [0.85, 0.90]
+    DDD: [0.76, 0.86]
     Choreography: [0.65, 0.78]
+    Vertical Slice: [0.48, 0.73]
     Modular Monolith: [0.45, 0.75]
     Microservices: [0.55, 0.72]
     GraphQL: [0.42, 0.68]
@@ -77,11 +79,13 @@ quadrantChart
 | Squash Merge | Clean main branch history, atomic feature commits | [repository-governance](facets/repository-governance/) |
 | Contract Testing | Catches integration breaks without full environment | [testing](facets/testing/) |
 | Component-Driven Development | Build UIs from isolated, testable components | [frontend-architecture](facets/frontend-architecture/) |
+| Domain-Driven Design | Bounded contexts, aggregates, ubiquitous language for complex domains | [backend-architecture](facets/backend-architecture/) |
 
 ### Trial
 
 | Technology | Rationale | Source Facet |
 |-----------|-----------|-------------|
+| Vertical Slice Architecture | Feature-based code organisation, strong for CRUD-heavy domains | [backend-architecture](facets/backend-architecture/) |
 | Modular Monolith (Modulith) | Monolith benefits with clear module boundaries | [backend-architecture](facets/backend-architecture/) |
 | Microservices (teams 15+) | Independent deployment at scale, high operational cost | [backend-architecture](facets/backend-architecture/) |
 | GraphQL | Excellent for complex data relationships and mobile clients | [api-design](facets/api-design/) |
@@ -223,6 +227,7 @@ quadrantChart
     Terraform: [0.76, 0.87]
     axe-core: [0.68, 0.83]
     Lighthouse CI: [0.65, 0.80]
+    LocalStack: [0.52, 0.76]
     Renovate: [0.55, 0.78]
     Dependabot: [0.58, 0.75]
     k6: [0.48, 0.72]
@@ -263,6 +268,7 @@ quadrantChart
 
 | Technology | Rationale | Source Facet |
 |-----------|-----------|-------------|
+| LocalStack | Local AWS service emulation for integration tests | [testing](facets/testing/) |
 | Renovate | Highly configurable automated dependency updates | [dependency-management](facets/dependency-management/) |
 | Dependabot | Simpler automated dependency updates, GitHub-native | [dependency-management](facets/dependency-management/) |
 | k6 | JavaScript-based load testing | [performance](facets/performance/) |
@@ -387,8 +393,8 @@ quadrantChart
 
 | Ring | Count | Description |
 |------|-------|-------------|
-| Adopt | 50 | Proven defaults — use confidently |
-| Trial | 42 | Strong alternatives — adopt for the right context |
+| Adopt | 51 | Proven defaults — use confidently |
+| Trial | 44 | Strong alternatives — adopt for the right context |
 | Assess | 20 | Situational — evaluate before committing |
 | Hold | 17 | Avoid or migrate away from |
 

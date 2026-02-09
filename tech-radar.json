@@ -775,5 +775,26 @@
     "quadrant": "languages-and-frameworks",
     "isNew": false,
     "description": "Upgrade to Java 17+ for LTS and language features."
+  },
+  {
+    "name": "Domain-Driven Design",
+    "ring": "adopt",
+    "quadrant": "techniques",
+    "isNew": true,
+    "description": "Bounded contexts, aggregates, ubiquitous language for complex domains."
+  },
+  {
+    "name": "Vertical Slice Architecture",
+    "ring": "trial",
+    "quadrant": "techniques",
+    "isNew": true,
+    "description": "Feature-based code organisation, strong for CRUD-heavy or simpler domains."
+  },
+  {
+    "name": "LocalStack",
+    "ring": "trial",
+    "quadrant": "tools",
+    "isNew": true,
+    "description": "Local AWS service emulation for integration tests via Testcontainers."
   }
 ]

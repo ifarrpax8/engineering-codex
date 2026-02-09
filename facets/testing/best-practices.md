@@ -7,6 +7,8 @@
 - [Test Independence](#test-independence)
 - [What to Test vs What Not to Test](#what-to-test-vs-what-not-to-test)
 - [Anti-Patterns](#anti-patterns)
+- [Cloud Integration Testing](#cloud-integration-testing)
+- [Stack-Specific Callouts](#stack-specific-callouts)
 
 ## Test Structure
 
@@ -614,6 +616,117 @@ fun test1() {
 ```
 
 **Best Practice**: Extract common test setup into factories, builders, and fixtures. Don't copy-paste.
+
+## Cloud Integration Testing
+
+### Prefer LocalStack + Testcontainers Over Mocking AWS SDK Clients
+
+**Problem**: Mocking AWS SDK clients only tests that you called the right method, not that your serialization, error handling, and configuration work correctly.
+
+**Solution**: Use LocalStack + Testcontainers to test against real AWS API endpoints locally.
+
+**Why**:
+- Tests actual serialization/deserialization of AWS requests/responses
+- Tests error handling with real AWS error responses
+- Tests configuration (endpoint URLs, credentials, regions)
+- Tests integration behavior, not just method calls
+- Catches issues that mocks would miss (wrong bucket names, malformed requests, etc.)
+
+**Example**:
+```kotlin
+// BAD: Mocking AWS client
+@Test
+fun `should upload file`() {
+    val s3Client = mockk<S3Client>()
+    every { s3Client.putObject(any()) } returns PutObjectResponse.builder().build()
+    
+    service.uploadFile("bucket", "key", content)
+    
+    verify { s3Client.putObject(any()) }  // Only tests method call
+}
+
+// GOOD: Using LocalStack
+@Testcontainers
+@SpringBootTest
+class S3UploadServiceTest {
+    @Container
+    val localStack = LocalStackContainer(DockerImageName.parse("localstack/localstack:latest"))
+        .withServices(LocalStackContainer.Service.S3)
+
+    @Autowired
+    lateinit var s3UploadService: S3UploadService
+
+    @Test
+    fun `should upload file to S3`() {
+        val key = s3UploadService.upload("test-bucket", "test-key", fileContent)
+        
+        assertNotNull(key)
+        // Verify file actually exists in LocalStack S3
+        val object = s3Client.getObject("test-bucket", "test-key")
+        assertNotNull(object)  // Tests real integration
+    }
+}
+```
+
+**Best Practice**: Prefer LocalStack + Testcontainers over mocking AWS SDK clients. You want to test your integration with AWS services, not just that you called the right method.
+
+### Keep LocalStack Containers Shared Across Test Classes
+
+**Pattern**: Use singleton pattern to share LocalStack container across multiple test classes for faster test execution.
+
+**Why**: Starting LocalStack container is expensive. Sharing it across test classes reduces startup time.
+
+**Implementation**:
+```kotlin
+object LocalStackSingleton {
+    val container = LocalStackContainer(DockerImageName.parse("localstack/localstack:latest"))
+        .withServices(LocalStackContainer.Service.S3, LocalStackContainer.Service.SQS)
+    
+    init {
+        container.start()
+    }
+}
+
+@Testcontainers
+class S3ServiceTest {
+    companion object {
+        @Container
+        val localStack = LocalStackSingleton.container
+    }
+}
+
+@Testcontainers
+class SQSServiceTest {
+    companion object {
+        @Container
+        val localStack = LocalStackSingleton.container
+    }
+}
+```
+
+**Trade-offs**:
+- ✅ Faster test execution (container starts once)
+- ✅ Lower resource usage
+- ❌ Tests must be careful about shared state (use unique bucket/queue names per test)
+- ❌ Risk of test interference if cleanup isn't thorough
+
+**Best Practice**: Keep LocalStack containers shared across test classes for speed, but ensure each test uses unique resource names and cleans up properly.
+
+### Use Real AWS Only for Smoke Tests in Staging
+
+**Principle**: Use LocalStack for integration tests, real AWS only for smoke tests in staging environments.
+
+**Why**:
+- LocalStack is fast, free, and isolated (perfect for CI/CD)
+- Real AWS is slow, costs money, and requires network access
+- Real AWS should validate that LocalStack tests translate to production
+
+**Strategy**:
+- **Integration Tests**: Use LocalStack (fast, isolated, free)
+- **Smoke Tests**: Use real AWS in staging (validates production-like behavior)
+- **E2E Tests**: Use real AWS in staging (full system validation)
+
+**Best Practice**: Use LocalStack for integration tests in CI/CD. Use real AWS only for smoke tests and E2E tests in staging environments.
 
 ## Stack-Specific Callouts
 
