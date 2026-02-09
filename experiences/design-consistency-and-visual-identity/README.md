@@ -8,6 +8,20 @@ last_updated: 2026-02-09
 
 Ensuring a cohesive, predictable UI that builds user trust and reduces cognitive load across the entire application.
 
+## Contents
+
+- [TL;DR](#tldr)
+- [Perspectives](#perspectives)
+- [Related Facets](#related-facets)
+- [Related Experiences](#related-experiences)
+
+## TL;DR
+
+- **Default approach**: Adopt an existing design system like Propulsion or MUI rather than building from scratch
+- **Key principle**: Consistency beats aesthetics—users trust predictable interfaces more than beautiful but inconsistent ones
+- **Common gotcha**: "Just this one exception" snowballs into design system fragmentation across teams
+- **Start here**: See [architecture.md](architecture.md) for design token architecture and component library integration patterns
+
 ## Perspectives
 
 - [Product Perspective](product.md) -- Business value, user flows, personas
