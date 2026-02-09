@@ -57,8 +57,9 @@ engineering-codex/
 ├── checklists/              # Quick-reference actionable checklists
 ├── decision-frameworks/     # Evaluation criteria, templates, and decision documentation
 ├── evolution/               # Architecture scaling journeys and inflection points
-├── facets/                  # 19 engineering-focused deep dives
+├── facets/                  # 21 engineering-focused deep dives
 ├── experiences/             # 17 user-centric UX perspectives
+├── pax8-context/            # Pax8-specific ADR overlay (optional, for Pax8 projects)
 ├── reading-paths.md         # Role-based navigation guides
 ├── tag-index.md             # Auto-generated cross-reference of tags
 ├── stack-context.md         # Assumed technology landscape
@@ -90,6 +91,8 @@ engineering-codex/
 | 17 | [Configuration Management](facets/configuration-management/) | Externalized config, secrets, profiles, environment management |
 | 18 | [Refactoring & Extraction](facets/refactoring-and-extraction/) | When and how to refactor, extraction patterns, safe migration |
 | 19 | [Work Management](facets/work-management/) | Ticket systems, ticket types, workflows, estimation, sprints |
+| 20 | [Dependency Management](facets/dependency-management/) | Evaluation, versioning, upgrades, license compliance, scanning |
+| 21 | [Repository & Code Governance](facets/repository-governance/) | Branch strategies, CODEOWNERS, PR policies, repo lifecycle |
 
 ## Experiences (User-Centric)
 
@@ -124,6 +127,8 @@ engineering-codex/
 - **checklist-runner** -- Run a codex checklist interactively against your project
 - **experience-audit** -- Audit your frontend against an experience's UX guidelines
 - **onboarding-guide** -- Generate a personalised reading path for a project
+- **generate-opportunity-brief** -- Draft a Pax8 Opportunity Brief informed by codex content
+- **generate-prd** -- Draft a Pax8 PRD from an approved Opportunity Brief
 
 ### Commands (Quick Triggers)
 
@@ -131,6 +136,7 @@ engineering-codex/
 - **generate-adr** -- Generate an ADR from a codex decision
 - **gotcha-check** -- Instantly surface gotchas for any facet or experience
 - **generate-checklist** -- Create a project-specific checklist tailored to your stack
+- **pax8-standard** -- Surface Pax8-specific standards and deprecated technologies for any facet
 - **what-should-i-read** -- Map a task description to relevant codex content
 
 ## Related Resources

@@ -4,6 +4,23 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-09] - Pax8 Context Overlay, New Facets, and Product Skills
+
+### Added
+
+- **2 new facets**: Dependency Management (evaluation, versioning, upgrades, license compliance, security scanning) and Repository & Code Governance (branch strategies, CODEOWNERS, PR policies, repo lifecycle) — full 7-file structure with diagrams, code examples, and cross-references
+- **Pax8 Standards Overlay** (`pax8-context/`): standards-map.md mapping 40+ active Pax8 ADRs to codex facets with type classification (Standard/Guidance), deprecated.md tracking technologies being phased out (NewRelic, Moment.js, Axon Server, legacy branch protection, etc.)
+- **2 new skills**: generate-opportunity-brief (draft Pax8 Opportunity Briefs informed by codex content) and generate-prd (expand approved briefs into full PRDs using codex + Pax8 standards)
+- **1 new command**: pax8-standard (surface Pax8-specific standards and deprecated technologies for any facet)
+
+### Changed
+
+- **evaluate-options skill**: Added optional Phase 3b (Pax8 Standards Check) that checks organisational standards before scoring — skipped for non-Pax8 projects
+- **Facet index**: Updated to 21 facets (was 19)
+- **Root README**: Updated structure, facet table, skills, and commands sections
+
+---
+
 ## [2026-02-09] - V1 Improvements: Diagrams, Code, Quality, Tagging
 
 ### Added

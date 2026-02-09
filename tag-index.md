@@ -29,6 +29,7 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `azure-boards` | [Work Management](facets/work-management/) |
 | `azure-pipelines` | [CI/CD](facets/ci-cd/) |
 | `bdd` | [Testing](facets/testing/) |
+| `branch-protection` | [Repository & Code Governance](facets/repository-governance/) |
 | `branding` | [Multi-Tenancy UX](experiences/multi-tenancy-ux/) |
 | `breadcrumbs` | [Navigation](experiences/navigation/) |
 | `breakpoints` | [Responsive Design](experiences/responsive-design/) |
@@ -40,6 +41,7 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `circuit-breaker` | [Error Handling](facets/error-handling/) |
 | `code-smells` | [Refactoring & Extraction](facets/refactoring-and-extraction/) |
 | `code-splitting` | [Performance](facets/performance/) |
+| `codeowners` | [Repository & Code Governance](facets/repository-governance/) |
 | `component-library` | [Frontend Architecture](facets/frontend-architecture/), [Design Consistency & Visual Identity](experiences/design-consistency-and-visual-identity/) |
 | `composables` | [State Management](facets/state-management/) |
 | `configmap` | [Configuration Management](facets/configuration-management/) |
@@ -60,6 +62,8 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `ddd` | [Backend Architecture](facets/backend-architecture/) |
 | `dead-letter-queue` | [Error Handling](facets/error-handling/) |
 | `deep-linking` | [Navigation](experiences/navigation/) |
+| `dependabot` | [Dependency Management](facets/dependency-management/) |
+| `dependencies` | [Dependency Management](facets/dependency-management/) |
 | `dependency-inversion` | [Refactoring & Extraction](facets/refactoring-and-extraction/) |
 | `dependency-scanning` | [Security](facets/security/) |
 | `deployment` | [CI/CD](facets/ci-cd/) |
@@ -91,9 +95,11 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `flyway` | [Data Persistence](facets/data-persistence/) |
 | `forms` | [Forms and Data Entry](experiences/forms-and-data-entry/) |
 | `full-text-search` | [Search & Discovery](experiences/search-and-discovery/) |
+| `git` | [Repository & Code Governance](facets/repository-governance/) |
+| `github` | [Repository & Code Governance](facets/repository-governance/) |
 | `github-actions` | [CI/CD](facets/ci-cd/) |
 | `github-issues` | [Work Management](facets/work-management/) |
-| `gradle` | [Backend Architecture](facets/backend-architecture/) |
+| `gradle` | [Backend Architecture](facets/backend-architecture/), [Dependency Management](facets/dependency-management/) |
 | `grafana` | [Observability](facets/observability/) |
 | `graphql` | [API Design](facets/api-design/) |
 | `grpc` | [API Design](facets/api-design/) |
@@ -132,9 +138,11 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `l10n` | [Internationalization](facets/internationalization/) |
 | `launchdarkly` | [Feature Toggles](facets/feature-toggles/) |
 | `lazy-loading` | [Performance](facets/performance/), [Loading and Perceived Performance](experiences/loading-and-perceived-performance/) |
+| `license` | [Dependency Management](facets/dependency-management/) |
 | `lighthouse` | [Accessibility](facets/accessibility/), [Performance](facets/performance/) |
 | `liquibase` | [Data Persistence](facets/data-persistence/) |
 | `locale` | [Internationalization](facets/internationalization/), [Settings & Preferences](experiences/settings-and-preferences/) |
+| `lock-file` | [Dependency Management](facets/dependency-management/) |
 | `logging` | [Observability](facets/observability/) |
 | `long-running` | [Workflows & Tasks](experiences/workflows-and-tasks/) |
 | `media-queries` | [Responsive Design](experiences/responsive-design/) |
@@ -151,10 +159,13 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `modularization` | [Refactoring & Extraction](facets/refactoring-and-extraction/) |
 | `module-federation` | [Frontend Architecture](facets/frontend-architecture/) |
 | `modulith` | [Backend Architecture](facets/backend-architecture/) |
+| `monorepo` | [Repository & Code Governance](facets/repository-governance/) |
 | `mui` | [Design Consistency & Visual Identity](experiences/design-consistency-and-visual-identity/) |
 | `multi-step` | [Forms and Data Entry](experiences/forms-and-data-entry/) |
 | `multi-tenant` | [Permissions UX](experiences/permissions-ux/) |
+| `naming-conventions` | [Repository & Code Governance](facets/repository-governance/) |
 | `notification-center` | [Notifications](experiences/notifications/) |
+| `npm` | [Dependency Management](facets/dependency-management/) |
 | `nps` | [Feedback & Support](experiences/feedback-and-support/) |
 | `oauth` | [Authentication & Authorization](facets/authentication/) |
 | `oidc` | [Authentication & Authorization](facets/authentication/) |
@@ -172,6 +183,7 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `playwright` | [Testing](facets/testing/) |
 | `polling` | [Real-Time & Collaboration](experiences/real-time-and-collaboration/) |
 | `postgresql` | [Data Persistence](facets/data-persistence/) |
+| `pr-review` | [Repository & Code Governance](facets/repository-governance/) |
 | `prefetch` | [Loading and Perceived Performance](experiences/loading-and-perceived-performance/) |
 | `presence` | [Real-Time & Collaboration](experiences/real-time-and-collaboration/) |
 | `problem-details` | [Error Handling](facets/error-handling/) |
@@ -196,6 +208,8 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `redis` | [Data Persistence](facets/data-persistence/) |
 | `redux` | [State Management](facets/state-management/) |
 | `relevance` | [Search & Discovery](experiences/search-and-discovery/) |
+| `renovate` | [Dependency Management](facets/dependency-management/) |
+| `repository` | [Repository & Code Governance](facets/repository-governance/) |
 | `request-access` | [Permissions UX](experiences/permissions-ux/) |
 | `responsive-charts` | [Data Visualization](experiences/data-visualization/) |
 | `responsive-images` | [Responsive Design](experiences/responsive-design/) |
@@ -205,10 +219,12 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `role-based` | [Permissions UX](experiences/permissions-ux/) |
 | `routing` | [Frontend Architecture](facets/frontend-architecture/), [Navigation](experiences/navigation/) |
 | `rtl` | [Internationalization](facets/internationalization/) |
+| `rulesets` | [Repository & Code Governance](facets/repository-governance/) |
 | `saga` | [Event-Driven Architecture](facets/event-driven-architecture/), [Workflows & Tasks](experiences/workflows-and-tasks/) |
 | `screen-reader` | [Accessibility](facets/accessibility/) |
 | `scrum` | [Work Management](facets/work-management/) |
 | `secrets` | [Configuration Management](facets/configuration-management/), [Security](facets/security/) |
+| `semver` | [Dependency Management](facets/dependency-management/) |
 | `session` | [Authentication & Authorization](facets/authentication/) |
 | `session-replay` | [Feedback & Support](experiences/feedback-and-support/) |
 | `sidebar` | [Navigation](experiences/navigation/) |
@@ -253,6 +269,7 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `tooltip` | [Onboarding](experiences/onboarding/) |
 | `touch` | [Responsive Design](experiences/responsive-design/) |
 | `tracing` | [Observability](facets/observability/) |
+| `transitive` | [Dependency Management](facets/dependency-management/) |
 | `translation` | [Internationalization](facets/internationalization/) |
 | `twelve-factor` | [Configuration Management](facets/configuration-management/) |
 | `typespec` | [API Design](facets/api-design/) |
@@ -271,6 +288,7 @@ Auto-generated cross-reference of tags to facets and experiences. Regenerate wit
 | `vue-router` | [Navigation](experiences/navigation/) |
 | `vuelidate` | [Forms and Data Entry](experiences/forms-and-data-entry/) |
 | `vuex` | [State Management](facets/state-management/) |
+| `vulnerability` | [Dependency Management](facets/dependency-management/) |
 | `walkthrough` | [Onboarding](experiences/onboarding/) |
 | `wcag` | [Accessibility](facets/accessibility/) |
 | `websocket` | [Notifications](experiences/notifications/), [Real-Time & Collaboration](experiences/real-time-and-collaboration/) |

@@ -1,6 +1,6 @@
 # Engineering Facets
 
-19 engineering-focused deep dives, each covering a critical concern in modern application development. Every facet provides seven perspectives: product, architecture, testing, best practices, gotchas, and options.
+21 engineering-focused deep dives, each covering a critical concern in modern application development. Every facet provides seven perspectives: product, architecture, testing, best practices, gotchas, and options.
 
 ## Facet Index
 
@@ -25,6 +25,8 @@
 | 17 | [Configuration Management](configuration-management/) | Externalized config, secrets, profiles, environment management | Operations |
 | 18 | [Refactoring & Extraction](refactoring-and-extraction/) | When and how to refactor, extraction patterns, safe migration | Process |
 | 19 | [Work Management](work-management/) | Ticket systems, ticket types, workflows, estimation, sprints | Process |
+| 20 | [Dependency Management](dependency-management/) | Evaluation, versioning, upgrades, license compliance, security scanning | Quality |
+| 21 | [Repository & Code Governance](repository-governance/) | Branch strategies, CODEOWNERS, PR policies, repo lifecycle | Process |
 
 ## How to Navigate
 

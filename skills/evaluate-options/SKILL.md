@@ -71,6 +71,22 @@ Which criteria are most important for this decision?
 3. Present the relevant synergies based on their answers
 4. Adjust scoring guidance: if a synergy strongly favors one option, note this as a contextual bonus
 
+### Phase 3b: Pax8 Standards Check (Optional)
+
+If the user is working on a Pax8 project:
+
+1. Ask: "Is this a Pax8 project? Would you like to check Pax8 standards?" using AskQuestion
+2. If yes, read `@engineering-codex/pax8-context/standards-map.md` and filter for the current facet
+3. Check `@engineering-codex/pax8-context/deprecated.md` for any deprecated options
+4. Present findings:
+   - If Pax8 has a **Standard** for this facet: "Pax8 has already decided: [summary]. This is an organisational standard — adopt unless you have a strong, documented reason to diverge."
+   - If Pax8 has **Guidance**: "Pax8 recommends: [summary]. This is guidance, not a mandate — weigh it alongside other criteria."
+   - If an option under evaluation is **deprecated** at Pax8: "Note: [technology] is deprecated at Pax8 (ADR-XXXXX). Avoid for Pax8 projects."
+5. If Pax8 has already decided, ask whether to accept the standard or evaluate alternatives anyway
+6. If accepted, skip to Phase 5 (Document the Decision) with the Pax8 standard as the chosen option
+
+This phase is skipped entirely for non-Pax8 projects.
+
 ### Phase 4: Scoring and Recommendation
 
 For decision-matrix mode:
