@@ -2,6 +2,7 @@
 title: Error Handling
 type: facet
 last_updated: 2026-02-09
+tags: [exceptions, rfc-7807, problem-details, error-boundary, retry, circuit-breaker, dead-letter-queue]
 ---
 
 # Error Handling

@@ -2,6 +2,7 @@
 title: Multi-Tenancy UX
 type: experience
 last_updated: 2026-02-09
+tags: [tenant, switching, white-labeling, impersonation, data-isolation, tenant-context, branding]
 ---
 
 # Multi-Tenancy UX

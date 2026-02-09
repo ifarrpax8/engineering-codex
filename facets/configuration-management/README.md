@@ -2,6 +2,7 @@
 title: Configuration Management
 type: facet
 last_updated: 2026-02-09
+tags: [environment-variables, feature-flags, vault, configmap, secrets, twelve-factor, spring-config]
 ---
 
 # Configuration Management

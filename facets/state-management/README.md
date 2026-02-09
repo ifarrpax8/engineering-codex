@@ -2,6 +2,7 @@
 title: State Management
 type: facet
 last_updated: 2026-02-09
+tags: [pinia, zustand, tanstack-query, vuex, redux, composables, hooks, reactive, store]
 ---
 
 # State Management

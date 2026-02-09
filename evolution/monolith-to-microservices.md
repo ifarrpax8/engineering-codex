@@ -86,7 +86,7 @@ Each transition has specific triggers, trade-offs, and prerequisites.
 
 **How to transition:**
 1. Start with the module that has the strongest case for independence
-2. Extract one module at a time (strangler fig pattern) → [Refactoring](../facets/refactoring/architecture.md)
+2. Extract one module at a time (strangler fig pattern) → [Refactoring](../facets/refactoring-and-extraction/architecture.md)
 3. Define clear API contracts between services → [API Design](../facets/api-design/options.md)
 4. Implement event-driven communication where appropriate → [Event-Driven Architecture](../facets/event-driven-architecture/options.md)
 5. Establish per-service data ownership

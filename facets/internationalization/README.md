@@ -2,6 +2,7 @@
 title: Internationalization
 type: facet
 last_updated: 2026-02-09
+tags: [i18n, l10n, vue-i18n, react-intl, spring-messagesource, icu, locale, translation, rtl]
 ---
 
 # Internationalization

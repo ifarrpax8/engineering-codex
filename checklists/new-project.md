@@ -33,9 +33,9 @@ Use this checklist when starting a greenfield project or new service. Each item 
 
 ## Developer Experience
 
-- [ ] **Local development setup documented** → [Developer Experience](../facets/developer-experience/best-practices.md)
-- [ ] **README with setup instructions** → [Developer Experience](../facets/developer-experience/product.md)
-- [ ] **Code formatting and linting configured** → [Developer Experience](../facets/developer-experience/best-practices.md)
+- [ ] **Local development setup documented** → [Configuration Management](../facets/configuration-management/best-practices.md)
+- [ ] **README with setup instructions** → [Backend Architecture](../facets/backend-architecture/best-practices.md)
+- [ ] **Code formatting and linting configured** → [Testing](../facets/testing/best-practices.md)
 - [ ] **Feature toggle approach decided** → [Feature Toggles](../facets/feature-toggles/options.md)
 
 ## User Experience

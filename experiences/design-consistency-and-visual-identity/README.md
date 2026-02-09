@@ -2,6 +2,7 @@
 title: Design Consistency & Visual Identity
 type: experience
 last_updated: 2026-02-09
+tags: [design-tokens, propulsion, mui, storybook, theming, visual-regression, component-library, figma]
 ---
 
 # Design Consistency & Visual Identity

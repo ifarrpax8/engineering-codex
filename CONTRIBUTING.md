@@ -47,8 +47,18 @@ Every facet/experience README must include:
 title: <Display Name>
 type: facet  # or "experience"
 last_updated: YYYY-MM-DD
+tags: [keyword1, keyword2, keyword3]
 ---
 ```
+
+### Tagging Conventions
+
+Tags enable cross-cutting discovery via [tag-index.md](tag-index.md). When adding or updating tags:
+
+- Use lowercase, hyphenated keywords (e.g., `spring-boot`, not `Spring Boot`)
+- Include technology names (e.g., `kafka`, `vue-router`), concepts (e.g., `event-sourcing`, `pagination`), and abbreviations (e.g., `a11y`, `i18n`)
+- Aim for 5-10 tags per entry — enough for discoverability without noise
+- After updating tags, regenerate the index: `python3 ./scripts/generate-tag-index.sh`
 
 ## Updating Existing Content
 

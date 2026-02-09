@@ -2,6 +2,7 @@
 title: Real-Time & Collaboration
 type: experience
 last_updated: 2026-02-09
+tags: [websocket, stomp, crdt, presence, conflict-resolution, optimistic-update, polling, sse]
 ---
 
 # Real-Time & Collaboration

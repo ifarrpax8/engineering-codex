@@ -2,6 +2,7 @@
 title: Testing
 type: facet
 last_updated: 2026-02-09
+tags: [junit, vitest, playwright, testcontainers, mockk, mockito, tdd, bdd, e2e, integration-testing, unit-testing]
 ---
 
 # Testing

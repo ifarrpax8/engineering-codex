@@ -2,6 +2,7 @@
 title: Security
 type: facet
 last_updated: 2026-02-09
+tags: [csp, cors, xss, csrf, tls, encryption, secrets, vault, dependency-scanning, owasp]
 ---
 
 # Security

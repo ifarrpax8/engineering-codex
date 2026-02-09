@@ -2,6 +2,7 @@
 title: Event-Driven Architecture
 type: facet
 last_updated: 2026-02-09
+tags: [kafka, rabbitmq, axon, event-sourcing, cqrs, saga, messaging, async, eventual-consistency]
 ---
 
 # Event-Driven Architecture

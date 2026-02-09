@@ -2,6 +2,7 @@
 title: Accessibility
 type: facet
 last_updated: 2026-02-09
+tags: [wcag, aria, screen-reader, keyboard-navigation, axe-core, lighthouse, inclusive-design, a11y]
 ---
 
 # Accessibility

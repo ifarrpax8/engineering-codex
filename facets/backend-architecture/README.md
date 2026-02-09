@@ -2,6 +2,7 @@
 title: Backend Architecture
 type: facet
 last_updated: 2026-02-09
+tags: [spring-boot, kotlin, java, hexagonal, cqrs, ddd, microservices, modulith, gradle]
 ---
 
 # Backend Architecture

@@ -2,6 +2,7 @@
 title: API Design
 type: facet
 last_updated: 2026-02-09
+tags: [rest, graphql, grpc, openapi, typespec, pagination, hateoas, http, versioning]
 ---
 
 # API Design

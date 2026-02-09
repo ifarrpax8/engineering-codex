@@ -52,7 +52,7 @@ Use this checklist before launching a service or feature to production. Each ite
 ## Documentation
 
 - [ ] **API documentation available** → [API Design](../facets/api-design/best-practices.md)
-- [ ] **Runbook for operational procedures** → [Developer Experience](../facets/developer-experience/best-practices.md)
+- [ ] **Runbook for operational procedures** → [Observability](../facets/observability/operations.md)
 - [ ] **Architecture decisions documented** → [Documenting Decisions](../decision-frameworks/documenting-decisions.md)
 
 ## Deployment

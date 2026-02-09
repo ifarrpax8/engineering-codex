@@ -2,6 +2,7 @@
 title: Settings & Preferences
 type: experience
 last_updated: 2026-02-09
+tags: [user-preferences, theme, locale, configuration, api, caching, real-time, propagation]
 ---
 
 # Settings & Preferences

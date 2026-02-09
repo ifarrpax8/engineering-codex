@@ -2,6 +2,7 @@
 title: Search & Discovery
 type: experience
 last_updated: 2026-02-09
+tags: [opensearch, elasticsearch, full-text-search, autocomplete, faceted-search, indexing, relevance]
 ---
 
 # Search & Discovery

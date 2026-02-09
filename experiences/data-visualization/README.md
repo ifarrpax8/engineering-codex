@@ -2,6 +2,7 @@
 title: Data Visualization
 type: experience
 last_updated: 2026-02-09
+tags: [chart-js, echarts, d3, recharts, dashboard, aggregation, export, responsive-charts]
 ---
 
 # Data Visualization

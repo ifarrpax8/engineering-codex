@@ -2,6 +2,7 @@
 title: Work Management
 type: facet
 last_updated: 2026-02-09
+tags: [jira, github-issues, azure-boards, agile, scrum, kanban, sprint, estimation, tickets]
 ---
 
 # Work Management

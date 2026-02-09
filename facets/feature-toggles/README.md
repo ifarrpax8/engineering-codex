@@ -2,6 +2,7 @@
 title: Feature Toggles
 type: facet
 last_updated: 2026-02-09
+tags: [launchdarkly, openfeature, feature-flags, canary, a-b-testing, progressive-rollout, kill-switch]
 ---
 
 # Feature Toggles

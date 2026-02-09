@@ -2,6 +2,7 @@
 title: Content Strategy
 type: experience
 last_updated: 2026-02-09
+tags: [microcopy, empty-state, error-messages, tone-of-voice, vue-i18n, react-intl, string-externalization]
 ---
 
 # Content Strategy

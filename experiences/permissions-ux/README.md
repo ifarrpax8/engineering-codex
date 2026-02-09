@@ -2,6 +2,7 @@
 title: Permissions UX
 type: experience
 last_updated: 2026-02-09
+tags: [rbac, abac, fga, hide-disable, request-access, permission-aware, multi-tenant, role-based]
 ---
 
 # Permissions UX

@@ -2,6 +2,7 @@
 title: Notifications
 type: experience
 last_updated: 2026-02-09
+tags: [toast, push-notification, websocket, sse, email, in-app, notification-center, real-time]
 ---
 
 # Notifications

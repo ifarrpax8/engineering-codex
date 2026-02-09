@@ -67,4 +67,4 @@ Universal inflection point triggers that signal when an architectural decision s
 
 - [Monolith to Microservices](monolith-to-microservices.md)
 - [SPA to MFE](spa-to-mfe.md)
-- [Refactoring Facet](../facets/refactoring/) -- For code-level evolution guidance
+- [Refactoring Facet](../facets/refactoring-and-extraction/) -- For code-level evolution guidance

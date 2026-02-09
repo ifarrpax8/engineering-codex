@@ -2,6 +2,7 @@
 title: Refactoring & Extraction
 type: facet
 last_updated: 2026-02-09
+tags: [strangler-fig, extract-method, code-smells, technical-debt, modularization, dependency-inversion]
 ---
 
 # Refactoring & Extraction

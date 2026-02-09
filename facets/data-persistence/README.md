@@ -2,6 +2,7 @@
 title: Data Persistence
 type: facet
 last_updated: 2026-02-09
+tags: [postgresql, redis, jpa, hibernate, flyway, liquibase, caching, database, migration, spring-data]
 ---
 
 # Data Persistence

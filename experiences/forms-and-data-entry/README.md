@@ -2,6 +2,7 @@
 title: Forms and Data Entry
 type: experience
 last_updated: 2026-02-09
+tags: [forms, validation, wizard, multi-step, vuelidate, zod, react-hook-form, input, draft]
 ---
 
 # Forms and Data Entry

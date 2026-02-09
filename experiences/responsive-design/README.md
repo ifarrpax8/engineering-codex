@@ -2,6 +2,7 @@
 title: Responsive Design
 type: experience
 last_updated: 2026-02-09
+tags: [mobile-first, media-queries, container-queries, tailwind, breakpoints, responsive-images, touch]
 ---
 
 # Responsive Design

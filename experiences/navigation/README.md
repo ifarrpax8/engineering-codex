@@ -2,6 +2,7 @@
 title: Navigation
 type: experience
 last_updated: 2026-02-09
+tags: [vue-router, react-router, breadcrumbs, deep-linking, sidebar, tabs, mobile-navigation, routing]
 ---
 
 # Navigation

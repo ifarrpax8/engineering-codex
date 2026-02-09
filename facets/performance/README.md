@@ -2,6 +2,7 @@
 title: Performance
 type: facet
 last_updated: 2026-02-09
+tags: [caching, lazy-loading, code-splitting, core-web-vitals, profiling, jmeter, lighthouse, bundle-size]
 ---
 
 # Performance

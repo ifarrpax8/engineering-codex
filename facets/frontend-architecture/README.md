@@ -2,6 +2,7 @@
 title: Frontend Architecture
 type: facet
 last_updated: 2026-02-09
+tags: [vue, react, mfe, module-federation, vite, component-library, spa, routing]
 ---
 
 # Frontend Architecture

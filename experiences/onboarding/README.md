@@ -2,6 +2,7 @@
 title: Onboarding
 type: experience
 last_updated: 2026-02-09
+tags: [first-run, guided-tour, empty-state, progressive-disclosure, activation, walkthrough, tooltip]
 ---
 
 # Onboarding

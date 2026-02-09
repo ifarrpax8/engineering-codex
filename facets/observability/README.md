@@ -2,6 +2,7 @@
 title: Observability
 type: facet
 last_updated: 2026-02-09
+tags: [logging, metrics, tracing, opentelemetry, prometheus, grafana, alerting, structured-logging, apm]
 ---
 
 # Observability

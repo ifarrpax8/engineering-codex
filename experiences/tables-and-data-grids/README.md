@@ -2,6 +2,7 @@
 title: Tables & Data Grids
 type: experience
 last_updated: 2026-02-09
+tags: [pagination, sorting, filtering, virtual-scroll, tanstack-table, ag-grid, inline-editing, export]
 ---
 
 # Tables & Data Grids

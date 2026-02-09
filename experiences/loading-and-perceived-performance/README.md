@@ -2,6 +2,7 @@
 title: Loading and Perceived Performance
 type: experience
 last_updated: 2026-02-09
+tags: [skeleton, spinner, optimistic-ui, suspense, prefetch, lazy-loading, core-web-vitals, progressive]
 ---
 
 # Loading and Perceived Performance

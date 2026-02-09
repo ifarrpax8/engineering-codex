@@ -2,6 +2,7 @@
 title: Feedback & Support
 type: experience
 last_updated: 2026-02-09
+tags: [feedback-widget, support-ticket, knowledge-base, session-replay, nps, csat, help-center]
 ---
 
 # Feedback & Support

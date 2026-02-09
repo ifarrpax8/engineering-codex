@@ -2,6 +2,7 @@
 title: CI/CD
 type: facet
 last_updated: 2026-02-09
+tags: [github-actions, azure-pipelines, docker, kubernetes, helm, terraform, deployment, pipeline, argocd]
 ---
 
 # CI/CD

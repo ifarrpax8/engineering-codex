@@ -2,6 +2,7 @@
 title: Authentication & Authorization
 type: facet
 last_updated: 2026-02-09
+tags: [oauth, oidc, jwt, session, rbac, abac, fga, spring-security, keycloak, auth0]
 ---
 
 # Authentication & Authorization

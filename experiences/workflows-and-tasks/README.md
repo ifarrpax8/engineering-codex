@@ -2,6 +2,7 @@
 title: Workflows & Tasks
 type: experience
 last_updated: 2026-02-09
+tags: [state-machine, approval, bulk-actions, progress, long-running, undo, saga, spring-statemachine]
 ---
 
 # Workflows & Tasks
