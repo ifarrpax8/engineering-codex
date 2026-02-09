@@ -36,14 +36,14 @@ Tenant switching, white-labeling, role-based UI adaptation, and the UX patterns 
 
 ## Related Facets
 
-- [authentication](../facets/authentication.md) -- JWT claims, tenant-aware authentication flows
-- [security](../facets/security.md) -- Data isolation, cross-tenant access prevention, audit logging
-- [data-persistence](../facets/data-persistence.md) -- Schema-per-tenant vs shared schema patterns, tenant-scoped queries
-- [configuration-management](../facets/configuration-management.md) -- Tenant-specific configuration, white-label settings
+- [Authentication](../../facets/authentication/) -- JWT claims, tenant-aware authentication flows
+- [Security](../../facets/security/) -- Data isolation, cross-tenant access prevention, audit logging
+- [Data Persistence](../../facets/data-persistence/) -- Schema-per-tenant vs shared schema patterns, tenant-scoped queries
+- [Configuration Management](../../facets/configuration-management/) -- Tenant-specific configuration, white-label settings
 
 ## Related Experiences
 
-- [permissions-ux](../experiences/permissions-ux.md) -- Role-based UI adaptation per tenant, permission caching
-- [settings-and-preferences](../experiences/settings-and-preferences.md) -- Tenant-specific user preferences, notification settings
-- [navigation](../experiences/navigation.md) -- Tenant-aware routing, feature visibility per tenant plan
-- [design-consistency-and-visual-identity](../experiences/design-consistency-and-visual-identity.md) -- White-labeling, brand consistency, custom themes
+- [Permissions UX](../permissions-ux/) -- Role-based UI adaptation per tenant, permission caching
+- [Settings and Preferences](../settings-and-preferences/) -- Tenant-specific user preferences, notification settings
+- [Navigation](../navigation/) -- Tenant-aware routing, feature visibility per tenant plan
+- [Design Consistency and Visual Identity](../design-consistency-and-visual-identity/) -- White-labeling, brand consistency, custom themes

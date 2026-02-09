@@ -5,7 +5,7 @@ Testing state management requires strategies at multiple levels: unit testing st
 ## Contents
 
 - [Store Unit Testing](#store-unit-testing)
-- [Component + State Testing](#component--state-testing)
+- [Component + State Testing](#component-state-testing)
 - [Server State Testing](#server-state-testing)
 - [Integration Testing](#integration-testing)
 - [Performance Testing](#performance-testing)

@@ -34,9 +34,9 @@ Information architecture, wayfinding, menu structures, breadcrumbs, and routing 
 
 ## Related Facets
 
-- [Frontend Architecture](../facets/frontend-architecture.md) -- Component structure, state management, routing patterns
-- [Accessibility](../facets/accessibility.md) -- Keyboard navigation, screen reader support, focus management
-- [Authentication](../facets/authentication.md) -- Route guards, protected routes, permission-based navigation
+- [Frontend Architecture](../../facets/frontend-architecture/) -- Component structure, state management, routing patterns
+- [Accessibility](../../facets/accessibility/) -- Keyboard navigation, screen reader support, focus management
+- [Authentication](../../facets/authentication/) -- Route guards, protected routes, permission-based navigation
 
 ## Related Experiences
 

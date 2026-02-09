@@ -33,4 +33,4 @@ Environment configuration, secrets, feature flags, profiles, externalized config
 
 ## Related Experiences
 
-- [Multi-Tenancy](../../experiences/multi-tenancy/) -- Tenant-specific configuration
+- [Multi-Tenancy](../../experiences/multi-tenancy-ux/) -- Tenant-specific configuration

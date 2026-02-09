@@ -32,5 +32,3 @@ When to refactor, when to extract, code smells, technical debt management, safe 
 - [Observability](../observability/) -- Monitoring during and after refactoring
 
 ## Related Experiences
-
-- [Developer Experience](../../experiences/developer-experience/) -- Codebase health affects DX

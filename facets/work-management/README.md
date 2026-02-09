@@ -31,5 +31,3 @@ Ticket systems, ticket types, workflows, estimation, sprint management, backlog 
 - [Testing](../testing/) -- Test coverage tied to acceptance criteria
 
 ## Related Experiences
-
-- [Developer Experience](../../experiences/developer-experience/) -- How work management affects developer productivity

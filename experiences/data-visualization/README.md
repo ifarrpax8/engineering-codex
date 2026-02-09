@@ -35,14 +35,14 @@ Charts, dashboards, data exports, and reporting UX patterns for presenting compl
 
 ## Related Facets
 
-- [API Design](../facets/api-design.md) — Chart data endpoints, aggregation API patterns, pagination for large datasets
-- [Performance](../facets/performance.md) — Chart rendering optimization, lazy loading, data sampling strategies
-- [Data Persistence](../facets/data-persistence.md) — Time-series data storage, aggregation query optimization, caching strategies
-- [Observability](../facets/observability.md) — Dashboard load time monitoring, export job tracking, chart render performance
+- [API Design](../../facets/api-design/) — Chart data endpoints, aggregation API patterns, pagination for large datasets
+- [Performance](../../facets/performance/) — Chart rendering optimization, lazy loading, data sampling strategies
+- [Data Persistence](../../facets/data-persistence/) — Time-series data storage, aggregation query optimization, caching strategies
+- [Observability](../../facets/observability/) — Dashboard load time monitoring, export job tracking, chart render performance
 
 ## Related Experiences
 
-- [Tables and Data Grids](../experiences/tables-and-data-grids.md) — Complementary data presentation patterns, when to use tables vs charts
-- [Loading and Perceived Performance](../experiences/loading-and-perceived-performance.md) — Skeleton states for charts, progressive data loading
-- [Responsive Design](../experiences/responsive-design.md) — Mobile chart simplification, touch interactions, responsive dashboard layouts
-- [Search and Discovery](../experiences/search-and-discovery.md) — Filtering dashboards, date range selection, drill-down navigation patterns
+- [Tables and Data Grids](../tables-and-data-grids/) — Complementary data presentation patterns, when to use tables vs charts
+- [Loading and Perceived Performance](../loading-and-perceived-performance/) — Skeleton states for charts, progressive data loading
+- [Responsive Design](../responsive-design/) — Mobile chart simplification, touch interactions, responsive dashboard layouts
+- [Search and Discovery](../search-and-discovery/) — Filtering dashboards, date range selection, drill-down navigation patterns

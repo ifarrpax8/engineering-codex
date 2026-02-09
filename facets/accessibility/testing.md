@@ -11,7 +11,6 @@
 - [User Testing with Assistive Technology Users](#user-testing-with-assistive-technology-users)
 - [CI/CD Integration](#cicd-integration)
 - [Color Contrast Testing](#color-contrast-testing)
-- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 ## Automated Testing with axe-core
 

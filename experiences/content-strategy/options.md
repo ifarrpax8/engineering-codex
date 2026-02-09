@@ -482,25 +482,25 @@ Standardized error response format for APIs. Includes type, title, status, detai
 - Content strategy requires i18n infrastructure
 - i18n enables content strategy at scale
 - Shared message catalogs and locale management
-- See: [Internationalization Facet](../facets/internationalization.md)
+- See: [Internationalization Facet](../../facets/internationalization/)
 
 **Error Handling:**
 - Error messages are core content type
 - Error handling patterns inform content structure
 - Content strategy improves error recovery
-- See: [Error Handling Facet](../facets/error-handling.md)
+- See: [Error Handling Facet](../../facets/error-handling/)
 
 **Accessibility:**
 - Content must be accessible (labels, alt text, meaningful links)
 - Accessibility requirements inform content patterns
 - Content strategy improves accessibility
-- See: [Accessibility Facet](../facets/accessibility.md)
+- See: [Accessibility Facet](../../facets/accessibility/)
 
 **Design Systems:**
 - Content patterns should be part of design system
 - Design system components need content guidelines
 - Shared terminology and tone
-- See: [Design Systems Experience](../design-systems/)
+- See: [Design Systems Experience](../design-consistency-and-visual-identity/)
 
 ## Evolution Triggers
 

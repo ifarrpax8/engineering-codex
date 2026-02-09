@@ -34,7 +34,7 @@ WCAG compliance, semantic HTML, ARIA, keyboard navigation, screen readers, color
 
 ## Related Experiences
 
-- [Forms & Validation](../../experiences/forms-and-validation/) -- Accessible form patterns
+- [Forms & Validation](../../experiences/forms-and-data-entry/) -- Accessible form patterns
 - [Navigation](../../experiences/navigation/) -- Keyboard navigation, skip links, landmarks
 - [Tables & Data Grids](../../experiences/tables-and-data-grids/) -- Accessible table markup
 - [Loading & Perceived Performance](../../experiences/loading-and-perceived-performance/) -- Loading announcements for screen readers

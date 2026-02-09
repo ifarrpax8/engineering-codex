@@ -41,6 +41,6 @@ This facet covers the complete spectrum of internationalization concerns, from p
 
 ## Related Experiences
 
-- [Forms & Validation](../../experiences/forms-and-validation/) -- Localized validation messages, locale-aware input formatting, error message translation, field label internationalization
+- [Forms & Validation](../../experiences/forms-and-data-entry/) -- Localized validation messages, locale-aware input formatting, error message translation, field label internationalization
 - [Navigation](../../experiences/navigation/) -- Language switching UX, locale persistence, language selector placement, URL structure for locales
 - [Notifications](../../experiences/notifications/) -- Localized notification content, timezone-aware timestamps, culturally appropriate messaging, notification channel preferences by locale

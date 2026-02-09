@@ -7,7 +7,7 @@
 - [Graceful Degradation](#graceful-degradation)
 - [Debounce/Throttle Real-Time UI Updates](#debouncethrottle-real-time-ui-updates)
 - [Presence Should Have a Timeout](#presence-should-have-a-timeout)
-- [Optimistic + Real-Time](#optimistic--real-time)
+- [Optimistic + Real-Time](#optimistic-real-time)
 - [Show "What Changed" Not Just "Something Changed"](#show-what-changed-not-just-something-changed)
 - [Connection Management](#connection-management)
 - [Stack-Specific Implementation](#stack-specific-implementation)

@@ -18,7 +18,6 @@ last_updated: 2026-02-09
 - [Testing Dead Letter Queues](#testing-dead-letter-queues)
 - [Testing Idempotency](#testing-idempotency)
 - [End-to-End Event Flow Testing](#end-to-end-event-flow-testing)
-- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 ## Testing Event Handlers
 

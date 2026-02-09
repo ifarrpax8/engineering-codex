@@ -34,9 +34,9 @@ Creating interfaces that adapt seamlessly across mobile, tablet, and desktop dev
 
 ## Related Facets
 
-- [Frontend Architecture](../facets/frontend-architecture.md) -- Component structure, state management, MFE patterns
-- [Performance](../facets/performance.md) -- Mobile performance budgets, image optimization, Core Web Vitals
-- [Accessibility](../facets/accessibility.md) -- Touch target sizes, keyboard navigation, screen reader support
+- [Frontend Architecture](../../facets/frontend-architecture/) -- Component structure, state management, MFE patterns
+- [Performance](../../facets/performance/) -- Mobile performance budgets, image optimization, Core Web Vitals
+- [Accessibility](../../facets/accessibility/) -- Touch target sizes, keyboard navigation, screen reader support
 
 ## Related Experiences
 

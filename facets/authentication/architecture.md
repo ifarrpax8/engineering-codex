@@ -6,7 +6,7 @@ Authentication architecture determines how identity is established, verified, an
 
 - [Authentication Approaches](#authentication-approaches)
 - [JWT Deep Dive](#jwt-deep-dive)
-- [OAuth 2.0 / OIDC Flows](#oauth-20--oidc-flows)
+- [OAuth 2.0 / OIDC Flows](#oauth-20-oidc-flows)
 - [Authorization Models](#authorization-models)
 - [Architecture Patterns](#architecture-patterns)
 - [Session Storage](#session-storage)

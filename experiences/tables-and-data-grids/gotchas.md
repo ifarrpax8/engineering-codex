@@ -4,7 +4,7 @@
 
 - [Loading All Data Client-Side](#loading-all-data-client-side)
 - [COUNT(*) Performance Issues](#count-performance-issues)
-- [Pagination + Sorting Inconsistency](#pagination--sorting-inconsistency)
+- [Pagination + Sorting Inconsistency](#pagination-sorting-inconsistency)
 - [Filter State Lost on Navigation](#filter-state-lost-on-navigation)
 - [Column Reordering Not Persisted](#column-reordering-not-persisted)
 - [Inline Editing Without Optimistic Lock](#inline-editing-without-optimistic-lock)

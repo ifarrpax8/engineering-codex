@@ -35,9 +35,9 @@ Microcopy, help text, empty states, error messages, and tone of voice — the wo
 
 ## Related Facets
 
-- [Internationalization](../facets/internationalization.md) — Content strategy requires i18n infrastructure for message catalogs, pluralization, and locale-aware content
-- [Error Handling](../facets/error-handling.md) — Error messages are a core content type; error handling patterns inform content structure
-- [Accessibility](../facets/accessibility.md) — Content must be accessible: meaningful link text, proper labels, screen reader support
+- [Internationalization](../../facets/internationalization/) — Content strategy requires i18n infrastructure for message catalogs, pluralization, and locale-aware content
+- [Error Handling](../../facets/error-handling/) — Error messages are a core content type; error handling patterns inform content structure
+- [Accessibility](../../facets/accessibility/) — Content must be accessible: meaningful link text, proper labels, screen reader support
 
 ## Related Experiences
 

@@ -35,9 +35,9 @@ First-time user experience, progressive disclosure, activation funnels, and guid
 
 ## Related Facets
 
-- [Authentication](../facets/authentication.md) -- First-time user registration, role-based onboarding paths, org setup flows
-- [Feature Toggles](../facets/feature-toggles.md) -- Graduated rollout of onboarding flows, A/B testing variants, feature gating by onboarding stage
-- [Observability](../facets/observability.md) -- Tracking onboarding funnel metrics, drop-off analysis, activation event monitoring
+- [Authentication](../../facets/authentication/) -- First-time user registration, role-based onboarding paths, org setup flows
+- [Feature Toggles](../../facets/feature-toggles/) -- Graduated rollout of onboarding flows, A/B testing variants, feature gating by onboarding stage
+- [Observability](../../facets/observability/) -- Tracking onboarding funnel metrics, drop-off analysis, activation event monitoring
 
 ## Related Experiences
 

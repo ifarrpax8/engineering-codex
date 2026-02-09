@@ -34,9 +34,9 @@ How access control decisions are communicated to users through the UI — disabl
 
 ## Related Facets
 
-- [Authentication](../facets/authentication.md) -- User identity and session management
-- [Security](../facets/security.md) -- Defense in depth, authorization enforcement
-- [Frontend Architecture](../facets/frontend-architecture.md) -- Component patterns, state management, conditional rendering
+- [Authentication](../../facets/authentication/) -- User identity and session management
+- [Security](../../facets/security/) -- Defense in depth, authorization enforcement
+- [Frontend Architecture](../../facets/frontend-architecture/) -- Component patterns, state management, conditional rendering
 
 ## Related Experiences
 

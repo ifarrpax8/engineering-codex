@@ -35,14 +35,14 @@ User configuration, personalization, and account management that empowers users 
 
 ## Related Facets
 
-- [Authentication](../facets/authentication.md) -- User identity and session management for settings access
-- [Configuration Management](../facets/configuration-management.md) -- System-level configuration vs user preferences
-- [Data Persistence](../facets/data-persistence.md) -- Settings storage patterns and migration strategies
-- [Feature Toggles](../facets/feature-toggles.md) -- Settings that appear conditionally based on feature flags
+- [Authentication](../../facets/authentication/) -- User identity and session management for settings access
+- [Configuration Management](../../facets/configuration-management/) -- System-level configuration vs user preferences
+- [Data Persistence](../../facets/data-persistence/) -- Settings storage patterns and migration strategies
+- [Feature Toggles](../../facets/feature-toggles/) -- Settings that appear conditionally based on feature flags
 
 ## Related Experiences
 
-- [Notifications](../experiences/notifications.md) -- Notification preferences and channel configuration
-- [Multi-Tenancy UX](../experiences/multi-tenancy-ux.md) -- Org/tenant-level settings and user overrides
-- [Permissions UX](../experiences/permissions-ux.md) -- Permission-gated settings and admin-only configurations
-- [Design Consistency and Visual Identity](../experiences/design-consistency-and-visual-identity.md) -- Theme, appearance, and visual customization settings
+- [Notifications](../notifications/) -- Notification preferences and channel configuration
+- [Multi-Tenancy UX](../multi-tenancy-ux/) -- Org/tenant-level settings and user overrides
+- [Permissions UX](../permissions-ux/) -- Permission-gated settings and admin-only configurations
+- [Design Consistency and Visual Identity](../design-consistency-and-visual-identity/) -- Theme, appearance, and visual customization settings

@@ -34,10 +34,10 @@ Alerts, emails, in-app messages, and communication preferences that keep users i
 
 ## Related Facets
 
-- [Event-Driven Architecture](../facets/event-driven-architecture.md) -- Notifications are often triggered by domain events
-- [API Design](../facets/api-design.md) -- Notification service APIs and webhook integrations
-- [Observability](../facets/observability.md) -- Monitoring notification delivery rates, open rates, and failures
-- [Security](../facets/security.md) -- Secure notification channels, preference data protection, unsubscribe mechanisms
+- [Event-Driven Architecture](../../facets/event-driven-architecture/) -- Notifications are often triggered by domain events
+- [API Design](../../facets/api-design/) -- Notification service APIs and webhook integrations
+- [Observability](../../facets/observability/) -- Monitoring notification delivery rates, open rates, and failures
+- [Security](../../facets/security/) -- Secure notification channels, preference data protection, unsubscribe mechanisms
 
 ## Related Experiences
 

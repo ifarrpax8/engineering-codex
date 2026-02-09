@@ -10,8 +10,8 @@ Effective state management balances simplicity, performance, and maintainability
 - [Derive State, Don't Duplicate It](#derive-state-dont-duplicate-it)
 - [Normalize Complex State](#normalize-complex-state)
 - [Optimistic Updates for Perceived Performance](#optimistic-updates-for-perceived-performance)
-- [Vue 3 / Pinia Specific Practices](#vue-3--pinia-specific-practices)
-- [React / Zustand Specific Practices](#react--zustand-specific-practices)
+- [Vue 3 / Pinia Specific Practices](#vue-3-pinia-specific-practices)
+- [React / Zustand Specific Practices](#react-zustand-specific-practices)
 - [TanStack Query Specific Practices](#tanstack-query-specific-practices)
 - [VueQuery (TanStack Query for Vue) Specific Practices](#vuequery-tanstack-query-for-vue-specific-practices)
 

@@ -37,4 +37,3 @@ Input validation, secrets management, dependency scanning, encryption, CORS, CSP
 ## Related Experiences
 
 - [Forms & Validation](../../experiences/forms-and-data-entry/) -- Client-side input validation
-- [File Upload & Media](../../experiences/file-upload-and-media/) -- Upload security, file type validation

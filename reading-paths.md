@@ -5,11 +5,11 @@ Curated routes through the Engineering Codex based on your role or current need.
 ## Contents
 
 - [New Developer](#new-developer)
-- [QA / Test Engineer](#qa--test-engineer)
+- [QA / Test Engineer](#qa-test-engineer)
 - [Architect](#architect)
-- [Product Manager / Designer](#product-manager--designer)
-- [DevOps / Platform Engineer](#devops--platform-engineer)
-- [Tech Lead / Engineering Manager](#tech-lead--engineering-manager)
+- [Product Manager / Designer](#product-manager-designer)
+- [DevOps / Platform Engineer](#devops-platform-engineer)
+- [Tech Lead / Engineering Manager](#tech-lead-engineering-manager)
 
 ## New Developer
 

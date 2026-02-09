@@ -46,8 +46,8 @@ Feature toggles, also known as feature flags, are a powerful technique that allo
 
 ## Related Experiences
 
-- [Onboarding & Activation](../../experiences/onboarding-and-activation/) -- Progressive feature rollout, gradual user introduction to capabilities
-- [Multi-Tenancy](../../experiences/multi-tenancy/) -- Tenant-specific feature availability, per-customer feature control
+- [Onboarding & Activation](../../experiences/onboarding/) -- Progressive feature rollout, gradual user introduction to capabilities
+- [Multi-Tenancy](../../experiences/multi-tenancy-ux/) -- Tenant-specific feature availability, per-customer feature control
 
 ## Quick Start
 

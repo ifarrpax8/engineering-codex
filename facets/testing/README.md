@@ -27,7 +27,6 @@ Unit, integration, e2e, contract, performance, TDD, BDD, test architecture
 ## Related Facets
 
 - [CI/CD](../ci-cd/README.md) -- Testing is integral to continuous integration pipelines; fast test suites enable continuous deployment
-- [Developer Experience](../developer-experience/README.md) -- Testing tools and practices directly impact developer productivity and confidence
 - [Security](../security/README.md) -- Security testing, vulnerability scanning, and penetration testing are critical testing concerns
 - [Performance](../performance/README.md) -- Performance testing, load testing, and benchmarking validate non-functional requirements
 - [Backend Architecture](../backend-architecture/README.md) -- Testing strategies differ for microservices vs monoliths; contract testing for service boundaries

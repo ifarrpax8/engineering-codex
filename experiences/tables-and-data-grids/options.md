@@ -618,7 +618,7 @@ fun downloadExport(@PathVariable jobId: String, response: HttpServletResponse) {
 
 ### API Design (Pagination)
 
-Table pagination patterns align with [api-design](../facets/api-design.md) pagination standards:
+Table pagination patterns align with [api-design](../../facets/api-design/) pagination standards:
 - Use consistent pagination parameters (`page`, `size`, `sort`)
 - Return standard pagination response format (`Page<T>` or `Slice<T>`)
 - Document pagination behavior in API specs
@@ -632,7 +632,7 @@ Tables integrate with [search-and-discovery](../search-and-discovery/) experienc
 
 ### Performance
 
-Table performance considerations align with [performance](../facets/performance.md) best practices:
+Table performance considerations align with [performance](../../facets/performance/) best practices:
 - Virtual scrolling for large datasets
 - Server-side pagination to reduce data transfer
 - Lazy loading and code splitting for table components

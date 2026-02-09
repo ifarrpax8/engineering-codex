@@ -34,13 +34,13 @@ Input patterns, validation, multi-step flows, inline editing, and wizard forms t
 
 ## Related Facets
 
-- [Frontend Architecture](../facets/frontend-architecture.md) -- Component patterns, state management strategies
-- [API Design](../facets/api-design.md) -- Form submission endpoints, validation error responses
-- [Accessibility](../facets/accessibility.md) -- Form accessibility patterns, ARIA attributes, keyboard navigation
-- [State Management](../facets/state-management.md) -- Form state patterns, draft persistence strategies
+- [Frontend Architecture](../../facets/frontend-architecture/) -- Component patterns, state management strategies
+- [API Design](../../facets/api-design/) -- Form submission endpoints, validation error responses
+- [Accessibility](../../facets/accessibility/) -- Form accessibility patterns, ARIA attributes, keyboard navigation
+- [State Management](../../facets/state-management/) -- Form state patterns, draft persistence strategies
 
 ## Related Experiences
 
-- [Workflows and Tasks](../experiences/workflows-and-tasks.md) -- Multi-step user journeys, task completion flows
-- [Tables and Data Grids](../experiences/tables-and-data-grids.md) -- Inline editing patterns, bulk data entry
-- [Design Consistency and Visual Identity](../experiences/design-consistency-and-visual-identity.md) -- Form styling, design system integration (Propulsion, MUI)
+- [Workflows and Tasks](../workflows-and-tasks/) -- Multi-step user journeys, task completion flows
+- [Tables and Data Grids](../tables-and-data-grids/) -- Inline editing patterns, bulk data entry
+- [Design Consistency and Visual Identity](../design-consistency-and-visual-identity/) -- Form styling, design system integration (Propulsion, MUI)

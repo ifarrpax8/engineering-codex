@@ -13,7 +13,7 @@ last_updated: 2026-02-09
 - [Component Library Compliance](#component-library-compliance)
 - [Cross-Browser and Cross-Device Consistency Testing](#cross-browser-and-cross-device-consistency-testing)
 - [Responsive Layout Verification](#responsive-layout-verification)
-- [Dark Mode / Theme Testing](#dark-mode--theme-testing)
+- [Dark Mode / Theme Testing](#dark-mode-theme-testing)
 - [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 ## Visual Regression Testing

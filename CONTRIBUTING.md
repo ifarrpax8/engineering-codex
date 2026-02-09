@@ -88,7 +88,7 @@ Both modes must include:
 When referencing another facet or experience, use relative markdown links:
 
 ```markdown
-See [Authentication > Architecture](../authentication/architecture.md) for session management patterns.
+See [Authentication > Architecture](facets/authentication/architecture.md) for session management patterns.
 ```
 
 When referencing from a checklist or top-level file:

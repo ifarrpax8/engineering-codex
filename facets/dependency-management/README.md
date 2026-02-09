@@ -42,4 +42,3 @@ Evaluating, selecting, versioning, and maintaining third-party dependencies. Cov
 ## Related Experiences
 
 - [Forms & Validation](../../experiences/forms-and-data-entry/) -- Form library dependencies, validation library choices
-- [File Upload & Media](../../experiences/file-upload-and-media/) -- Media processing library dependencies, file type detection libraries

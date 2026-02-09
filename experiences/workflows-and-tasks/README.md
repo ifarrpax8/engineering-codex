@@ -35,10 +35,10 @@ Patterns for guiding users through multi-step processes, managing task completio
 
 ## Related Facets
 
-- [event-driven-architecture](../facets/event-driven-architecture.md) -- Event-driven workflows, Axon sagas, async task processing
-- [state-management](../facets/state-management.md) -- Workflow state machines, step state persistence
-- [error-handling](../facets/error-handling.md) -- Partial failure handling, retry strategies, compensation patterns
-- [api-design](../facets/api-design.md) -- Bulk operation endpoints, async task APIs, workflow state APIs
+- [event-driven-architecture](../../facets/event-driven-architecture/) -- Event-driven workflows, Axon sagas, async task processing
+- [state-management](../../facets/state-management/) -- Workflow state machines, step state persistence
+- [error-handling](../../facets/error-handling/) -- Partial failure handling, retry strategies, compensation patterns
+- [api-design](../../facets/api-design/) -- Bulk operation endpoints, async task APIs, workflow state APIs
 
 ## Related Experiences
 

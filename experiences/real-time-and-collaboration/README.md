@@ -35,10 +35,10 @@ Live updates, presence indicators, collaborative editing, and WebSocket UX patte
 
 ## Related Facets
 
-- [Event-Driven Architecture](../facets/event-driven-architecture/) -- Real-time systems are inherently event-driven
-- [State Management](../facets/state-management/) -- Merging real-time updates into application state
-- [Performance](../facets/performance/) -- WebSocket connection limits, message throughput, latency
-- [Observability](../facets/observability/) -- Monitoring WebSocket connections, message rates, presence accuracy
+- [Event-Driven Architecture](../../facets/event-driven-architecture/) -- Real-time systems are inherently event-driven
+- [State Management](../../facets/state-management/) -- Merging real-time updates into application state
+- [Performance](../../facets/performance/) -- WebSocket connection limits, message throughput, latency
+- [Observability](../../facets/observability/) -- Monitoring WebSocket connections, message rates, presence accuracy
 
 ## Related Experiences
 

@@ -31,5 +31,3 @@ Branch strategies, protection rules, CODEOWNERS, PR review policies, repository 
 - [Security](../security/) -- CODEOWNERS for security-sensitive paths, branch protection prevents force push
 
 ## Related Experiences
-
-- [Developer Experience](../../experiences/developer-experience/) -- How repository governance affects developer productivity and onboarding speed

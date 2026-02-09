@@ -28,10 +28,10 @@ Skeleton screens, optimistic UI, progressive loading, stale-while-revalidate
 
 ## Related Facets
 
-- [Performance](../facets/performance.md) -- Core performance optimization techniques
-- [Frontend Architecture](../facets/frontend-architecture.md) -- Component patterns and structure
-- [State Management](../facets/state-management.md) -- Data fetching and caching strategies
-- [Observability](../facets/observability.md) -- Monitoring and measuring performance
+- [Performance](../../facets/performance/) -- Core performance optimization techniques
+- [Frontend Architecture](../../facets/frontend-architecture/) -- Component patterns and structure
+- [State Management](../../facets/state-management/) -- Data fetching and caching strategies
+- [Observability](../../facets/observability/) -- Monitoring and measuring performance
 
 ## Related Experiences
 

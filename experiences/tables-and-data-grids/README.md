@@ -35,10 +35,10 @@ Enterprise table patterns, sorting, filtering, pagination, column management, an
 
 ## Related Facets
 
-- [api-design](../facets/api-design.md) -- Pagination patterns, query parameter conventions, RESTful API design
-- [data-persistence](../facets/data-persistence.md) -- Database query optimization, indexing strategies for sortable/filterable columns
-- [performance](../facets/performance.md) -- Virtual scrolling, lazy loading, query optimization
-- [accessibility](../facets/accessibility.md) -- Keyboard navigation, screen reader support, ARIA attributes for tables
+- [api-design](../../facets/api-design/) -- Pagination patterns, query parameter conventions, RESTful API design
+- [data-persistence](../../facets/data-persistence/) -- Database query optimization, indexing strategies for sortable/filterable columns
+- [performance](../../facets/performance/) -- Virtual scrolling, lazy loading, query optimization
+- [accessibility](../../facets/accessibility/) -- Keyboard navigation, screen reader support, ARIA attributes for tables
 
 ## Related Experiences
 

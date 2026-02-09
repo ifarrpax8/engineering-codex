@@ -35,7 +35,7 @@ Client state, server state, global vs local, reactive patterns.
 
 ## Related Experiences
 
-- [Forms & Validation](../../experiences/forms-and-validation/) -- Form state management
+- [Forms & Validation](../../experiences/forms-and-data-entry/) -- Form state management
 - [Loading & Perceived Performance](../../experiences/loading-and-perceived-performance/) -- Loading states
 - [Navigation](../../experiences/navigation/) -- Route-based state
 - [Real-Time & Collaboration](../../experiences/real-time-and-collaboration/) -- Real-time state synchronization
