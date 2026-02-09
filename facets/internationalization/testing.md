@@ -10,6 +10,7 @@
 - [Pluralization Testing](#pluralization-testing)
 - [Snapshot Testing](#snapshot-testing)
 - [End-to-End Testing](#end-to-end-testing)
+- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 ## Visual Testing with Pseudo-localization
 

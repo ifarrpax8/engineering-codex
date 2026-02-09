@@ -43,6 +43,7 @@
 | `best-practices.md` | Best Practices | Language-agnostic principles, anti-patterns |
 | `gotchas.md` | Gotchas | Common pitfalls, traps, and lessons learned |
 | `options.md` | Options | Decision matrix or recommended practice with alternatives |
+| `operations.md` | Operations | Day-2 operational concerns — present in select facets |
 
 ## Adding New Facets
 

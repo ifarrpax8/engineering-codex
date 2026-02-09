@@ -12,6 +12,7 @@
 - [Configuration Testing in CI/CD](#configuration-testing-in-cicd)
 - [Testing Multi-Environment Configuration](#testing-multi-environment-configuration)
 - [Performance Testing with Configuration](#performance-testing-with-configuration)
+- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 Configuration testing ensures that applications correctly load, validate, and use configuration across all environments and scenarios. Effective configuration testing prevents production incidents caused by missing, invalid, or incorrectly applied configuration.
 

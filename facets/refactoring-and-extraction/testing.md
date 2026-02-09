@@ -11,6 +11,7 @@
 - [Regression Testing](#regression-testing)
 - [Test-Driven Refactoring](#test-driven-refactoring)
 - [Refactoring Test Code](#refactoring-test-code)
+- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 ## Test Coverage as a Safety Net
 

@@ -10,6 +10,7 @@
 - [Security Unit Tests](#security-unit-tests)
 - [Infrastructure Security Testing](#infrastructure-security-testing)
 - [OWASP ZAP in CI/CD](#owasp-zap-in-cicd)
+- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 Security testing validates that security controls function correctly and identifies vulnerabilities before attackers exploit them. Security testing spans multiple categories: static analysis of source code, dynamic analysis of running applications, dependency scanning, secret detection, penetration testing, and infrastructure security validation. Each category provides different coverage and should be integrated into the development lifecycle.
 
@@ -120,3 +121,63 @@ ZAP can be integrated into CI/CD pipelines using Docker containers or GitHub Act
 ZAP findings should be tracked and remediated like other security findings. However, ZAP may produce false positives, especially for applications with complex authentication or custom security controls. Tune ZAP policies and review findings to reduce false positives while maintaining vulnerability detection.
 
 Security testing is not a one-time activity—it's an ongoing process integrated into the development lifecycle. Multiple testing categories provide complementary coverage, and no single category is sufficient. Combine SAST, DAST, dependency scanning, secret scanning, and infrastructure testing to achieve comprehensive security validation.
+
+## QA and Test Engineer Perspective
+
+### Risk-Based Testing Priorities
+
+Prioritize security testing based on attack likelihood and business impact. Critical paths requiring immediate coverage include: authentication and authorization (unauthorized access risk), input validation (injection attack risk), and sensitive data handling (data breach risk). High-priority areas include: session management (session hijacking risk), cryptographic operations (data encryption risk), and API security (API abuse risk).
+
+Medium-priority areas suitable for later iterations include: security headers, CORS configuration, and rate limiting. Low-priority areas for exploratory testing include: security logging, security monitoring, and security documentation.
+
+Focus on attack vectors with high business impact: data breaches (PII exposure, financial data exposure), unauthorized access (privilege escalation, account takeover), and service disruption (DoS attacks, resource exhaustion). These represent the highest risk of security incidents and compliance violations.
+
+### Exploratory Testing Guidance
+
+Authentication and authorization exploration: test authentication bypass attempts (missing tokens, invalid tokens, expired tokens), privilege escalation attempts (role manipulation, permission bypass), and session management (session fixation, session hijacking). Probe edge cases: concurrent logins, session sharing, and session timeout behavior.
+
+Input validation requires investigation: test injection attacks (SQL injection, XSS, command injection), input boundary testing (maximum lengths, special characters), and encoding issues (unicode, encoding bypass). Explore what happens with malformed input, oversized input, and encoded input.
+
+Sensitive data handling needs exploration: test data exposure (logs, error messages, API responses), data encryption (data at rest, data in transit), and data masking (PII masking, sensitive field masking). Probe edge cases: data leakage in error messages, data exposure in logs, and data exposure in API responses.
+
+Security configuration requires investigation: test security headers (CSP, HSTS, X-Frame-Options), CORS configuration (allowed origins, allowed methods), and rate limiting (rate limit enforcement, rate limit bypass). Explore what happens with misconfigured security settings, missing security headers, and overly permissive configurations.
+
+### Test Data Management
+
+Security testing requires realistic test data: user accounts with various roles (admin, user, guest), resources with various access levels (public, private, restricted), and sensitive data (PII, financial data, authentication data). Create test data factories that generate realistic security test scenarios: `createAdminUser()`, `createUserWithRestrictedAccess()`.
+
+Sensitive security test data must be handled carefully: never commit real credentials, use test credentials that are clearly identifiable, and rotate test credentials regularly. Use test data that mirrors production patterns but is clearly test data (test email domains, test account prefixes).
+
+Test data refresh strategies: security test data may become stale (expired tokens, locked accounts, rotated credentials). Implement test data refresh that generates new tokens, resets account states, and updates credentials. Security test data should be refreshed more frequently than other test data due to security requirements.
+
+Attack payload test data: maintain test datasets of attack payloads (SQL injection payloads, XSS payloads, command injection payloads). These payloads should be safe to use in test environments but representative of real attacks. Update payload datasets as new attack vectors are discovered.
+
+### Test Environment Considerations
+
+Security test environments must mirror production security configurations: same authentication mechanisms, same authorization rules, same security headers, and same rate limiting. Differences can hide vulnerabilities or create false positives. Verify that test environments use production-like security configurations.
+
+Shared test environments create isolation challenges: concurrent security tests may interfere with each other (rate limiting, account lockouts, session conflicts). Use isolated test environments per test run, or implement test isolation through unique user accounts and cleanup between tests.
+
+Environment-specific risks include: test environments with relaxed security (missing security headers, permissive CORS), test environments missing production security features (WAF, rate limiting), and test environments with different security configurations. Verify that test environments have equivalent security controls, or explicitly test security control absence as a separate scenario.
+
+Security testing tools: test environments may have different security testing tool configurations than production. Verify that security testing tools are configured correctly and that findings are relevant to production environments.
+
+### Regression Strategy
+
+Security regression suites must include: authentication and authorization checks (unauthorized access prevented), input validation (injection attacks prevented), sensitive data handling (data not exposed), and security configuration (security headers present). These represent the core security functionality that must never regress.
+
+Automation candidates for regression include: security unit tests (input validation, authorization checks), SAST scans (static analysis), dependency scans (vulnerability scanning), and secret scans (secret detection). These are deterministic and can be validated automatically.
+
+Manual regression items include: penetration testing (manual security testing), security configuration review (security headers, CORS), and security monitoring (security event analysis). These require human judgment and security expertise.
+
+Trim regression suites by removing tests for deprecated security features, obsolete attack vectors, or rarely-used security functionality. However, maintain tests for critical security controls (authentication, authorization, input validation) even if they're simple—security regressions have high impact.
+
+### Defect Patterns
+
+Common security bugs include: authentication bypass (unauthorized access possible), injection vulnerabilities (SQL injection, XSS), authorization bypass (privilege escalation), and sensitive data exposure (PII in logs, credentials in error messages). These patterns recur across applications and should be tested explicitly.
+
+Bugs tend to hide in: edge cases (boundary conditions, encoding issues), error paths (error messages leak information), and configuration issues (missing security headers, permissive CORS). Test these scenarios explicitly—they're common sources of security vulnerabilities.
+
+Historical patterns show that security bugs cluster around: input validation (injection attacks), authentication and authorization (unauthorized access), and sensitive data handling (data exposure). Focus security testing on these areas.
+
+Triage guidance: security bugs are typically critical severity due to security implications. However, distinguish between exploitable vulnerabilities (attackers can exploit) and security improvements (defense in depth). Exploitable vulnerabilities require immediate attention, while security improvements can be prioritized based on risk.

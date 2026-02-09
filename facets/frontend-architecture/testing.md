@@ -17,6 +17,7 @@ Frontend architecture decisions fundamentally shape testing strategies. A monoli
 - [Performance Testing](#performance-testing)
 - [Storybook as a Test Surface](#storybook-as-a-test-surface)
 - [Testing MFE Integration](#testing-mfe-integration)
+- [QA and Test Engineer Perspective](#qa-and-test-engineer-perspective)
 
 ## Component Testing
 
@@ -209,3 +210,63 @@ Communication tests are particularly important because MFEs are developed indepe
 When MFEs share state through the shell application or events, tests verify that state contracts are maintained. Tests ensure that state shape remains compatible, that state updates propagate correctly, and that MFEs handle missing or malformed state gracefully.
 
 State contract tests might use TypeScript types to verify compile-time compatibility, runtime validation to catch type mismatches, and integration tests to verify actual behavior. This multi-layered approach catches contract violations at different stages of development.
+
+## QA and Test Engineer Perspective
+
+### Risk-Based Testing Priorities
+
+Prioritize frontend testing based on user impact and failure likelihood. Critical paths requiring immediate coverage include: core user journeys (checkout, login, data entry), navigation and routing (users can reach all pages), and form submissions (data is saved correctly). High-priority areas include: responsive design (mobile/tablet/desktop), accessibility (keyboard navigation, screen readers), and error handling (network failures, validation errors).
+
+Medium-priority areas suitable for later iterations include: advanced features, admin interfaces, and edge case UI states. Low-priority areas for exploratory testing include: animation timing, visual polish, and rarely-used features.
+
+Focus on user-facing failures: broken checkout flows (revenue impact), inaccessible pages (compliance risk), and data loss scenarios (user trust impact). These represent the highest risk of user frustration and business impact.
+
+### Exploratory Testing Guidance
+
+Component interaction exploration: test component composition (parent-child relationships), prop drilling (data flow through component trees), and event handling (click, input, focus events). Probe edge cases: empty states, loading states, error states, and boundary conditions (maximum input lengths, special characters).
+
+Responsive design requires manual investigation: test breakpoints (mobile, tablet, desktop), viewport resizing (dynamic resizing behavior), and orientation changes (portrait/landscape). Explore what happens at exact breakpoint boundaries and when content overflows containers.
+
+Accessibility exploration: test keyboard navigation (Tab order, focus indicators), screen reader compatibility (ARIA labels, semantic HTML), and color contrast (text readability). Probe edge cases: focus traps in modals, skip links functionality, and form error announcements.
+
+Browser compatibility needs exploration: test across browsers (Chrome, Firefox, Safari, Edge), test browser-specific behaviors (CSS differences, JavaScript API support), and test on real devices (not just emulators). Investigate what happens with older browsers, disabled JavaScript, and slow network connections.
+
+### Test Data Management
+
+Frontend testing requires realistic test data: user accounts with various roles, resources in different states (pending, active, archived), and relationships (users with orders, products with reviews). Create test data factories that generate realistic entities: `createUserWithOrders()`, `createProductWithReviews()`.
+
+UI state test data: forms with various field combinations, lists with different item counts (empty, single item, many items), and tables with sorting/filtering states. Test data should cover edge cases: very long text, special characters, unicode characters, and boundary values.
+
+Test data refresh strategies: frontend applications may cache data, store state in localStorage, or maintain in-memory state. Implement test cleanup that clears caches, removes localStorage data, and resets application state between tests.
+
+Visual regression testing requires consistent test data: screenshots must use the same data to enable meaningful comparison. Maintain baseline test datasets that produce consistent visual output, or use data placeholders that mask dynamic content.
+
+### Test Environment Considerations
+
+Frontend test environments must match production: same API endpoints (or test doubles), same authentication flows, and same feature flags. Differences can hide bugs or create false positives. Verify that test environments use production-like configurations: API responses, authentication mechanisms, and feature toggles.
+
+Shared test environments create isolation challenges: concurrent tests may conflict with authentication state, interfere with each other's data, or exhaust rate limits. Use isolated test environments per test run, or implement test isolation through unique user accounts and cleanup between tests.
+
+Environment-specific risks include: test environments with different API response times (affects loading states), test environments missing production features (affects feature availability), and test environments with relaxed security (affects authentication flows). Verify that test environments have equivalent behavior, or explicitly test differences as separate scenarios.
+
+Browser and device testing: test environments may use different browsers or devices than production. Verify that test browsers match production browser usage, or test across multiple browsers to catch browser-specific issues.
+
+### Regression Strategy
+
+Frontend regression suites must include: core user journeys (checkout, login, data entry), navigation and routing (all pages accessible), form submissions (data saved correctly), and responsive design (mobile/tablet/desktop). These represent the core frontend functionality that must never break.
+
+Automation candidates for regression include: component rendering (components render without errors), form validation (validation rules enforced), and navigation (routes work correctly). These are deterministic and can be validated automatically.
+
+Manual regression items include: visual design (layout, styling, animations), accessibility (keyboard navigation, screen reader compatibility), and browser compatibility (cross-browser behavior). These require human judgment or specialized tools.
+
+Trim regression suites by removing tests for deprecated features, obsolete UI patterns, or rarely-used functionality. However, maintain tests for critical user journeys (checkout, login) even if they're complex—user-facing regressions have high impact.
+
+### Defect Patterns
+
+Common frontend bugs include: broken navigation (links don't work, routes don't load), form validation issues (invalid data accepted, valid data rejected), and responsive design problems (layout breaks on mobile, content overflow). These patterns recur across applications and should be tested explicitly.
+
+Bugs tend to hide in: edge cases (empty states, error states, boundary conditions), browser-specific behaviors (CSS differences, JavaScript API support), and timing issues (race conditions, async operations). Test these scenarios explicitly—they're common sources of user-facing bugs.
+
+Historical patterns show that frontend bugs cluster around: state management (component state, application state), async operations (API calls, animations), and browser compatibility (CSS, JavaScript differences). Focus exploratory testing on these areas.
+
+Triage guidance: frontend bugs affecting user journeys are typically high severity due to user impact. However, distinguish between blocking bugs (users cannot complete tasks) and cosmetic issues (visual problems that don't block functionality). Blocking bugs require immediate attention, while cosmetic issues can be prioritized based on user impact.
