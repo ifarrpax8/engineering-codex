@@ -9,6 +9,16 @@ last_updated: 2026-02-09
 
 Common pitfalls and traps in data persistence can cause performance problems, data corruption, or production outages. Understanding these gotchas helps avoid costly mistakes.
 
+## Contents
+
+- [ORM Lazy Loading Surprises (LazyInitializationException)](#orm-lazy-loading-surprises-lazyinitializationexception)
+- [N+1 Queries Hidden by the ORM](#n1-queries-hidden-by-the-orm)
+- [Migrations That Lock Tables in Production](#migrations-that-lock-tables-in-production)
+- [Shared Database Across Services Creating Coupling](#shared-database-across-services-creating-coupling)
+- [Event Sourcing Without Snapshots](#event-sourcing-without-snapshots)
+- [Caching Stale Data](#caching-stale-data)
+- [Premature Denormalization](#premature-denormalization)
+
 ## ORM Lazy Loading Surprises (LazyInitializationException)
 
 ### The Problem

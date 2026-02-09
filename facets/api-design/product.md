@@ -2,6 +2,15 @@
 
 APIs are products with users—developers. Treating API design as a product discipline ensures better adoption, reduced support burden, and stronger partner relationships.
 
+## Contents
+
+- [API as a Product](#api-as-a-product)
+- [Internal vs External APIs](#internal-vs-external-apis)
+- [API Versioning and Its Business Impact](#api-versioning-and-its-business-impact)
+- [Documentation](#documentation)
+- [API Lifecycle](#api-lifecycle)
+- [Success Metrics](#success-metrics)
+
 ## API as a Product
 
 ### Developers Are Users

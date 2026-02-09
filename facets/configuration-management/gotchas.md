@@ -1,5 +1,21 @@
 # Configuration Management: Gotchas
 
+## Contents
+
+- [Secrets Committed to Git](#secrets-committed-to-git)
+- [Configuration Drift Between Environments](#configuration-drift-between-environments)
+- [Hardcoded Values That Should Be Configuration](#hardcoded-values-that-should-be-configuration)
+- [.env Files Not in .gitignore](#env-files-not-in-gitignore)
+- [Frontend Secrets Exposed in Bundle](#frontend-secrets-exposed-in-bundle)
+- [Missing Configuration Discovered at Runtime](#missing-configuration-discovered-at-runtime)
+- [Configuration Override Order Mistakes](#configuration-override-order-mistakes)
+- [Kubernetes Secrets Not Actually Encrypted](#kubernetes-secrets-not-actually-encrypted)
+- [Too Many Configuration Profiles](#too-many-configuration-profiles)
+- [Configuration Changes Requiring Full Restarts](#configuration-changes-requiring-full-restarts)
+- [Configuration Documentation Missing or Outdated](#configuration-documentation-missing-or-outdated)
+- [Configuration Validation Too Permissive](#configuration-validation-too-permissive)
+- [Configuration in Multiple Places](#configuration-in-multiple-places)
+
 Configuration management is deceptively simple but full of subtle pitfalls that cause production incidents, security vulnerabilities, and operational headaches. Understanding these common mistakes helps avoid them.
 
 ## Secrets Committed to Git

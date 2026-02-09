@@ -1,5 +1,18 @@
 # Security -- Architecture
 
+## Contents
+
+- [Defense in Depth: Multiple Security Layers](#defense-in-depth-multiple-security-layers)
+- [Input Validation and Sanitization](#input-validation-and-sanitization)
+- [Secrets Management](#secrets-management)
+- [Transport Security](#transport-security)
+- [Data Protection](#data-protection)
+- [Browser Security Headers](#browser-security-headers)
+- [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
+- [API Security](#api-security)
+- [Dependency Security](#dependency-security)
+- [OWASP Top 10](#owasp-top-10)
+
 Security architecture implements defense in depth—multiple layers of security controls where no single control is sufficient. Attackers who bypass one layer encounter another. This layered approach recognizes that perfect security is impossible, but making attacks progressively harder and more expensive reduces risk to acceptable levels.
 
 ## Defense in Depth: Multiple Security Layers

@@ -2,6 +2,15 @@
 
 Authentication and authorization are security-critical concerns that require careful implementation. Mistakes can lead to unauthorized access, data breaches, and compliance violations. These best practices provide guidance for building secure, maintainable authentication systems that balance security requirements with user experience and operational needs.
 
+## Contents
+
+- [Foundational Principles](#foundational-principles)
+- [Token and Session Management](#token-and-session-management)
+- [Password Handling](#password-handling)
+- [API Security](#api-security)
+- [Audit and Monitoring](#audit-and-monitoring)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 ## Foundational Principles
 
 ### Never Implement Custom Cryptography or Auth Protocols

@@ -1,5 +1,13 @@
 # Architecture: Observability
 
+## Contents
+
+- [The Three Pillars of Observability](#the-three-pillars-of-observability)
+- [Frontend Observability](#frontend-observability)
+- [OpenTelemetry Architecture](#opentelemetry-architecture)
+- [Alerting](#alerting)
+- [Dashboards](#dashboards)
+
 Observability architecture centers on three pillars: logs, metrics, and traces. Each pillar provides different insights, and together they enable comprehensive understanding of system behavior. Modern observability stacks integrate these pillars through standardized instrumentation and unified backends.
 
 ## The Three Pillars of Observability

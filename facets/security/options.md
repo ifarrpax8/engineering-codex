@@ -1,5 +1,11 @@
 # Security -- Options
 
+## Contents
+
+- [Secrets Management](#secrets-management)
+- [Dependency Scanning](#dependency-scanning)
+- [Application Security Testing](#application-security-testing)
+
 Decision matrices for security technology choices. Each option is evaluated against criteria relevant to security, operational complexity, and integration with existing infrastructure.
 
 ## Secrets Management

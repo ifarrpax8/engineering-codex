@@ -2,6 +2,20 @@
 
 Common pitfalls that trap teams when building backend systems. Recognizing these patterns early prevents costly refactoring later.
 
+## Contents
+
+- [Distributed Monolith](#distributed-monolith)
+- [Premature Decomposition](#premature-decomposition)
+- [Shared Database Across Services](#shared-database-across-services)
+- [Synchronous Inter-Service Calls Creating Coupling](#synchronous-inter-service-calls-creating-coupling)
+- [N+1 Service Calls](#n1-service-calls)
+- [Not Accounting for Network Failures](#not-accounting-for-network-failures)
+- ["Just One More Endpoint" on a Monolith](#just-one-more-endpoint-on-a-monolith)
+- [Anemic Domain Model](#anemic-domain-model)
+- [Ignoring Conway's Law](#ignoring-conways-law)
+- [Over-Engineering](#over-engineering)
+- [Summary](#summary)
+
 ## Distributed Monolith
 
 A distributed monolith has the complexity of microservices without the benefits. Services must be deployed together, share a database, or have synchronous call chains that create tight coupling.

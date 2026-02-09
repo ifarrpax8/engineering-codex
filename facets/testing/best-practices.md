@@ -1,5 +1,13 @@
 # Testing: Best Practices
 
+## Contents
+
+- [Test Structure](#test-structure)
+- [Test Naming](#test-naming)
+- [Test Independence](#test-independence)
+- [What to Test vs What Not to Test](#what-to-test-vs-what-not-to-test)
+- [Anti-Patterns](#anti-patterns)
+
 ## Test Structure
 
 ### Arrange-Act-Assert (AAA)

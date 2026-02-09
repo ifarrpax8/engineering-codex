@@ -9,6 +9,15 @@ last_updated: 2026-02-09
 
 Frontend architecture encompasses the structural patterns that organize how applications are built, deployed, and composed. The choice between Single Page Applications (SPA), Micro-Frontends (MFE), or Server-Side Rendering (SSR) shapes everything from build tooling to routing strategies to component organization.
 
+## Contents
+
+- [Single Page Application (SPA)](#single-page-application-spa)
+- [Multi-Page SPA](#multi-page-spa)
+- [Micro-Frontend (MFE) Architecture](#micro-frontend-mfe-architecture)
+- [Server-Side Rendering (SSR)](#server-side-rendering-ssr)
+- [Component Architecture](#component-architecture)
+- [Routing Patterns](#routing-patterns)
+
 ## Single Page Application (SPA)
 
 A Single Page Application is a frontend architecture where a single JavaScript bundle manages the entire application lifecycle. The browser loads the application once, and subsequent navigation happens entirely on the client side through JavaScript routing. The server primarily serves static assets and provides API endpoints—it doesn't render HTML for each route.

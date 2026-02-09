@@ -1,5 +1,16 @@
 # Best Practices: Internationalization
 
+## Contents
+
+- [Never Hardcode User-Facing Strings](#never-hardcode-user-facing-strings)
+- [Use Keys, Not English Text](#use-keys-not-english-text)
+- [Keep Message Keys Organized by Feature](#keep-message-keys-organized-by-feature)
+- [Don't Concatenate Translated Strings](#dont-concatenate-translated-strings)
+- [Format Dates and Numbers on the Frontend](#format-dates-and-numbers-on-the-frontend)
+- [Design UI for Text Expansion](#design-ui-for-text-expansion)
+- [Use ICU Message Format for Pluralization](#use-icu-message-format-for-pluralization)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 ## Never Hardcode User-Facing Strings
 
 Every user-visible string should go through the i18n system, even if the application initially supports only one language. Hardcoded strings create technical debt that compounds over time. When the first translation effort begins, hundreds of hardcoded strings scattered throughout the codebase must be found, extracted, and replaced—a time-consuming and error-prone process.

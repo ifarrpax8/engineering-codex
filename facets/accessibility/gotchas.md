@@ -1,5 +1,19 @@
 # Accessibility: Gotchas
 
+## Contents
+
+- [Using Div and Span for Everything](#using-div-and-span-for-everything)
+- [Removing Focus Outlines](#removing-focus-outlines)
+- [Images Without Alt Text](#images-without-alt-text)
+- [Placeholder as Label](#placeholder-as-label)
+- [Color-Only Status Indicators](#color-only-status-indicators)
+- [Inaccessible Custom Components](#inaccessible-custom-components)
+- [Auto-Playing Media](#auto-playing-media)
+- [Insufficient Color Contrast](#insufficient-color-contrast)
+- [Missing Skip Links](#missing-skip-links)
+- [Dynamic Content Not Announced](#dynamic-content-not-announced)
+- [Form Validation That Only Uses Visual Cues](#form-validation-that-only-uses-visual-cues)
+
 ## Using Div and Span for Everything
 
 One of the most common accessibility mistakes is using generic `<div>` and `<span>` elements for interactive components instead of semantic HTML elements. Developers create `<div onclick>` buttons, `<span>` links, and `<div>` navigation menus because they're easier to style or seem more flexible.

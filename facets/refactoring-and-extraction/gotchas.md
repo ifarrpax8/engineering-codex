@@ -1,5 +1,20 @@
 # Gotchas: Common Refactoring & Extraction Pitfalls
 
+## Contents
+
+- [Premature Extraction](#premature-extraction)
+- [Wrong Abstraction](#wrong-abstraction)
+- [Big Bang Rewrite](#big-bang-rewrite)
+- [Refactoring Without Tests](#refactoring-without-tests)
+- [Refactoring and Adding Features Simultaneously](#refactoring-and-adding-features-simultaneously)
+- [Extracting Shared Libraries Between Services](#extracting-shared-libraries-between-services)
+- [Over-Engineering Extract](#over-engineering-extract)
+- [Not Updating the Mental Model](#not-updating-the-mental-model)
+- [Scope Creep During Refactoring](#scope-creep-during-refactoring)
+- [Ignoring the Build](#ignoring-the-build)
+- [Refactoring During Critical Periods](#refactoring-during-critical-periods)
+- [Assuming Refactoring Is Always Safe](#assuming-refactoring-is-always-safe)
+
 ## Premature Extraction
 
 Extracting a shared function, component, or service after seeing the pattern only once is premature extraction. The abstraction doesn't fit the second use case. Now you have a leaky abstraction that's worse than duplication.

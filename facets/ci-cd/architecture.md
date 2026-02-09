@@ -7,6 +7,15 @@ last_updated: 2026-02-09
 
 # CI/CD: Architecture
 
+## Contents
+
+- [Pipeline Architecture](#pipeline-architecture)
+- [Build Strategies](#build-strategies)
+- [Deployment Strategies](#deployment-strategies)
+- [Branching Strategies](#branching-strategies)
+- [Quality Gates](#quality-gates)
+- [Artifact Management](#artifact-management)
+
 ## Pipeline Architecture
 
 ### CI Pipeline Stages

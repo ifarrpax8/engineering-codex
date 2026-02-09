@@ -7,6 +7,16 @@ last_updated: 2026-02-09
 
 # CI/CD: Product Perspective
 
+## Contents
+
+- [Competitive Advantage Through Speed](#competitive-advantage-through-speed)
+- [DORA Metrics: The Science of Delivery Performance](#dora-metrics-the-science-of-delivery-performance)
+- [Developer Experience: The Hidden Cost of Slow CI](#developer-experience-the-hidden-cost-of-slow-ci)
+- [Risk Reduction Through Automation](#risk-reduction-through-automation)
+- [The Cost of Manual Processes](#the-cost-of-manual-processes)
+- [Deployment Confidence](#deployment-confidence)
+- [Success Metrics](#success-metrics)
+
 ## Competitive Advantage Through Speed
 
 Continuous Integration and Continuous Deployment represent a fundamental shift in how engineering teams deliver value. Teams that deploy frequently don't just move faster—they fundamentally change their relationship with risk, feedback, and iteration. When deployments happen multiple times per day, the distance between writing code and seeing its impact in production shrinks dramatically. This creates a compounding advantage: faster feature delivery, quicker recovery from issues, and more rapid iteration based on user feedback.

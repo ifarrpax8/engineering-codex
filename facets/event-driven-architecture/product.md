@@ -7,6 +7,16 @@ last_updated: 2026-02-09
 
 # Product Perspective: Event-Driven Architecture
 
+## Contents
+
+- [Business Value](#business-value)
+- [User-Facing Impact](#user-facing-impact)
+- [Team Autonomy](#team-autonomy)
+- [Integration Patterns](#integration-patterns)
+- [Cost Implications](#cost-implications)
+- [Risk and Business Impact](#risk-and-business-impact)
+- [Success Metrics](#success-metrics)
+
 ## Business Value
 
 Event-driven architecture delivers business value through real-time responsiveness, organizational decoupling, and operational flexibility. Unlike request-response patterns that require immediate coordination, event-driven systems enable temporal decoupling where producers emit events without waiting for consumers to process them. This fundamental shift enables businesses to respond to changes as they happen rather than polling for updates.

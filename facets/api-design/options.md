@@ -6,6 +6,15 @@ recommendation_type: decision-matrix
 
 Decision matrix for choosing API styles and pagination strategies.
 
+## Contents
+
+- [API Style Options](#api-style-options)
+- [Pagination Options](#pagination-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## API Style Options
 
 ### 1. REST

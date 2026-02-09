@@ -9,6 +9,15 @@ last_updated: 2026-02-09
 
 Frontend architecture decisions fundamentally shape testing strategies. A monolithic SPA requires different testing approaches than a micro-frontend architecture, and component architecture determines how easily components can be tested in isolation. Effective testing strategies align with architecture patterns to maximize confidence while minimizing maintenance burden.
 
+## Contents
+
+- [Component Testing](#component-testing)
+- [End-to-End Testing](#end-to-end-testing)
+- [Visual Regression Testing](#visual-regression-testing)
+- [Performance Testing](#performance-testing)
+- [Storybook as a Test Surface](#storybook-as-a-test-surface)
+- [Testing MFE Integration](#testing-mfe-integration)
+
 ## Component Testing
 
 Component testing verifies that individual components render correctly, handle user interactions, and manage their internal state. The Testing Library philosophy emphasizes testing behavior from the user's perspective rather than implementation details, creating tests that remain stable as implementation evolves.

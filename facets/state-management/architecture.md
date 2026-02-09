@@ -2,6 +2,14 @@
 
 State management architecture determines how data flows through an application, where state lives, how it's updated, and how components react to changes. The architecture must balance simplicity, performance, maintainability, and developer experience.
 
+## Contents
+
+- [Types of State](#types-of-state)
+- [State Management Architectures](#state-management-architectures)
+- [State Ownership in MFE](#state-ownership-in-mfe)
+- [Server State Caching](#server-state-caching)
+- [Persistence](#persistence)
+
 ## Types of State
 
 Understanding the different types of state is fundamental to choosing appropriate management strategies. Each type has different lifecycle requirements, sharing patterns, and persistence needs.

@@ -9,6 +9,15 @@ last_updated: 2026-02-09
 
 Frontend architecture decisions directly impact both user experience and team productivity. The choice between a Single Page Application (SPA), Micro-Frontend (MFE), or Server-Side Rendering (SSR) architecture affects how quickly users can interact with your application, how independently teams can ship features, and how consistently the user experience feels across different parts of the product.
 
+## Contents
+
+- [User Experience Impact](#user-experience-impact)
+- [Team Productivity and Autonomy](#team-productivity-and-autonomy)
+- [UX Consistency Challenges](#ux-consistency-challenges)
+- [Deployment Independence as a Product Feature](#deployment-independence-as-a-product-feature)
+- [Design System Adoption Impact](#design-system-adoption-impact)
+- [Success Metrics](#success-metrics)
+
 ## User Experience Impact
 
 ### Page Load and Perceived Performance

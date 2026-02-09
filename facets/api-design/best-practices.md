@@ -2,6 +2,17 @@
 
 Language-agnostic principles for designing consistent, maintainable, and developer-friendly APIs.
 
+## Contents
+
+- [Resource Naming](#resource-naming)
+- [Error Response Format](#error-response-format)
+- [Idempotency](#idempotency)
+- [Pagination by Default](#pagination-by-default)
+- [API-First Design](#api-first-design)
+- [Request and Response Design](#request-and-response-design)
+- [Versioning Discipline](#versioning-discipline)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 ## Resource Naming
 
 ### Use Plural Nouns for Collections

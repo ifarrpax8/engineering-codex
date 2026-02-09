@@ -1,5 +1,12 @@
 # Accessibility: Options
 
+## Contents
+
+- [Recommended Accessibility Approach](#recommended-accessibility-approach)
+- [Accessibility Testing Strategy Decision Matrix](#accessibility-testing-strategy-decision-matrix)
+- [Component Library Strategy Decision Matrix](#component-library-strategy-decision-matrix)
+- [Recommended Decision Path](#recommended-decision-path)
+
 ## Recommended Accessibility Approach
 
 **Target Standard**: WCAG 2.1 Level AA conformance serves as the minimum standard for most applications. This level provides meaningful accessibility improvements while remaining achievable for most development teams and design constraints. WCAG 2.1 AA compliance ensures legal compliance with most accessibility regulations and provides a solid foundation for inclusive design.

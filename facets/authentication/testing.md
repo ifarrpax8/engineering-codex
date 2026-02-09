@@ -2,6 +2,14 @@
 
 Testing authentication and authorization requires validating identity verification, session management, token handling, and permission enforcement across multiple layers of your application. Security vulnerabilities in authentication can lead to unauthorized access, data breaches, and compliance violations. Comprehensive testing ensures that authentication works correctly under normal conditions and fails securely under attack.
 
+## Contents
+
+- [Unit Testing](#unit-testing)
+- [Integration Testing](#integration-testing)
+- [End-to-End Testing](#end-to-end-testing)
+- [Security Testing](#security-testing)
+- [Test Utilities and Patterns](#test-utilities-and-patterns)
+
 ## Unit Testing
 
 ### Token Generation and Validation Logic

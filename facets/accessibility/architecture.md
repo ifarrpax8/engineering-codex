@@ -1,5 +1,14 @@
 # Accessibility: Architecture
 
+## Contents
+
+- [WCAG 2.1 Principles: POUR Framework](#wcag-21-principles-pour-framework)
+- [Semantic HTML: The Foundation of Accessibility](#semantic-html-the-foundation-of-accessibility)
+- [ARIA: Accessible Rich Internet Applications](#aria-accessible-rich-internet-applications)
+- [Keyboard Navigation Architecture](#keyboard-navigation-architecture)
+- [Color and Visual Design](#color-and-visual-design)
+- [Component Patterns for Accessibility](#component-patterns-for-accessibility)
+
 ## WCAG 2.1 Principles: POUR Framework
 
 The Web Content Accessibility Guidelines (WCAG) 2.1 organizes accessibility requirements around four foundational principles, remembered by the acronym POUR: Perceivable, Operable, Understandable, and Robust. These principles form the architectural foundation for accessible design.

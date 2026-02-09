@@ -1,5 +1,15 @@
 # Configuration Management: Options
 
+## Contents
+
+- [Recommended Configuration Stack](#recommended-configuration-stack)
+- [Secrets Management Options](#secrets-management-options)
+- [Runtime Configuration Options](#runtime-configuration-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies with Other Facets](#synergies-with-other-facets)
+- [Evolution Triggers](#evolution-triggers)
+
 Configuration management requires choosing tools and patterns that balance simplicity, flexibility, security, and operational requirements. This document provides decision guidance for common configuration management choices.
 
 ## Recommended Configuration Stack

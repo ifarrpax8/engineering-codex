@@ -1,5 +1,20 @@
 # Configuration Management: Best Practices
 
+## Contents
+
+- [Externalize Everything That Varies](#externalize-everything-that-varies)
+- [Use Typed, Validated Configuration](#use-typed-validated-configuration)
+- [Fail Fast on Missing Configuration](#fail-fast-on-missing-configuration)
+- [Never Commit Secrets](#never-commit-secrets)
+- [Maintain Environment Parity](#maintain-environment-parity)
+- [Document Every Configuration Property](#document-every-configuration-property)
+- [Configuration as Code](#configuration-as-code)
+- [Stack-Specific Practices](#stack-specific-practices)
+- [Configuration Change Management](#configuration-change-management)
+- [Configuration Monitoring and Alerting](#configuration-monitoring-and-alerting)
+- [Gradual Configuration Migration](#gradual-configuration-migration)
+- [Configuration Security](#configuration-security)
+
 Configuration management best practices ensure that applications are maintainable, secure, and operable across diverse environments. These practices apply across technology stacks, though implementation details vary.
 
 ## Externalize Everything That Varies

@@ -2,6 +2,20 @@
 
 Common pitfalls and traps that developers encounter when writing and managing tests. These are the things that seem like good practice at first but create problems over time.
 
+## Contents
+
+- [100% Code Coverage Doesn't Mean Your Tests Are Good](#100-code-coverage-doesnt-mean-your-tests-are-good)
+- [Mocking Everything](#mocking-everything)
+- [Testing Implementation Details](#testing-implementation-details)
+- [Shared Mutable State Between Tests](#shared-mutable-state-between-tests)
+- [Sleep-Based Waits in E2E Tests](#sleep-based-waits-in-e2e-tests)
+- [The Ice Cream Cone (Inverted Pyramid)](#the-ice-cream-cone-inverted-pyramid)
+- [Testing Against a Shared Test Environment](#testing-against-a-shared-test-environment)
+- [Not Testing Error Paths](#not-testing-error-paths)
+- [Assertion-Free Tests](#assertion-free-tests)
+- [Flaky Tests That Get Ignored](#flaky-tests-that-get-ignored)
+- [Over-Specifying Test Data](#over-specifying-test-data)
+
 ## 100% Code Coverage Doesn't Mean Your Tests Are Good
 
 **The trap**: Targeting 100% code coverage as a quality metric, then writing tests that execute every line without actually verifying behavior.

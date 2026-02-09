@@ -8,6 +8,16 @@ last_updated: 2026-02-09
 
 # CI/CD: Options
 
+## Contents
+
+- [Deployment Strategy Options](#deployment-strategy-options)
+- [Branching Strategy Options](#branching-strategy-options)
+- [CI Platform Options](#ci-platform-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Deployment Strategy Options
 
 ### Rolling Deployment

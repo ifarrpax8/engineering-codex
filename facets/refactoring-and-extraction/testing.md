@@ -1,5 +1,17 @@
 # Testing: Refactoring & Extraction Safety
 
+## Contents
+
+- [Test Coverage as a Safety Net](#test-coverage-as-a-safety-net)
+- [Characterization Tests](#characterization-tests)
+- [Refactoring Should Not Change Test Behavior](#refactoring-should-not-change-test-behavior)
+- [Testing Extraction Boundaries](#testing-extraction-boundaries)
+- [Testing the Strangler Fig Pattern](#testing-the-strangler-fig-pattern)
+- [Architecture Tests for Enforced Boundaries](#architecture-tests-for-enforced-boundaries)
+- [Regression Testing](#regression-testing)
+- [Test-Driven Refactoring](#test-driven-refactoring)
+- [Refactoring Test Code](#refactoring-test-code)
+
 ## Test Coverage as a Safety Net
 
 Refactoring without tests is risky. You cannot know if you've broken something until it reaches production. Tests provide a safety net: they verify that behavior remains unchanged after refactoring. Before refactoring, ensure the code under change has adequate test coverage.

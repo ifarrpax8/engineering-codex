@@ -2,6 +2,16 @@
 
 Decision matrix for choosing backend architecture patterns based on team size, domain complexity, and operational maturity.
 
+## Contents
+
+- [Deployment Architecture Options](#deployment-architecture-options)
+- [Internal Architecture Options](#internal-architecture-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies with Other Facets](#synergies-with-other-facets)
+- [Evolution Triggers](#evolution-triggers)
+- [Decision Framework](#decision-framework)
+
 ## Deployment Architecture Options
 
 ### Monolith

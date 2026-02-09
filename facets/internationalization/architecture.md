@@ -1,5 +1,13 @@
 # Architecture: Internationalization
 
+## Contents
+
+- [i18n vs L10n](#i18n-vs-l10n)
+- [Frontend i18n Architecture](#frontend-i18n-architecture)
+- [Backend i18n Architecture](#backend-i18n-architecture)
+- [Translation Workflow](#translation-workflow)
+- [RTL Support](#rtl-support)
+
 ## i18n vs L10n
 
 Internationalization (i18n) and localization (l10n) are distinct but related concepts. Internationalization is the technical work of making code and architecture support multiple languages and locales. It is done by developers as a one-time investment in the codebase structure. Localization is the process of adapting content for specific languages and locales. It is done by translators and is an ongoing effort that must be repeated for each new locale.

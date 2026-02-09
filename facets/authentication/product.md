@@ -2,6 +2,14 @@
 
 Authentication and authorization are foundational to product security and user experience. They determine who can access your application, what they can do within it, and how seamlessly they can interact with your system. Poor authentication design creates friction, security vulnerabilities, and compliance risks. Well-designed authentication enables trust, reduces support burden, and supports business growth.
 
+## Contents
+
+- [Core User Flows](#core-user-flows)
+- [Advanced Flows](#advanced-flows)
+- [Personas and Their Concerns](#personas-and-their-concerns)
+- [Compliance and Regulatory Drivers](#compliance-and-regulatory-drivers)
+- [Success Metrics](#success-metrics)
+
 ## Core User Flows
 
 ### Login

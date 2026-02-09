@@ -1,5 +1,21 @@
 # Feature Toggles: Gotchas
 
+## Contents
+
+- [Toggle Debt](#toggle-debt)
+- [Toggle Naming Chaos](#toggle-naming-chaos)
+- [Testing Only the Toggle-On Path](#testing-only-the-toggle-on-path)
+- [Inconsistent Toggle Evaluation](#inconsistent-toggle-evaluation)
+- [Toggle State Leaking Between Tests](#toggle-state-leaking-between-tests)
+- [Random Percentage Rollout](#random-percentage-rollout)
+- [Too Many Toggles Active at Once](#too-many-toggles-active-at-once)
+- [Using Toggles for Permanent Configuration](#using-toggles-for-permanent-configuration)
+- [Toggle Checks Deep in Business Logic](#toggle-checks-deep-in-business-logic)
+- [No Audit Trail for Toggle Changes](#no-audit-trail-for-toggle-changes)
+- [Toggle Evaluation Performance Issues](#toggle-evaluation-performance-issues)
+- [Toggle Removal Breaking Features](#toggle-removal-breaking-features)
+- [Summary](#summary)
+
 This document covers common pitfalls, traps, and mistakes when implementing and using feature toggles. Understanding these gotchas helps teams avoid costly mistakes and maintain healthy toggle systems.
 
 ## Toggle Debt

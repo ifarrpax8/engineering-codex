@@ -7,6 +7,17 @@ last_updated: 2026-02-09
 
 # CI/CD: Best Practices
 
+## Contents
+
+- [Keep Pipelines Fast](#keep-pipelines-fast)
+- [Fail Fast](#fail-fast)
+- [Make Builds Reproducible](#make-builds-reproducible)
+- [Trunk-Based Development with Feature Flags](#trunk-based-development-with-feature-flags)
+- [Infrastructure as Code](#infrastructure-as-code)
+- [Immutable Artifacts](#immutable-artifacts)
+- [Automate Everything](#automate-everything)
+- [Stack-Specific Optimizations](#stack-specific-optimizations)
+
 ## Keep Pipelines Fast
 
 Pipeline duration directly impacts developer productivity. Slow pipelines cause context switching, batching of changes, and avoidance of small pull requests. The target for optimal developer experience is under 10 minutes for the complete CI pipeline, with critical path stages completing even faster.

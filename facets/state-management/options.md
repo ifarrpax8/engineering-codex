@@ -6,6 +6,15 @@ recommendation_type: decision-matrix
 
 State management decisions depend on application complexity, team preferences, and specific requirements. This matrix helps evaluate options and make informed choices.
 
+## Contents
+
+- [Client State Management Options](#client-state-management-options)
+- [Server State Management Options](#server-state-management-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Client State Management Options
 
 ### Local Component State Only

@@ -1,5 +1,15 @@
 # Options: Work Management Decision Matrix
 
+## Contents
+
+- [Ticket System Options](#ticket-system-options)
+- [Estimation Approach Options](#estimation-approach-options)
+- [Workflow Complexity Options](#workflow-complexity-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 Choosing a work management system involves trade-offs between features, complexity, cost, and integration needs. Different systems suit different team sizes, workflows, and organizational contexts. This decision matrix evaluates ticket system options and provides guidance for selection.
 
 ## Ticket System Options

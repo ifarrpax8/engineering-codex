@@ -1,5 +1,18 @@
 # Best Practices: Refactoring & Extraction
 
+## Contents
+
+- [Refactor in Small, Safe Steps](#refactor-in-small-safe-steps)
+- [Boy Scout Rule](#boy-scout-rule)
+- [Refactor What You're Working In](#refactor-what-youre-working-in)
+- [Don't Mix Refactoring with Feature Work](#dont-mix-refactoring-with-feature-work)
+- [Prefer Composition Over Inheritance](#prefer-composition-over-inheritance)
+- [Extract When the Pattern Is Clear](#extract-when-the-pattern-is-clear)
+- [Use Feature Flags for Risky Extractions](#use-feature-flags-for-risky-extractions)
+- [Stack-Specific Practices](#stack-specific-practices)
+- [Refactoring Tools and Automation](#refactoring-tools-and-automation)
+- [Documentation and Communication](#documentation-and-communication)
+
 ## Refactor in Small, Safe Steps
 
 Each refactoring step should result in a working state. Commit frequently. If a step breaks something, revert to the last working state. Never refactor and add features in the same commit.

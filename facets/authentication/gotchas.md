@@ -2,6 +2,20 @@
 
 Common pitfalls and traps that developers encounter when implementing authentication and authorization. These are the things that seem reasonable at first but cause real problems.
 
+## Contents
+
+- [JWTs Can't Be Revoked (Without Defeating Their Purpose)](#jwts-cant-be-revoked-without-defeating-their-purpose)
+- [Refresh Token Rotation and Multi-Tab Issues](#refresh-token-rotation-and-multi-tab-issues)
+- [Storing Tokens in localStorage](#storing-tokens-in-localstorage)
+- [Generic Error Messages That Are Too Generic](#generic-error-messages-that-are-too-generic)
+- [Permission Checks Only at the UI Level](#permission-checks-only-at-the-ui-level)
+- [Hardcoding Roles Instead of Permissions](#hardcoding-roles-instead-of-permissions)
+- [Session Fixation](#session-fixation)
+- [Forgot Password Tokens That Don't Expire](#forgot-password-tokens-that-dont-expire)
+- [Not Rate Limiting Auth Endpoints](#not-rate-limiting-auth-endpoints)
+- [OAuth Scopes That Are Too Broad](#oauth-scopes-that-are-too-broad)
+- [Impersonation Without Audit Trail](#impersonation-without-audit-trail)
+
 ## JWTs Can't Be Revoked (Without Defeating Their Purpose)
 
 **The trap**: Choosing JWTs for their "stateless" nature, then realizing you need to revoke them (user logs out, password changed, account compromised).

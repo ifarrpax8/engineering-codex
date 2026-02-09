@@ -1,5 +1,21 @@
 # Performance -- Gotchas
 
+## Contents
+
+- [Premature Optimization](#premature-optimization)
+- [N+1 Queries](#n1-queries)
+- [Bundle Size Creep](#bundle-size-creep)
+- [Caching Without Invalidation Strategy](#caching-without-invalidation-strategy)
+- [Load Testing in the Wrong Environment](#load-testing-in-the-wrong-environment)
+- [Ignoring p99 Latency](#ignoring-p99-latency)
+- [Memory Leaks in Frontend](#memory-leaks-in-frontend)
+- [Synchronous I/O Blocking Threads](#synchronous-io-blocking-threads)
+- [Over-Caching](#over-caching)
+- [Over-Indexing](#over-indexing)
+- [Not Accounting for Cold Starts](#not-accounting-for-cold-starts)
+- [Database Connection Exhaustion](#database-connection-exhaustion)
+- [Ignoring Mobile and Low-Bandwidth Users](#ignoring-mobile-and-low-bandwidth-users)
+
 Common performance pitfalls that catch teams off guard. These are lessons learned from real projects where performance degraded silently until it became a crisis.
 
 ## Premature Optimization

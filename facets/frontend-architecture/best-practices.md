@@ -2,6 +2,18 @@
 
 Principles and patterns for building maintainable, performant frontend applications. These are language-agnostic where possible, with stack-specific callouts for Vue 3 and React where the framework materially affects the recommendation.
 
+## Contents
+
+- [Feature-Based Folder Structure](#feature-based-folder-structure)
+- [Component Composition Over Inheritance](#component-composition-over-inheritance)
+- [Smart vs Presentational Components](#smart-vs-presentational-components)
+- [Prop Drilling Alternatives](#prop-drilling-alternatives)
+- [Lazy Loading Routes](#lazy-loading-routes)
+- [Shared Design System Usage](#shared-design-system-usage)
+- [Code Splitting Strategy](#code-splitting-strategy)
+- [Error Boundaries and Resilience](#error-boundaries-and-resilience)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 ## Feature-Based Folder Structure
 
 Group code by feature, not by type. A feature folder contains everything that feature needs: components, composables/hooks, services, types, and tests.

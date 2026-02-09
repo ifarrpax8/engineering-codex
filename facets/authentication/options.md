@@ -6,6 +6,15 @@ recommendation_type: decision-matrix
 
 Authentication strategy is a foundational architectural decision that impacts security, scalability, user experience, and operational complexity. This decision matrix helps you choose the right authentication approach for your application's needs.
 
+## Contents
+
+- [Options](#options)
+- [Authorization Model Options](#authorization-model-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Options
 
 ### 1. Session-Based Authentication

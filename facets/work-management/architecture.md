@@ -1,5 +1,14 @@
 # Architecture: Work Management Systems
 
+## Contents
+
+- [Ticket Hierarchy](#ticket-hierarchy)
+- [Ticket Structure and Templates](#ticket-structure-and-templates)
+- [Workflow States](#workflow-states)
+- [Estimation](#estimation)
+- [Sprint Management](#sprint-management)
+- [Linking Work to Code](#linking-work-to-code)
+
 Work management architecture defines how work is structured, tracked, and executed. This includes ticket hierarchies that organize work by scope, templates that standardize information capture, workflows that enforce process, estimation approaches that enable planning, and linking mechanisms that connect work to code. Understanding these architectural patterns is essential for designing effective work management systems.
 
 ## Ticket Hierarchy

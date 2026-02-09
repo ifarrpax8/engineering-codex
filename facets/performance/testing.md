@@ -7,6 +7,18 @@ last_updated: 2026-02-09
 
 # Performance: Testing
 
+## Contents
+
+- [Load Testing](#load-testing)
+- [Performance Benchmarking](#performance-benchmarking)
+- [Frontend Performance Testing](#frontend-performance-testing)
+- [Database Query Performance Testing](#database-query-performance-testing)
+- [API Latency Testing](#api-latency-testing)
+- [Stress Testing](#stress-testing)
+- [Soak Testing](#soak-testing)
+- [Profiling](#profiling)
+- [Regression Testing](#regression-testing)
+
 Performance testing validates that applications meet user experience and scalability goals under realistic conditions. This perspective covers load testing, performance benchmarking, frontend performance testing, database query performance testing, API latency testing, stress testing, soak testing, profiling, and regression testing.
 
 ## Load Testing

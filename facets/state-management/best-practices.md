@@ -2,6 +2,19 @@
 
 Effective state management balances simplicity, performance, and maintainability. These practices apply across frameworks and libraries, with stack-specific considerations where they materially affect outcomes.
 
+## Contents
+
+- [Separate Server State from Client State](#separate-server-state-from-client-state)
+- [Keep State as Local as Possible](#keep-state-as-local-as-possible)
+- [URL as Source of Truth for Navigation State](#url-as-source-of-truth-for-navigation-state)
+- [Derive State, Don't Duplicate It](#derive-state-dont-duplicate-it)
+- [Normalize Complex State](#normalize-complex-state)
+- [Optimistic Updates for Perceived Performance](#optimistic-updates-for-perceived-performance)
+- [Vue 3 / Pinia Specific Practices](#vue-3--pinia-specific-practices)
+- [React / Zustand Specific Practices](#react--zustand-specific-practices)
+- [TanStack Query Specific Practices](#tanstack-query-specific-practices)
+- [VueQuery (TanStack Query for Vue) Specific Practices](#vuequery-tanstack-query-for-vue-specific-practices)
+
 ## Separate Server State from Client State
 
 Server state (data fetched from APIs) has fundamentally different requirements than client state (UI toggles, form inputs, user preferences). Server state needs caching, background revalidation, error handling, and request deduplication. Client state needs reactivity and persistence.

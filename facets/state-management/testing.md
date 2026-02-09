@@ -2,6 +2,15 @@
 
 Testing state management requires strategies at multiple levels: unit testing stores in isolation, testing components with state, testing server state lifecycle, integration testing complete flows, and performance testing to prevent unnecessary re-renders.
 
+## Contents
+
+- [Store Unit Testing](#store-unit-testing)
+- [Component + State Testing](#component--state-testing)
+- [Server State Testing](#server-state-testing)
+- [Integration Testing](#integration-testing)
+- [Performance Testing](#performance-testing)
+- [Testing MFE State Isolation](#testing-mfe-state-isolation)
+
 ## Store Unit Testing
 
 Store unit tests verify that stores work correctly in isolation, without rendering components or making actual API calls. These tests are fast, focused, and easy to debug.

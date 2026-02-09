@@ -1,5 +1,19 @@
 # Gotchas: Work Management Pitfalls
 
+## Contents
+
+- [Vague Tickets](#vague-tickets)
+- [Story Point Inflation](#story-point-inflation)
+- [Sprint Scope Creep](#sprint-scope-creep)
+- [Tickets as Task Lists](#tickets-as-task-lists)
+- [Stale Backlog](#stale-backlog)
+- [Missing Spike Before Complex Work](#missing-spike-before-complex-work)
+- [Bug vs Feature Confusion](#bug-vs-feature-confusion)
+- [Using Velocity for Performance Evaluation](#using-velocity-for-performance-evaluation)
+- [Subtask Overload](#subtask-overload)
+- [Not Linking PRs to Tickets](#not-linking-prs-to-tickets)
+- [Treating Refinement as Optional](#treating-refinement-as-optional)
+
 Work management systems can create value or waste depending on how they're used. Common pitfalls turn ticket systems into bureaucratic overhead rather than delivery enablers. Recognizing these gotchas helps teams avoid them and maintain effective work management practices.
 
 ## Vague Tickets

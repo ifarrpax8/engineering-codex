@@ -1,5 +1,11 @@
 # Error Handling -- Architecture
 
+## Contents
+
+- [Backend Error Architecture](#backend-error-architecture)
+- [Frontend Error Architecture](#frontend-error-architecture)
+- [Cross-Cutting Concerns](#cross-cutting-concerns)
+
 Error handling architecture spans backend exception management, frontend error boundaries, API error responses, messaging retry patterns, and cross-cutting concerns like correlation IDs and error logging. This architecture ensures errors are caught, handled gracefully, and provide actionable information to users and operators.
 
 ## Backend Error Architecture

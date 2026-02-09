@@ -1,5 +1,17 @@
 # Feature Toggles: Best Practices
 
+## Contents
+
+- [Short-Lived Release Toggles](#short-lived-release-toggles)
+- [Toggle Naming Conventions](#toggle-naming-conventions)
+- [Toggle Removal Discipline](#toggle-removal-discipline)
+- [Safe Defaults](#safe-defaults)
+- [Minimize Toggle Scope](#minimize-toggle-scope)
+- [Don't Nest Toggles](#dont-nest-toggles)
+- [Document Every Toggle](#document-every-toggle)
+- [Stack-Specific Best Practices](#stack-specific-best-practices)
+- [Summary](#summary)
+
 This document covers language-agnostic best practices for feature toggles, along with stack-specific guidance for Kotlin, Spring Boot, Vue 3, and React. These practices help teams avoid common pitfalls and maintain healthy toggle systems.
 
 ## Short-Lived Release Toggles

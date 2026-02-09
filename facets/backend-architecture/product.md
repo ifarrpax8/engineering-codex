@@ -2,6 +2,16 @@
 
 Backend architecture decisions fundamentally shape how quickly teams can deliver features, how reliably systems operate, and how organizations scale. These choices impact every stakeholder from developers writing code to customers experiencing the product.
 
+## Contents
+
+- [Feature Delivery Speed](#feature-delivery-speed)
+- [Deployment Risk and Blast Radius](#deployment-risk-and-blast-radius)
+- [Team Autonomy and Ownership](#team-autonomy-and-ownership)
+- [Operational Cost](#operational-cost)
+- [Scaling Ability](#scaling-ability)
+- [Time to Market vs Long-Term Sustainability](#time-to-market-vs-long-term-sustainability)
+- [Success Metrics](#success-metrics)
+
 ## Feature Delivery Speed
 
 Architecture directly influences the time from idea to production. A monolith enables rapid feature development for small teams—developers can add endpoints, modify shared domain logic, and deploy everything together without coordinating across service boundaries. This simplicity accelerates early product development when the team is small and the domain is still being discovered.

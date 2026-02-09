@@ -1,5 +1,18 @@
 # Best Practices: Work Management
 
+## Contents
+
+- [Write Tickets for Your Future Self](#write-tickets-for-your-future-self)
+- [One Ticket, One Concern](#one-ticket-one-concern)
+- [Acceptance Criteria Before Implementation](#acceptance-criteria-before-implementation)
+- [Keep Tickets Small](#keep-tickets-small)
+- [Refine Ahead](#refine-ahead)
+- [Use Spikes to Reduce Uncertainty](#use-spikes-to-reduce-uncertainty)
+- [Track Technical Debt as Tickets](#track-technical-debt-as-tickets)
+- [Link Everything](#link-everything)
+- [Sprint Retrospectives Must Produce Action Items](#sprint-retrospectives-must-produce-action-items)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 Work management best practices are language-agnostic principles that apply regardless of which ticket system or workflow a team uses. These practices emerge from experience and enable effective delivery through disciplined ticket creation, refinement, and execution.
 
 ## Write Tickets for Your Future Self

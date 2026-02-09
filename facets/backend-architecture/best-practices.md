@@ -2,6 +2,18 @@
 
 Principles and patterns for building maintainable, scalable backend applications. These are language-agnostic where possible, with stack-specific callouts for Kotlin, Spring Boot, and Axon Framework where they materially affect the recommendation.
 
+## Contents
+
+- [Start Simple, Evolve When Needed](#start-simple-evolve-when-needed)
+- [Enforce Boundaries Early](#enforce-boundaries-early)
+- [Separate Domain Logic from Infrastructure](#separate-domain-logic-from-infrastructure)
+- [Package by Feature, Not by Layer](#package-by-feature-not-by-layer)
+- [API-First Development](#api-first-development)
+- [Idempotent Operations](#idempotent-operations)
+- [Consistent Error Handling](#consistent-error-handling)
+- [Graceful Degradation](#graceful-degradation)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 ## Start Simple, Evolve When Needed
 
 Begin with a monolith. A well-structured monolith is faster to develop, simpler to deploy, and easier to reason about than a distributed system. The key is structuring the monolith so that extraction is possible when scaling triggers are reached.

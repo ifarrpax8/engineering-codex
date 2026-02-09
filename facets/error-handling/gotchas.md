@@ -1,5 +1,19 @@
 # Error Handling -- Gotchas
 
+## Contents
+
+- [Empty Catch Blocks](#empty-catch-blocks)
+- [Returning 200 with Error Body](#returning-200-with-error-body)
+- [Exposing Stack Traces to Users](#exposing-stack-traces-to-users)
+- [Catching Exception Instead of Specific Types](#catching-exception-instead-of-specific-types)
+- [Not Handling Async Errors](#not-handling-async-errors)
+- [Retry Without Backoff](#retry-without-backoff)
+- [Error Messages That Help Attackers](#error-messages-that-help-attackers)
+- [Inconsistent Error Format](#inconsistent-error-format)
+- [Not Testing Error Paths](#not-testing-error-paths)
+- [Frontend Error Boundary Too High or Too Low](#frontend-error-boundary-too-high-or-too-low)
+- [Not Propagating Correlation IDs](#not-propagating-correlation-ids)
+
 Common pitfalls and traps that developers encounter when handling errors. These are the things that seem reasonable at first but cause problems down the road.
 
 ## Empty Catch Blocks

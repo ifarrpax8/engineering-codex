@@ -1,5 +1,15 @@
 # Product Perspective: Refactoring & Extraction
 
+## Contents
+
+- [Refactoring Is Not a Feature](#refactoring-is-not-a-feature)
+- [The Business Case for Refactoring](#the-business-case-for-refactoring)
+- [Technical Debt as a Business Concept](#technical-debt-as-a-business-concept)
+- [When Refactoring Has ROI](#when-refactoring-has-roi)
+- [The Cost of Premature Extraction](#the-cost-of-premature-extraction)
+- [Refactoring as Ongoing Practice vs Big-Bang Rewrites](#refactoring-as-ongoing-practice-vs-big-bang-rewrites)
+- [Success Metrics](#success-metrics)
+
 ## Refactoring Is Not a Feature
 
 Refactoring does not add visible functionality to users. It does not create new buttons, improve performance, or add capabilities. From a product perspective, refactoring is invisible—like maintaining a road. Users do not notice when a road is repaved, but they immediately notice potholes. Similarly, users do not notice well-executed refactoring, but they experience the consequences of neglected code quality: bugs, slow feature delivery, and system instability.

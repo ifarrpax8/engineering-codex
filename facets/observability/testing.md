@@ -1,5 +1,15 @@
 # Testing: Observability
 
+## Contents
+
+- [Testing Instrumentation](#testing-instrumentation)
+- [Testing Alerts](#testing-alerts)
+- [Load Testing with Observability](#load-testing-with-observability)
+- [Testing Log Structure](#testing-log-structure)
+- [Synthetic Monitoring Tests](#synthetic-monitoring-tests)
+- [Chaos Engineering](#chaos-engineering)
+- [Testing Dashboards](#testing-dashboards)
+
 Testing observability ensures that instrumentation works correctly, alerts fire appropriately, and dashboards provide accurate insights. Observability testing spans unit tests for instrumentation, integration tests for trace propagation, and production validation of alerting and monitoring.
 
 ## Testing Instrumentation

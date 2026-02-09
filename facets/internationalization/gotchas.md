@@ -1,5 +1,18 @@
 # Gotchas: Internationalization
 
+## Contents
+
+- [Hardcoded Strings Discovered Late](#hardcoded-strings-discovered-late)
+- [Concatenated Translations](#concatenated-translations)
+- [Date Format Assumptions](#date-format-assumptions)
+- [Text Truncation](#text-truncation)
+- [Missing Plural Forms](#missing-plural-forms)
+- [Locale Fallback Chain](#locale-fallback-chain)
+- [Translation Context](#translation-context)
+- [Dynamic Content Not Translated](#dynamic-content-not-translated)
+- [RTL Afterthought](#rtl-afterthought)
+- [Translation Files Becoming Stale](#translation-files-becoming-stale)
+
 ## Hardcoded Strings Discovered Late
 
 The most common i18n gotcha is discovering hundreds of hardcoded strings scattered throughout the codebase when the first translation effort begins. Developers naturally write strings inline: `button.text = "Save"` or `<span>Welcome back</span>`. These work perfectly for single-language applications, but when translation becomes necessary, every hardcoded string must be found, extracted, and replaced—a time-consuming and error-prone process.

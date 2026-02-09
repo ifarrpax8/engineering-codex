@@ -7,6 +7,19 @@ last_updated: 2026-02-09
 
 # Gotchas: Common Pitfalls in Event-Driven Systems
 
+## Contents
+
+- [Event Storms](#event-storms)
+- [Eventual Consistency Confusion](#eventual-consistency-confusion)
+- [Ordering Guarantees](#ordering-guarantees)
+- [Schema Evolution Breaking Consumers](#schema-evolution-breaking-consumers)
+- [Lost Messages](#lost-messages)
+- [Debugging Distributed Flows](#debugging-distributed-flows)
+- [Dead Letter Queue Neglect](#dead-letter-queue-neglect)
+- [Tight Coupling Through Events](#tight-coupling-through-events)
+- [Over-Engineering with Events](#over-engineering-with-events)
+- [Consumer Lag Snowball](#consumer-lag-snowball)
+
 ## Event Storms
 
 Event storms occur when one event triggers a cascade of events that trigger more events, creating exponential amplification. A single `OrderPlaced` event might trigger `InventoryReserved`, which triggers `InventoryLow`, which triggers `ReorderRequested`, which triggers `SupplierNotified`, and so on. Without careful design, event storms can overwhelm systems and create cascading failures.

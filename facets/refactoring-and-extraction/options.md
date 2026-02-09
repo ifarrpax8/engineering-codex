@@ -1,5 +1,13 @@
 # Options: Refactoring & Extraction Decision Framework
 
+## Contents
+
+- [Recommended Refactoring Approach](#recommended-refactoring-approach)
+- [Refactoring Trigger Decision Guide](#refactoring-trigger-decision-guide)
+- [Extraction Readiness Checklist](#extraction-readiness-checklist)
+- [Synergies with Other Facets](#synergies-with-other-facets)
+- [Decision Matrix Summary](#decision-matrix-summary)
+
 ## Recommended Refactoring Approach
 
 **Default: Continuous Small Refactoring**

@@ -2,6 +2,16 @@
 
 Authentication architecture determines how identity is established, verified, and maintained across your application. Authorization architecture determines what authenticated users are permitted to do. These concerns span multiple layers: the network edge, API gateways, application services, and data stores. The chosen architecture impacts scalability, security, user experience, and operational complexity.
 
+## Contents
+
+- [Authentication Approaches](#authentication-approaches)
+- [JWT Deep Dive](#jwt-deep-dive)
+- [OAuth 2.0 / OIDC Flows](#oauth-20--oidc-flows)
+- [Authorization Models](#authorization-models)
+- [Architecture Patterns](#architecture-patterns)
+- [Session Storage](#session-storage)
+- [Comparison Table](#comparison-table)
+
 ## Authentication Approaches
 
 ### Session-Based Authentication

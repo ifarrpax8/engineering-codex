@@ -1,5 +1,15 @@
 # Product Perspective: Work Management
 
+## Contents
+
+- [The Bridge Between Intent and Execution](#the-bridge-between-intent-and-execution)
+- [Visibility and Accountability](#visibility-and-accountability)
+- [Planning and Forecasting](#planning-and-forecasting)
+- [Communication Artifact](#communication-artifact)
+- [Compliance and Audit Trail](#compliance-and-audit-trail)
+- [Cost of Poor Ticket Practices](#cost-of-poor-ticket-practices)
+- [Success Metrics](#success-metrics)
+
 Work management systems are the bridge between business intent and engineering execution. They transform abstract product ideas into concrete, trackable work items that can be planned, executed, and delivered. Understanding work management from a product perspective reveals why ticket hygiene, workflow discipline, and consistent practices matter beyond mere process compliance.
 
 ## The Bridge Between Intent and Execution

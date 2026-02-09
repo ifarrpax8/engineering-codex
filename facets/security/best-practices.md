@@ -1,5 +1,16 @@
 # Security -- Best Practices
 
+## Contents
+
+- [Validate Input on the Server, Always](#validate-input-on-the-server-always)
+- [Principle of Least Privilege](#principle-of-least-privilege)
+- [Fail Securely](#fail-securely)
+- [Keep Dependencies Updated](#keep-dependencies-updated)
+- [Use Parameterized Queries](#use-parameterized-queries)
+- [Encrypt Sensitive Data at Rest and in Transit](#encrypt-sensitive-data-at-rest-and-in-transit)
+- [Log Security Events](#log-security-events)
+- [Stack-Specific Security Practices](#stack-specific-security-practices)
+
 Security best practices are principles that apply across technologies and frameworks. These practices provide a foundation for secure application development, complementing framework-specific security features and tooling. While implementation details vary by technology stack, the underlying principles remain constant.
 
 ## Validate Input on the Server, Always

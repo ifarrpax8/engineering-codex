@@ -7,6 +7,12 @@ last_updated: 2026-02-09
 
 # Performance: Architecture
 
+## Contents
+
+- [Frontend Performance Architecture](#frontend-performance-architecture)
+- [Backend Performance Architecture](#backend-performance-architecture)
+- [Infrastructure Performance Architecture](#infrastructure-performance-architecture)
+
 Performance architecture encompasses the patterns, techniques, and infrastructure decisions that enable applications to meet user experience and scalability goals. This perspective covers frontend rendering optimization, backend throughput, database performance, caching strategies, and infrastructure scaling.
 
 ## Frontend Performance Architecture

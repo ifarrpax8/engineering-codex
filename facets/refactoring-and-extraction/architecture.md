@@ -1,5 +1,13 @@
 # Architecture: Refactoring & Extraction Patterns
 
+## Contents
+
+- [Types of Refactoring](#types-of-refactoring)
+- [Code Smells](#code-smells)
+- [Extraction Patterns](#extraction-patterns)
+- [The Strangler Fig Pattern](#the-strangler-fig-pattern)
+- [When to Extract vs When to Duplicate](#when-to-extract-vs-when-to-duplicate)
+
 ## Types of Refactoring
 
 Refactoring occurs at multiple levels of abstraction, each with different risks and techniques. Understanding these levels helps choose the right approach and manage risk appropriately.

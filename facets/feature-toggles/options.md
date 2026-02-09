@@ -1,5 +1,16 @@
 # Feature Toggles: Options
 
+## Contents
+
+- [Feature Toggle Implementation Options](#feature-toggle-implementation-options)
+- [Open-Source Alternatives](#open-source-alternatives)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+- [Decision Framework](#decision-framework)
+- [Summary](#summary)
+
 This document provides a decision matrix comparing different feature toggle implementation approaches, evaluation criteria, and recommendations for when to use each option. It covers both simple implementations suitable for teams without commercial service budgets and sophisticated commercial platforms.
 
 ## Feature Toggle Implementation Options

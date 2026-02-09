@@ -2,6 +2,16 @@
 
 Common pitfalls in state management create bugs, performance issues, and maintenance problems. Recognizing these patterns helps avoid them.
 
+## Contents
+
+- [Putting Everything in Global State](#putting-everything-in-global-state)
+- [Not Distinguishing Server State from Client State](#not-distinguishing-server-state-from-client-state)
+- [Stale Closures in React](#stale-closures-in-react)
+- [Reactivity Pitfalls in Vue](#reactivity-pitfalls-in-vue)
+- [Over-Rendering](#over-rendering)
+- [Forgetting to Clean Up](#forgetting-to-clean-up)
+- [Cache Invalidation Bugs](#cache-invalidation-bugs)
+
 ## Putting Everything in Global State
 
 Treating the store like a database where every piece of data goes into the global store creates unnecessary coupling and re-renders. Most state is local. API data belongs in a server state manager, not a global store.

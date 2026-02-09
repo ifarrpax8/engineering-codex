@@ -2,6 +2,20 @@
 
 Common pitfalls and traps that developers encounter when designing and implementing APIs. These are the things that seem reasonable at first but cause problems down the road.
 
+## Contents
+
+- [Using POST for Everything](#using-post-for-everything)
+- [Returning 200 with an Error Body](#returning-200-with-an-error-body)
+- [Using a Filtered Endpoint as a Search Engine](#using-a-filtered-endpoint-as-a-search-engine)
+- [Exposing Internal Database Structure](#exposing-internal-database-structure)
+- [Ignoring Pagination Until It's Too Late](#ignoring-pagination-until-its-too-late)
+- [Inconsistent Naming and Formatting](#inconsistent-naming-and-formatting)
+- [Over-Engineering Versioning](#over-engineering-versioning)
+- [Not Handling Partial Failures in Aggregation](#not-handling-partial-failures-in-aggregation)
+- [Pagination Without Stable Sorting](#pagination-without-stable-sorting)
+- [Treating API Keys as Authentication](#treating-api-keys-as-authentication)
+- [Synchronous Responses for Long-Running Operations](#synchronous-responses-for-long-running-operations)
+
 ## Using POST for Everything
 
 **The trap**: Using POST for all operations because "it's safer" or "GET has URL length limits."

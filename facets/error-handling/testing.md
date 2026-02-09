@@ -1,5 +1,17 @@
 # Error Handling -- Testing
 
+## Contents
+
+- [Testing Exception Handlers](#testing-exception-handlers)
+- [Testing Validation Errors](#testing-validation-errors)
+- [Testing Error Boundaries (Frontend)](#testing-error-boundaries-frontend)
+- [Testing Retry Logic](#testing-retry-logic)
+- [Testing Dead Letter Queue](#testing-dead-letter-queue)
+- [Testing Graceful Degradation](#testing-graceful-degradation)
+- [Testing Error Reporting](#testing-error-reporting)
+- [Testing Error Response Contracts](#testing-error-response-contracts)
+- [Negative Testing Patterns](#negative-testing-patterns)
+
 Testing error handling ensures that errors are caught, handled correctly, and provide useful information to users and operators. Error path testing is often neglected but is critical—production issues are frequently error scenarios that weren't tested.
 
 ## Testing Exception Handlers

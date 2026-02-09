@@ -1,5 +1,16 @@
 # Testing: Internationalization
 
+## Contents
+
+- [Visual Testing with Pseudo-localization](#visual-testing-with-pseudo-localization)
+- [Translation Completeness Checks](#translation-completeness-checks)
+- [Layout Testing](#layout-testing)
+- [RTL Testing](#rtl-testing)
+- [Date, Number, and Currency Formatting Tests](#date-number-and-currency-formatting-tests)
+- [Pluralization Testing](#pluralization-testing)
+- [Snapshot Testing](#snapshot-testing)
+- [End-to-End Testing](#end-to-end-testing)
+
 ## Visual Testing with Pseudo-localization
 
 Pseudo-localization is a testing technique that replaces characters with accented equivalents or special characters to simulate translation without requiring actual translations. Common transformations include: a→â, e→ê, o→ô, i→î, u→û. This technique reveals hardcoded strings, truncation issues, and layout problems before translations are complete.

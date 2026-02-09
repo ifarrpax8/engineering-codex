@@ -1,5 +1,19 @@
 # Security -- Gotchas
 
+## Contents
+
+- [Storing Secrets in Environment Variables in Source Control](#storing-secrets-in-environment-variables-in-source-control)
+- [CORS Misconfiguration](#cors-misconfiguration)
+- [Client-Side Authorization](#client-side-authorization)
+- [SQL Injection in Native Queries](#sql-injection-in-native-queries)
+- [JWT Stored in localStorage](#jwt-stored-in-localstorage)
+- [Missing Rate Limiting](#missing-rate-limiting)
+- [Logging Sensitive Data](#logging-sensitive-data)
+- [Overly Detailed Error Messages](#overly-detailed-error-messages)
+- [Ignoring Dependency Vulnerabilities](#ignoring-dependency-vulnerabilities)
+- [Disabled CSRF Protection Without Understanding](#disabled-csrf-protection-without-understanding)
+- [Hardcoded Cryptographic Keys](#hardcoded-cryptographic-keys)
+
 Common security pitfalls that seem reasonable at first but create vulnerabilities. These are the mistakes that slip through code reviews and seem harmless until they're exploited.
 
 ## Storing Secrets in Environment Variables in Source Control

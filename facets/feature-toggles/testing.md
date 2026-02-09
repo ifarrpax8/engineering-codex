@@ -1,5 +1,18 @@
 # Feature Toggles: Testing
 
+## Contents
+
+- [Testing Both Toggle States](#testing-both-toggle-states)
+- [Default State Testing](#default-state-testing)
+- [Combinatorial Testing](#combinatorial-testing)
+- [Testing Progressive Rollout](#testing-progressive-rollout)
+- [Integration Testing with Toggles](#integration-testing-with-toggles)
+- [Testing Toggle Cleanup](#testing-toggle-cleanup)
+- [Load Testing Toggle Evaluation](#load-testing-toggle-evaluation)
+- [Testing Commercial Platform Integration](#testing-commercial-platform-integration)
+- [Toggle State Management in Tests](#toggle-state-management-in-tests)
+- [Testing Strategy Summary](#testing-strategy-summary)
+
 Testing feature toggles requires strategies that account for multiple toggle states, toggle interactions, and the fact that both toggle-on and toggle-off paths are production code. This document covers comprehensive testing approaches for toggle-enabled features.
 
 ## Testing Both Toggle States

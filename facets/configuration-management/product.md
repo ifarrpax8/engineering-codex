@@ -1,5 +1,16 @@
 # Configuration Management: Product Perspective
 
+## Contents
+
+- [The Business Impact of Configuration](#the-business-impact-of-configuration)
+- [Environment Parity as a Product Requirement](#environment-parity-as-a-product-requirement)
+- [Time to Recovery as a Product Metric](#time-to-recovery-as-a-product-metric)
+- [Compliance and Audit Requirements](#compliance-and-audit-requirements)
+- [Multi-Environment Complexity](#multi-environment-complexity)
+- [Success Metrics](#success-metrics)
+- [User-Facing Configuration](#user-facing-configuration)
+- [Configuration as a Product Differentiator](#configuration-as-a-product-differentiator)
+
 Configuration management is often treated as a purely technical concern, but it has profound product implications. Misconfigured systems cause outages, expose vulnerabilities, and create user-facing failures that directly impact business outcomes.
 
 ## The Business Impact of Configuration

@@ -1,5 +1,14 @@
 # Error Handling -- Product Perspective
 
+## Contents
+
+- [Errors as a User Experience Problem](#errors-as-a-user-experience-problem)
+- [Business Impact of Error Handling](#business-impact-of-error-handling)
+- [Error Recovery and Graceful Degradation](#error-recovery-and-graceful-degradation)
+- [Support Team Impact](#support-team-impact)
+- [Success Metrics](#success-metrics)
+- [Error Handling as a Product Feature](#error-handling-as-a-product-feature)
+
 Errors are inevitable in software systems. How you handle them defines the user experience. A well-handled error builds trust—users understand what went wrong and what they can do about it. A poorly handled error destroys confidence—users don't know if their data was saved, if they should retry, or if they need to contact support.
 
 ## Errors as a User Experience Problem

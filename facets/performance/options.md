@@ -8,6 +8,16 @@ recommendation_type: decision-matrix
 
 # Performance: Options
 
+## Contents
+
+- [Load Testing Tool Options](#load-testing-tool-options)
+- [Frontend Performance Monitoring Options](#frontend-performance-monitoring-options)
+- [Backend Caching Options](#backend-caching-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies with Other Facets](#synergies-with-other-facets)
+- [Evolution Triggers](#evolution-triggers)
+
 Performance tooling decisions require evaluating options based on team context, requirements, and constraints. This decision matrix provides guidance for selecting load testing tools, frontend performance monitoring solutions, and backend caching strategies.
 
 ## Load Testing Tool Options

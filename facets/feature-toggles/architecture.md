@@ -1,5 +1,14 @@
 # Feature Toggles: Architecture
 
+## Contents
+
+- [Toggle Categories](#toggle-categories)
+- [Toggle Architecture: Without Commercial Services](#toggle-architecture-without-commercial-services)
+- [Toggle Architecture: With Commercial Services](#toggle-architecture-with-commercial-services)
+- [Frontend Toggle Integration](#frontend-toggle-integration)
+- [Toggle Storage and Evaluation](#toggle-storage-and-evaluation)
+- [Architecture Patterns Summary](#architecture-patterns-summary)
+
 This document covers the architectural patterns, implementation approaches, and technical trade-offs for feature toggle systems. It addresses both simple implementations suitable for teams without budget for commercial services and sophisticated implementations using commercial platforms.
 
 ## Toggle Categories

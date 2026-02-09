@@ -1,5 +1,14 @@
 # Options: Observability
 
+## Contents
+
+- [Observability Stack Options](#observability-stack-options)
+- [Instrumentation Standard Options](#instrumentation-standard-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 Observability stack selection depends on scale, budget, operational capabilities, and vendor preferences. This decision matrix evaluates major options and provides guidance for selection.
 
 ## Observability Stack Options

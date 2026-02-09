@@ -4,6 +4,15 @@ recommendation_type: decision-matrix
 
 # Testing: Options
 
+## Contents
+
+- [Testing Strategy Options](#testing-strategy-options)
+- [Test Distribution Options](#test-distribution-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Testing Strategy Options
 
 ### 1. Test-Driven Development (TDD)

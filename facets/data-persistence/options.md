@@ -10,6 +10,15 @@ last_updated: 2026-02-09
 
 This decision matrix guides data persistence technology choices based on application requirements, constraints, and trade-offs.
 
+## Contents
+
+- [Primary Data Store Options](#primary-data-store-options)
+- [Data Access Pattern Options](#data-access-pattern-options)
+- [Caching Options](#caching-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+
 ## Primary Data Store Options
 
 ### 1. Relational Database (PostgreSQL)

@@ -1,5 +1,15 @@
 # Options: Internationalization
 
+## Contents
+
+- [Frontend i18n Library Options](#frontend-i18n-library-options)
+- [Translation Management Options](#translation-management-options)
+- [Backend Localization Options](#backend-localization-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Frontend i18n Library Options
 
 ### vue-i18n (Vue) / react-intl (React)

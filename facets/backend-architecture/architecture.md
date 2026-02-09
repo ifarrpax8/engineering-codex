@@ -2,6 +2,13 @@
 
 Backend architecture encompasses both deployment architecture (how code is packaged and deployed) and internal architecture (how code is organized within each deployment unit). These decisions are independent but complementary.
 
+## Contents
+
+- [Deployment Architectures](#deployment-architectures)
+- [Internal Architecture Patterns](#internal-architecture-patterns)
+- [Domain-Driven Design Tactical Patterns](#domain-driven-design-tactical-patterns)
+- [Architecture Evolution](#architecture-evolution)
+
 ## Deployment Architectures
 
 ### Monolith

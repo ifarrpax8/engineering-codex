@@ -2,6 +2,17 @@
 
 Common pitfalls and traps when making frontend architecture decisions. These are lessons learned from real projects that can save significant time and rework.
 
+## Contents
+
+- [Shared State Across MFEs](#shared-state-across-mfes)
+- [CSS Isolation Failures](#css-isolation-failures)
+- [Duplicated Dependencies Inflating Bundle](#duplicated-dependencies-inflating-bundle)
+- [MFE Boundaries That Don't Match Team Boundaries](#mfe-boundaries-that-dont-match-team-boundaries)
+- [Premature MFE Adoption](#premature-mfe-adoption)
+- [Version Conflicts in Shared Libraries](#version-conflicts-in-shared-libraries)
+- [Over-Engineering Component Abstraction](#over-engineering-component-abstraction)
+- [Route Conflicts Across MFEs](#route-conflicts-across-mfes)
+
 ## Shared State Across MFEs
 
 MFEs should own their state. When multiple MFEs share a global store, changes in one MFE's state requirements ripple across all consumers. This creates the same coupling that MFEs were supposed to eliminate.

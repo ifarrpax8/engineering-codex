@@ -7,6 +7,17 @@ last_updated: 2026-02-09
 
 # CI/CD: Testing
 
+## Contents
+
+- [Testing in CI](#testing-in-ci)
+- [Test Parallelization](#test-parallelization)
+- [Flaky Test Management](#flaky-test-management)
+- [Test Result Reporting](#test-result-reporting)
+- [Pipeline Testing](#pipeline-testing)
+- [Security Testing in CI](#security-testing-in-ci)
+- [Performance Testing in CI](#performance-testing-in-ci)
+- [Smoke Tests After Deployment](#smoke-tests-after-deployment)
+
 ## Testing in CI
 
 Automated testing forms the foundation of continuous integration. Every pull request should trigger a comprehensive test suite that validates code correctness, integration behavior, and end-to-end functionality. The test pyramid guides test distribution: many fast unit tests, fewer slower integration tests, and a small number of expensive end-to-end tests.

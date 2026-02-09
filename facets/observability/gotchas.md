@@ -1,5 +1,18 @@
 # Gotchas: Observability
 
+## Contents
+
+- [Alert Fatigue](#alert-fatigue)
+- [Logging Sensitive Data](#logging-sensitive-data)
+- [Metric Cardinality Explosion](#metric-cardinality-explosion)
+- [Missing Trace Context in Async Flows](#missing-trace-context-in-async-flows)
+- [Log Volume Cost](#log-volume-cost)
+- [Dashboard Rot](#dashboard-rot)
+- [Observing the Wrong Thing](#observing-the-wrong-thing)
+- [Not Correlating Deployments with Metrics](#not-correlating-deployments-with-metrics)
+- [Sampling Bias](#sampling-bias)
+- [Health Check That Always Passes](#health-check-that-always-passes)
+
 Common pitfalls in observability implementation lead to alert fatigue, excessive costs, missing data, and ineffective debugging. Recognizing these gotchas enables avoiding them and building effective observability from the start.
 
 ## Alert Fatigue

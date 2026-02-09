@@ -1,5 +1,17 @@
 # Error Handling -- Best Practices
 
+## Contents
+
+- [Use Domain-Specific Exceptions](#use-domain-specific-exceptions)
+- [Never Swallow Exceptions Silently](#never-swallow-exceptions-silently)
+- [Separate Client Errors from Server Errors](#separate-client-errors-from-server-errors)
+- [Provide Actionable Error Messages](#provide-actionable-error-messages)
+- [Include Error Codes for Machine Consumption](#include-error-codes-for-machine-consumption)
+- [Retry Only Transient Errors](#retry-only-transient-errors)
+- [Use Circuit Breakers for External Dependencies](#use-circuit-breakers-for-external-dependencies)
+- [Stack-Specific Best Practices](#stack-specific-best-practices)
+- [Error Handling Checklist](#error-handling-checklist)
+
 Best practices for error handling that apply across languages and frameworks. These principles ensure errors are handled consistently, provide useful information, and don't expose security vulnerabilities.
 
 ## Use Domain-Specific Exceptions

@@ -1,5 +1,16 @@
 # Accessibility: Best Practices
 
+## Contents
+
+- [Use Semantic HTML First, ARIA Second](#use-semantic-html-first-aria-second)
+- [Every Image Needs Alternative Text](#every-image-needs-alternative-text)
+- [Every Form Input Needs a Label](#every-form-input-needs-a-label)
+- [Manage Focus Intentionally](#manage-focus-intentionally)
+- [Design for Keyboard First](#design-for-keyboard-first)
+- [Use the Design System](#use-the-design-system)
+- [Make Error Messages Accessible](#make-error-messages-accessible)
+- [Stack-Specific Best Practices](#stack-specific-best-practices)
+
 ## Use Semantic HTML First, ARIA Second
 
 The most effective accessibility practice is to use semantic HTML elements that provide built-in accessibility features. Native HTML elements like `<button>`, `<a>`, `<input>`, and `<nav>` have built-in keyboard support, focus management, and screen reader announcements. They work correctly with assistive technologies without additional code.

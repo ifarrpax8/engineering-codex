@@ -1,5 +1,14 @@
 # Error Handling -- Options
 
+## Contents
+
+- [Recommended Error Handling Stack](#recommended-error-handling-stack)
+- [Backend Error Response Format Options](#backend-error-response-format-options)
+- [Resilience Pattern Options](#resilience-pattern-options)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+- [Decision Guidance](#decision-guidance)
+
 Decision matrix and recommended practices for error handling architecture, error response formats, and resilience patterns.
 
 ## Recommended Error Handling Stack

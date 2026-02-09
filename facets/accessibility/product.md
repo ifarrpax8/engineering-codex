@@ -1,5 +1,14 @@
 # Accessibility: Product Perspective
 
+## Contents
+
+- [Accessibility as a Requirement, Not a Feature](#accessibility-as-a-requirement-not-a-feature)
+- [Legal Requirements and Compliance](#legal-requirements-and-compliance)
+- [Business Value of Accessibility](#business-value-of-accessibility)
+- [Cost of Retrofitting Accessibility](#cost-of-retrofitting-accessibility)
+- [User Personas and Accessibility Needs](#user-personas-and-accessibility-needs)
+- [Success Metrics for Accessibility](#success-metrics-for-accessibility)
+
 ## Accessibility as a Requirement, Not a Feature
 
 Accessibility is not an optional enhancement or a nice-to-have feature—it is a fundamental requirement for inclusive software design. Approximately 15-20% of the global population lives with some form of disability, which translates to over one billion people worldwide. When software is inaccessible, it completely excludes these users from participation, creating digital barriers that prevent them from accessing information, services, and opportunities that others take for granted.

@@ -9,6 +9,15 @@ last_updated: 2026-02-09
 
 Data persistence decisions have profound business implications that extend far beyond technical implementation. Understanding these product-level concerns ensures engineering teams make data architecture choices that align with business objectives, regulatory requirements, and user expectations.
 
+## Contents
+
+- [Data as a Business Asset](#data-as-a-business-asset)
+- [Data Consistency Expectations](#data-consistency-expectations)
+- [Regulatory Requirements](#regulatory-requirements)
+- [Backup and Recovery](#backup-and-recovery)
+- [Data Migration Impact on Users](#data-migration-impact-on-users)
+- [Success Metrics](#success-metrics)
+
 ## Data as a Business Asset
 
 Data outlives applications. A poorly designed database schema or migration strategy can create technical debt that persists for years, constraining product evolution and increasing maintenance costs. Conversely, well-architected data persistence enables rapid feature development, supports business intelligence initiatives, and provides a foundation for future product capabilities.

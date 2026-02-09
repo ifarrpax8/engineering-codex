@@ -9,6 +9,14 @@ last_updated: 2026-02-09
 
 Best practices for data persistence balance correctness, performance, and maintainability. These principles guide day-to-day development decisions and prevent common mistakes.
 
+## Contents
+
+- [Migration Best Practices](#migration-best-practices)
+- [Index Strategy](#index-strategy)
+- [N+1 Query Prevention](#n1-query-prevention)
+- [Connection Pool Sizing](#connection-pool-sizing)
+- [Transaction Management](#transaction-management)
+
 ## Migration Best Practices
 
 ### Migrations Must Be Backward-Compatible

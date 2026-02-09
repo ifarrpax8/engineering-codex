@@ -2,6 +2,14 @@
 
 This perspective focuses on evaluating and improving your testing strategy itself. How do you know if your tests are effective? Are they catching real bugs? Are they maintainable? Are they giving false confidence?
 
+## Contents
+
+- [Coverage Metrics](#coverage-metrics)
+- [Test Quality Indicators](#test-quality-indicators)
+- [Flaky Test Management](#flaky-test-management)
+- [Test Maintenance Cost](#test-maintenance-cost)
+- [Evaluating Your Testing Strategy](#evaluating-your-testing-strategy)
+
 ## Coverage Metrics
 
 ### Line Coverage

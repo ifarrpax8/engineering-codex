@@ -1,5 +1,16 @@
 # Best Practices: Observability
 
+## Contents
+
+- [Structured Logging Everywhere](#structured-logging-everywhere)
+- [Correlation IDs End-to-End](#correlation-ids-end-to-end)
+- [Instrument at Boundaries](#instrument-at-boundaries)
+- [Define SLOs Before Building Dashboards](#define-slos-before-building-dashboards)
+- [Alert on Symptoms, Not Causes](#alert-on-symptoms-not-causes)
+- [Keep Metric Cardinality Under Control](#keep-metric-cardinality-under-control)
+- [Log at the Right Level](#log-at-the-right-level)
+- [Stack-Specific Practices](#stack-specific-practices)
+
 Observability best practices ensure that telemetry data is useful, actionable, and cost-effective. These practices apply across languages and frameworks, with stack-specific considerations for Spring Boot, Kotlin, and frontend applications.
 
 ## Structured Logging Everywhere

@@ -1,5 +1,15 @@
 # Product Perspective: Observability
 
+## Contents
+
+- [Business Value](#business-value)
+- [Service Level Objectives (SLOs)](#service-level-objectives-slos)
+- [Service Level Indicators (SLIs)](#service-level-indicators-slis)
+- [Error Budgets](#error-budgets)
+- [User-Centric Monitoring](#user-centric-monitoring)
+- [Incident Response](#incident-response)
+- [Cost Considerations](#cost-considerations)
+
 Observability is fundamentally a product concern, not merely an operational one. You cannot fix what you cannot see, and outages directly impact revenue and customer trust. Proactive monitoring enables teams to detect and resolve issues before users report them, transforming reactive firefighting into proactive reliability engineering.
 
 ## Business Value

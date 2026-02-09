@@ -7,6 +7,18 @@ last_updated: 2026-02-09
 
 # Testing: Event-Driven Systems
 
+## Contents
+
+- [Testing Event Handlers](#testing-event-handlers)
+- [Testing Aggregates with Axon](#testing-aggregates-with-axon)
+- [Testing Sagas](#testing-sagas)
+- [Integration Testing with Testcontainers](#integration-testing-with-testcontainers)
+- [Contract Testing for Events](#contract-testing-for-events)
+- [Testing Eventual Consistency](#testing-eventual-consistency)
+- [Testing Dead Letter Queues](#testing-dead-letter-queues)
+- [Testing Idempotency](#testing-idempotency)
+- [End-to-End Event Flow Testing](#end-to-end-event-flow-testing)
+
 ## Testing Event Handlers
 
 Event handlers are the core of event-driven systems. They react to events and produce side effects—updating state, dispatching commands, or triggering other events. Testing event handlers requires verifying that given an event, the handler produces the correct side effects.

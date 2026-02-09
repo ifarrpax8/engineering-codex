@@ -2,6 +2,16 @@
 
 Data persistence architecture encompasses storage technology selection, data modeling, access patterns, caching strategies, and migration management. These decisions have long-lasting consequences -- data outlives applications, and changing a persistence strategy is one of the most expensive migrations a team can undertake.
 
+## Contents
+
+- [Relational Databases (PostgreSQL)](#relational-databases-postgresql)
+- [NoSQL Options](#nosql-options)
+- [Event Sourcing](#event-sourcing)
+- [CQRS Read Models](#cqrs-read-models)
+- [Database-per-Service Pattern](#database-per-service-pattern)
+- [Migrations](#migrations)
+- [Caching](#caching)
+
 ## Relational Databases (PostgreSQL)
 
 PostgreSQL is the recommended default for structured data. It provides ACID transactions, rich data types, powerful indexing, and a mature ecosystem.

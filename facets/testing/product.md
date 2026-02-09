@@ -1,5 +1,13 @@
 # Testing: Product Perspective
 
+## Contents
+
+- [The Business Case for Testing](#the-business-case-for-testing)
+- [Testing as Living Documentation](#testing-as-living-documentation)
+- [Stakeholder Value](#stakeholder-value)
+- [Testing Economics](#testing-economics)
+- [Success Metrics](#success-metrics)
+
 ## The Business Case for Testing
 
 ### Cost of Bugs by Stage

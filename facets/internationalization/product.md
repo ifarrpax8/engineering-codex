@@ -1,5 +1,15 @@
 # Product Perspective: Internationalization
 
+## Contents
+
+- [Market Expansion](#market-expansion)
+- [User Experience](#user-experience)
+- [Legal and Regulatory Requirements](#legal-and-regulatory-requirements)
+- [When to Invest](#when-to-invest)
+- [Translation Management](#translation-management)
+- [Localization Beyond Translation](#localization-beyond-translation)
+- [Success Metrics](#success-metrics)
+
 ## Market Expansion
 
 Internationalization is fundamentally about market expansion. A product available in one language addresses a fraction of the global market. Supporting ten languages multiplies the addressable market by an order of magnitude. Each new language opens access to millions of potential users who would otherwise be unable or unwilling to use the product.

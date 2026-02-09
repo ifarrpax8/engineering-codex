@@ -2,6 +2,17 @@
 
 API architecture encompasses the protocols, patterns, and infrastructure that enable service communication. Choose patterns that match your use case, performance requirements, and consumer needs.
 
+## Contents
+
+- [REST](#rest)
+- [GraphQL](#graphql)
+- [gRPC](#grpc)
+- [Pagination Patterns](#pagination-patterns)
+- [Filtering and Sorting](#filtering-and-sorting)
+- [Search vs Filtering](#search-vs-filtering)
+- [API Gateway Patterns](#api-gateway-patterns)
+- [Versioning Strategies](#versioning-strategies)
+
 ## REST
 
 REST (Representational State Transfer) is a resource-oriented architecture using HTTP methods and status codes.

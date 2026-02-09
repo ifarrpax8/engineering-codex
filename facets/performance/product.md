@@ -7,6 +7,17 @@ last_updated: 2026-02-09
 
 # Performance: Product Perspective
 
+## Contents
+
+- [Performance as a Feature](#performance-as-a-feature)
+- [Core Web Vitals as Product Metrics](#core-web-vitals-as-product-metrics)
+- [Backend Performance as User Experience](#backend-performance-as-user-experience)
+- [Scalability as a Business Enabler](#scalability-as-a-business-enabler)
+- [Performance Budgets](#performance-budgets)
+- [Cost of Poor Performance](#cost-of-poor-performance)
+- [Mobile and Low-Bandwidth Users](#mobile-and-low-bandwidth-users)
+- [Success Metrics](#success-metrics)
+
 Performance is not a technical concern—it is a product feature that directly impacts user satisfaction, business metrics, and competitive advantage. Users equate speed with quality, and every millisecond of delay has measurable business consequences.
 
 ## Performance as a Feature

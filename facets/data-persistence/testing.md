@@ -9,6 +9,15 @@ last_updated: 2026-02-09
 
 Testing data persistence requires validating schema, queries, migrations, and data integrity. This perspective covers testing strategies and tooling for ensuring data layer correctness and performance.
 
+## Contents
+
+- [Database Integration Tests with Testcontainers](#database-integration-tests-with-testcontainers)
+- [Slice Testing with @DataJpaTest](#slice-testing-with-datajpatest)
+- [Migration Testing](#migration-testing)
+- [Data Integrity Tests](#data-integrity-tests)
+- [Repository Testing Patterns](#repository-testing-patterns)
+- [Testing Event-Sourced Aggregates](#testing-event-sourced-aggregates)
+
 ## Database Integration Tests with Testcontainers
 
 Testcontainers spins up real database instances in Docker containers for integration tests. This provides authentic database behavior without mocking, ensuring tests validate actual SQL execution, constraints, and database-specific features.

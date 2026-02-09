@@ -1,5 +1,15 @@
 # Testing: Work Management Quality
 
+## Contents
+
+- [Testing Ticket Quality](#testing-ticket-quality)
+- [Acceptance Criteria as Test Cases](#acceptance-criteria-as-test-cases)
+- [Testing the Workflow](#testing-the-workflow)
+- [Sprint Metrics Validation](#sprint-metrics-validation)
+- [Retrospective Effectiveness](#retrospective-effectiveness)
+- [Backlog Health Checks](#backlog-health-checks)
+- [Testing Process Improvements](#testing-process-improvements)
+
 Testing work management systems means validating that tickets, workflows, and processes enable effective delivery. This includes testing ticket quality (can developers work without blockers?), using acceptance criteria as test cases, validating workflow enforcement, tracking metrics that reveal process health, and ensuring retrospectives drive improvement.
 
 ## Testing Ticket Quality

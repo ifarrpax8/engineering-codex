@@ -4,6 +4,15 @@ recommendation_type: decision-matrix
 
 # Frontend Architecture -- Options
 
+## Contents
+
+- [Options](#options)
+- [MFE Composition Options](#mfe-composition-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Options
 
 ### Single Page Application (SPA)

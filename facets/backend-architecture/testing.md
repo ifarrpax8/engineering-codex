@@ -2,6 +2,16 @@
 
 Testing strategies must align with architecture choices. Different architectures require different testing approaches, from unit tests that verify domain logic to integration tests that validate service boundaries.
 
+## Contents
+
+- [Architecture Tests](#architecture-tests)
+- [Service-Level Testing](#service-level-testing)
+- [Contract Testing](#contract-testing)
+- [Integration Testing by Pattern](#integration-testing-by-pattern)
+- [Testing Event-Driven Flows](#testing-event-driven-flows)
+- [Testing CQRS](#testing-cqrs)
+- [Test Strategy Summary](#test-strategy-summary)
+
 ## Architecture Tests
 
 Architecture tests enforce structural constraints that code reviews might miss. They run as part of the test suite, failing builds when architectural rules are violated.

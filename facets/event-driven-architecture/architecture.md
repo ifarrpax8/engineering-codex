@@ -7,6 +7,16 @@ last_updated: 2026-02-09
 
 # Architecture: Event-Driven Systems
 
+## Contents
+
+- [Core Concepts](#core-concepts)
+- [Messaging Patterns](#messaging-patterns)
+- [Choreography vs Orchestration](#choreography-vs-orchestration)
+- [Event Sourcing](#event-sourcing)
+- [Message Broker Architectures](#message-broker-architectures)
+- [Event Schema Management](#event-schema-management)
+- [Delivery Guarantees](#delivery-guarantees)
+
 ## Core Concepts
 
 ### Events vs Commands vs Queries

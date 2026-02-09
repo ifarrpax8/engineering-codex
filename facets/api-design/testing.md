@@ -2,6 +2,15 @@
 
 API testing ensures contracts are honored, implementations match specifications, and changes don't break consumers. Test at multiple levels: contracts, integration, performance, and security.
 
+## Contents
+
+- [Contract Testing](#contract-testing)
+- [Integration Testing](#integration-testing)
+- [Load and Performance Testing](#load-and-performance-testing)
+- [Schema and Compatibility Testing](#schema-and-compatibility-testing)
+- [Security Testing](#security-testing)
+- [API Documentation Testing](#api-documentation-testing)
+
 ## Contract Testing
 
 Contract testing verifies that API implementations match their specifications and that consumers and providers agree on the contract.

@@ -7,6 +7,18 @@ last_updated: 2026-02-09
 
 # Best Practices: Event-Driven Systems
 
+## Contents
+
+- [Design Events as Facts](#design-events-as-facts)
+- [Keep Events Immutable](#keep-events-immutable)
+- [Design for Idempotent Consumers](#design-for-idempotent-consumers)
+- [Use Correlation IDs](#use-correlation-ids)
+- [Prefer Choreography for Simple Flows](#prefer-choreography-for-simple-flows)
+- [Use Orchestration for Complex Flows](#use-orchestration-for-complex-flows)
+- [Handle Poison Messages](#handle-poison-messages)
+- [Version Your Events](#version-your-events)
+- [Stack-Specific Guidance](#stack-specific-guidance)
+
 ## Design Events as Facts
 
 Events represent facts that have already happened. They describe what occurred, not what should occur. Name events in past tense: `OrderPlaced`, `PaymentProcessed`, `InventoryReserved`. Avoid imperative names like `ProcessOrder` or `SendNotification`—these are commands, not events.

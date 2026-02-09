@@ -1,5 +1,17 @@
 # Performance -- Best Practices
 
+## Contents
+
+- [Measure Before Optimizing](#measure-before-optimizing)
+- [Set Performance Budgets](#set-performance-budgets)
+- [Optimize the Critical Path First](#optimize-the-critical-path-first)
+- [Cache Aggressively, Invalidate Precisely](#cache-aggressively-invalidate-precisely)
+- [Lazy Load Everything Not Immediately Visible](#lazy-load-everything-not-immediately-visible)
+- [Paginate All Collections](#paginate-all-collections)
+- [Use Async Processing for Non-Critical Work](#use-async-processing-for-non-critical-work)
+- [Monitor in Production, Not Just in Tests](#monitor-in-production-not-just-in-tests)
+- [Stack-Specific Callouts](#stack-specific-callouts)
+
 Performance optimization is most effective when guided by measurement. These practices apply across the stack, with specific callouts for Vue 3, React, Spring Boot, PostgreSQL, and Vite where the technology materially affects the approach.
 
 ## Measure Before Optimizing

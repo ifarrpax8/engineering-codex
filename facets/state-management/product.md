@@ -2,6 +2,15 @@
 
 State management is the foundation of user experience quality. When done well, it creates applications that feel instant, responsive, and trustworthy. When done poorly, it creates applications that feel broken, slow, and unreliable.
 
+## Contents
+
+- [User Experience Impact](#user-experience-impact)
+- [The Cost of Poor State Management](#the-cost-of-poor-state-management)
+- [User Expectations](#user-expectations)
+- [Team Productivity](#team-productivity)
+- [Performance as a Product Concern](#performance-as-a-product-concern)
+- [Success Metrics](#success-metrics)
+
 ## User Experience Impact
 
 The most visible impact of state management is on perceived performance and user trust. Users expect immediate feedback when they interact with an application. When a user clicks "Save" on a form, they expect to see their changes reflected immediately, not wait for a loading spinner and then see the form reset. Optimistic updates—updating the UI immediately before the server confirms the change—create this instant feedback. This requires careful state management to handle both the optimistic state and the eventual server response.

@@ -7,6 +7,19 @@ last_updated: 2026-02-09
 
 # CI/CD: Gotchas
 
+## Contents
+
+- [Slow CI Killing Developer Velocity](#slow-ci-killing-developer-velocity)
+- [Flaky Tests Eroding Trust](#flaky-tests-eroding-trust)
+- [Long-Lived Feature Branches](#long-lived-feature-branches)
+- [Manual Deployment Steps](#manual-deployment-steps)
+- [Secrets in CI Logs](#secrets-in-ci-logs)
+- [No Rollback Strategy](#no-rollback-strategy)
+- [Rebuilding for Each Environment](#rebuilding-for-each-environment)
+- [CI Cache Poisoning](#ci-cache-poisoning)
+- [Not Testing the Deployment Process](#not-testing-the-deployment-process)
+- [Over-Gating](#over-gating)
+
 ## Slow CI Killing Developer Velocity
 
 Slow CI pipelines create a cascade of negative behaviors that reduce team productivity. When pipelines take 30 minutes or more, developers naturally adapt their workflow in ways that harm code quality and collaboration.

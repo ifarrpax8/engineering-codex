@@ -1,5 +1,17 @@
 # Configuration Management: Architecture
 
+## Contents
+
+- [The Twelve-Factor App: Configuration](#the-twelve-factor-app-configuration)
+- [Configuration Hierarchy and Precedence](#configuration-hierarchy-and-precedence)
+- [Backend Configuration: Spring Boot](#backend-configuration-spring-boot)
+- [Frontend Configuration: Vite and React/Vue](#frontend-configuration-vite-and-reactvue)
+- [Kubernetes Configuration](#kubernetes-configuration)
+- [Secrets Management](#secrets-management)
+- [Configuration Patterns](#configuration-patterns)
+- [Configuration Refresh and Hot Reloading](#configuration-refresh-and-hot-reloading)
+- [Multi-Tenant Configuration](#multi-tenant-configuration)
+
 Configuration management architecture determines how applications discover, load, validate, and use configuration data. The architecture must balance simplicity, flexibility, security, and operational requirements across diverse technology stacks and deployment environments.
 
 ## The Twelve-Factor App: Configuration

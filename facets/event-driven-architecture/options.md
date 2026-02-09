@@ -8,6 +8,16 @@ last_updated: 2026-02-09
 
 # Options: Event-Driven Architecture Decisions
 
+## Contents
+
+- [Communication Pattern Options](#communication-pattern-options)
+- [Message Broker Options](#message-broker-options)
+- [Process Coordination Options](#process-coordination-options)
+- [Evaluation Criteria](#evaluation-criteria)
+- [Recommendation Guidance](#recommendation-guidance)
+- [Synergies](#synergies)
+- [Evolution Triggers](#evolution-triggers)
+
 ## Communication Pattern Options
 
 ### Synchronous (REST/gRPC)
