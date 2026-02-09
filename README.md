@@ -130,8 +130,6 @@ engineering-codex/
 - **checklist-runner** -- Run a codex checklist interactively against your project
 - **experience-audit** -- Audit your frontend against an experience's UX guidelines
 - **onboarding-guide** -- Generate a personalised reading path for a project
-- **generate-opportunity-brief** -- Draft a Pax8 Opportunity Brief informed by codex content
-- **generate-prd** -- Draft a Pax8 PRD from an approved Opportunity Brief
 - **sync-pax8-adrs** -- Diff ADR repo against standards map to surface new/changed/superseded ADRs
 - **content-freshness-audit** -- Check content age, technology references, and industry shifts
 - **refresh-tech-radar** -- Regenerate the tech radar from current codex and Pax8 content

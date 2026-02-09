@@ -20,6 +20,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ---
 
+## [2026-02-09] - Move Workflow Skills to Workspace Standards
+
+### Moved
+
+- **generate-opportunity-brief** and **generate-prd** skills moved to `workspace-standards` repository — they are workflow tools that read from the codex, not knowledge content that belongs in it
+- These skills now live alongside refine-ticket, spike, and implement-ticket where they can be chained in the full idea-to-implementation pipeline
+
+---
+
 ## [2026-02-09] - Pax8 Context Overlay, New Facets, and Product Skills
 
 ### Added
