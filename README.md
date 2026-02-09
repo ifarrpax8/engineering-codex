@@ -26,13 +26,15 @@ Need a fast answer? Start with [checklists](checklists/) for actionable lists th
 
 ### Learning a Topic
 
-Use the `facet-deep-dive` skill to explore any topic interactively, or read through the five perspectives directly:
+Use the `facet-deep-dive` skill to explore any topic interactively, or read through the seven perspectives directly:
 
 - **product.md** -- Business value, user flows, personas, compliance
 - **architecture.md** -- Patterns, diagrams, trade-offs, integration points
-- **testing.md** -- Test strategies, what to test, tooling categories
+- **testing.md** -- Test strategies, what to test, tooling categories, QA perspective
 - **best-practices.md** -- Language-agnostic principles with stack-specific callouts
+- **gotchas.md** -- Common pitfalls, traps, and lessons learned
 - **options.md** -- Decision matrix or recommended practice with alternatives
+- **operations.md** -- Day-2 operational concerns (select facets only)
 
 ### Reviewing Your Implementation
 
@@ -51,8 +53,8 @@ engineering-codex/
 ├── checklists/              # Quick-reference actionable checklists
 ├── decision-frameworks/     # Evaluation criteria, templates, and decision documentation
 ├── evolution/               # Architecture scaling journeys and inflection points
-├── facets/                  # 18 engineering-focused deep dives
-├── experiences/             # 16 user-centric UX perspectives
+├── facets/                  # 19 engineering-focused deep dives
+├── experiences/             # 17 user-centric UX perspectives
 ├── stack-context.md         # Assumed technology landscape
 ├── glossary.md              # Shared terminology
 └── CHANGELOG.md             # Change history
@@ -77,9 +79,10 @@ engineering-codex/
 | 13 | [Accessibility](facets/accessibility/) | WCAG, ARIA, keyboard navigation, screen readers |
 | 14 | [Error Handling](facets/error-handling/) | Error boundaries, retry patterns, circuit breakers, user feedback |
 | 15 | [Event-Driven Architecture](facets/event-driven-architecture/) | Messaging, event sourcing, CQRS, choreography vs orchestration |
-| 16 | [Developer Experience](facets/developer-experience/) | Tooling, onboarding, documentation, local dev, debugging |
-| 17 | [Feature Toggles](facets/feature-toggles/) | Toggle strategies, lifecycle management, rollout patterns |
-| 18 | [Refactoring](facets/refactoring/) | When and how to refactor, extraction patterns, safe migration |
+| 16 | [Feature Toggles](facets/feature-toggles/) | Toggle strategies, lifecycle management, rollout patterns |
+| 17 | [Configuration Management](facets/configuration-management/) | Externalized config, secrets, profiles, environment management |
+| 18 | [Refactoring & Extraction](facets/refactoring-and-extraction/) | When and how to refactor, extraction patterns, safe migration |
+| 19 | [Work Management](facets/work-management/) | Ticket systems, ticket types, workflows, estimation, sprints |
 
 ## Experiences (User-Centric)
 
@@ -101,6 +104,7 @@ engineering-codex/
 | 14 | [Permissions UX](experiences/permissions-ux/) | Access control communication, disabled states, request access |
 | 15 | [Real-Time & Collaboration](experiences/real-time-and-collaboration/) | Live updates, presence, WebSocket UX, conflict resolution |
 | 16 | [Loading & Perceived Performance](experiences/loading-and-perceived-performance/) | Skeleton screens, optimistic UI, progressive loading |
+| 17 | [Design Consistency & Visual Identity](experiences/design-consistency-and-visual-identity/) | Design tokens, component libraries, theming, UI cohesion |
 
 ## Skills & Commands
 
