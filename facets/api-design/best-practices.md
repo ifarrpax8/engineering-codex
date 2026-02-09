@@ -493,17 +493,14 @@ class UserController {
 - Use `@Operation`, `@ApiResponse` annotations for documentation
 - Generate client SDKs from same spec
 
-**Spring HATEOAS for link generation**:
+**Spring Data Pageable for pagination**:
 ```kotlin
-@GetMapping("/{id}")
-fun getUser(@PathVariable id: String): EntityModel<User> {
-    val user = userService.getUser(id)
-    return EntityModel.of(user,
-        linkTo<UserController> { getUser(id) }.withSelfRel(),
-        linkTo<UserController> { getOrders(id) }.withRel("orders")
-    )
+@GetMapping
+fun listUsers(pageable: Pageable): Page<User> {
+    return userRepository.findAll(pageable)
 }
 ```
+Spring auto-resolves `Pageable` from query parameters (`?page=0&size=20&sort=createdAt,desc`). The `Page<T>` response provides standardized pagination metadata without HATEOAS.
 
 **@ControllerAdvice for global error handling with RFC 9457**:
 ```kotlin

@@ -120,7 +120,17 @@ last_updated: <today's date>
 <!-- See stack-context.md for assumed technology landscape -->
 ```
 
-7. Create `options.md`:
+7. Create `gotchas.md`:
+
+```markdown
+# <Title> -- Gotchas
+
+<!-- Common pitfalls and traps developers encounter -->
+<!-- Things that seem reasonable at first but cause problems -->
+<!-- Specific to the patterns and options in this facet -->
+```
+
+8. Create `options.md`:
 
 ```markdown
 ---
@@ -178,6 +188,7 @@ Created new <type> "<Title>":
 - facets/<name>/architecture.md
 - facets/<name>/testing.md
 - facets/<name>/best-practices.md
+- facets/<name>/gotchas.md
 - facets/<name>/options.md
 - Updated facets/README.md index
 - Updated CHANGELOG.md

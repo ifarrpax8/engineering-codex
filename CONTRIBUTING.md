@@ -25,7 +25,7 @@ The skill will:
 
 ### Manual Creation
 
-If creating manually, every facet or experience must include these 6 files:
+If creating manually, every facet or experience must include these 7 files:
 
 ```
 facets/<name>/
@@ -34,6 +34,7 @@ facets/<name>/
 ├── architecture.md     # Patterns, diagrams, trade-offs
 ├── testing.md          # Test strategies, tooling categories
 ├── best-practices.md   # Language-agnostic principles
+├── gotchas.md          # Common pitfalls and traps
 └── options.md          # Decision matrix or best practice
 ```
 

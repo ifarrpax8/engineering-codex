@@ -69,7 +69,7 @@ Support JSON by default. XML, CSV, or other formats are optional based on consum
 
 ### HATEOAS (Hypermedia as the Engine of Application State)
 
-HATEOAS includes links in responses that describe available actions:
+HATEOAS is a REST constraint where responses include links that describe available actions:
 
 ```json
 {
@@ -83,17 +83,19 @@ HATEOAS includes links in responses that describe available actions:
 }
 ```
 
-**When HATEOAS helps**:
-- APIs with complex state machines
-- APIs where available actions depend on resource state
-- APIs consumed by generic clients that discover capabilities
+**Reality check**: HATEOAS is theoretically elegant but rarely adopted in practice. Most teams find that well-documented, stable APIs don't benefit from dynamic link discovery. The overhead of generating and consuming hypermedia links is seldom justified.
 
-**When HATEOAS is overhead**:
-- Simple CRUD APIs
-- APIs with stable, well-documented operations
-- APIs where clients are tightly coupled to specific endpoints
+**When HATEOAS genuinely helps**:
+- APIs with complex state machines where available actions change based on resource state
+- Public APIs consumed by generic clients that need to discover capabilities
+- APIs where URL structures change frequently (links decouple clients from URLs)
 
-For most APIs, HATEOAS adds complexity without clear benefit. Use it when state-dependent actions are central to your API.
+**When to skip HATEOAS (most cases)**:
+- Internal APIs where consumers are known and tightly coupled
+- Simple CRUD APIs with stable, well-documented endpoints
+- Teams without Spring HATEOAS experience (the learning curve isn't worth it for most projects)
+
+**Practical alternative**: Include relevant resource IDs and let clients construct URLs from documented patterns. This gives 80% of the navigability benefit with far less complexity.
 
 ## GraphQL
 
@@ -303,6 +305,58 @@ GET /users?page=2&pageSize=20
 
 **When to use**: Small datasets, user-facing pagination with page numbers, when consistency isn't critical.
 
+#### Spring Data Pageable (Offset Implementation)
+
+In the Spring ecosystem, offset-based pagination is most commonly implemented using Spring Data's `Pageable` / `Page<T>` / `PageRequest` pattern. This is the de facto standard for Spring Boot APIs and provides a standardized response envelope without needing HATEOAS.
+
+**Request**:
+```
+GET /users?page=0&size=20&sort=createdAt,desc
+```
+
+**Controller**:
+```kotlin
+@GetMapping
+fun listUsers(pageable: Pageable): Page<User> {
+    return userRepository.findAll(pageable)
+}
+```
+
+**Response** (`Page<T>` serialized):
+```json
+{
+  "content": [
+    { "id": "123", "email": "user@example.com" }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 20,
+    "sort": { "sorted": true, "unsorted": false }
+  },
+  "totalElements": 150,
+  "totalPages": 8,
+  "number": 0,
+  "size": 20,
+  "first": true,
+  "last": false,
+  "numberOfElements": 20
+}
+```
+
+**Why Spring Data Pageable is widely used**:
+- Zero boilerplate: Spring auto-resolves `Pageable` from query parameters
+- Standardized response: `Page<T>` gives consistent pagination metadata across all endpoints
+- Sorting built in: `?sort=field,direction` handled automatically
+- Repository integration: `findAll(Pageable)` works out of the box with Spring Data JPA
+- No HATEOAS dependency: Rich pagination metadata without the complexity of hypermedia links
+
+**Trade-offs**:
+- Spring-specific: response format is tied to Spring Data's `Page<T>` structure
+- Still offset-based: inherits all offset pagination weaknesses (deep page performance, concurrent write issues)
+- Opinionated structure: the response envelope is fixed -- if you need a custom format, you'll need to map from `Page<T>`
+
+For most Spring Boot APIs, Spring Data Pageable is the recommended starting point. Consider cursor-based or keyset pagination only when you hit the offset limitations (large datasets, high write volumes).
+
 ### Cursor-Based Pagination
 
 Uses opaque cursor tokens:
@@ -401,6 +455,132 @@ Support explicit sort direction:
 - `?sort=createdAt&order=asc` or `?sort=createdAt&order=desc`
 - `?sort=createdAt,updatedAt&order=desc,asc` (multiple fields)
 - Default to ascending if not specified
+
+## Search vs Filtering
+
+One of the most common architectural mistakes is trying to make a paginated filter endpoint serve as a search engine. These are fundamentally different concerns with different infrastructure needs.
+
+### The Spectrum
+
+| Level | What It Is | Infrastructure | When to Use |
+|-------|-----------|---------------|-------------|
+| **Filtering** | Exact-match query parameters on a paginated endpoint | Database queries (WHERE clauses) | Known-value lookups: status, role, date ranges |
+| **Basic Search** | Text matching within your existing database | PostgreSQL full-text search (`tsvector`/`tsquery`) | Moderate search needs, no extra infrastructure budget |
+| **Full Search Engine** | Dedicated search infrastructure with relevance scoring | OpenSearch, Meilisearch, Typesense | Search is a core user experience, fuzzy matching, autocomplete |
+
+### Level 1: Filtering (Database Queries)
+
+Standard query parameters on paginated endpoints:
+
+```
+GET /users?status=active&role=admin&createdAfter=2024-01-01
+```
+
+**Appropriate for**:
+- Filtering by known values (enums, IDs, date ranges)
+- Sorting by specific fields
+- Simple equality and comparison operators
+
+**Not appropriate for**:
+- Free-text search across multiple fields
+- Fuzzy matching (typo tolerance)
+- Relevance-ranked results
+- Autocomplete / type-ahead suggestions
+
+### Level 2: PostgreSQL Full-Text Search
+
+PostgreSQL has built-in full-text search capabilities using `tsvector` and `tsquery`:
+
+```sql
+SELECT * FROM products
+WHERE to_tsvector('english', name || ' ' || description) @@ plainto_tsquery('english', 'wireless headphones')
+ORDER BY ts_rank(to_tsvector('english', name || ' ' || description), plainto_tsquery('english', 'wireless headphones')) DESC;
+```
+
+**Strengths**:
+- No additional infrastructure (uses your existing PostgreSQL database)
+- Supports language-aware stemming and stop words
+- Configurable text search dictionaries
+- GIN indexes for performance
+- Ranking and relevance scoring
+
+**Weaknesses**:
+- Limited fuzzy matching (no typo tolerance by default)
+- No built-in autocomplete
+- Performance degrades with very large datasets
+- Less sophisticated relevance algorithms than dedicated search engines
+- Query syntax is less flexible than Lucene-style queries
+
+**When to use**: You need search beyond simple filtering, your dataset is moderate (< 1M documents), and you don't want to maintain additional infrastructure.
+
+### Level 3: Dedicated Search Engine
+
+For applications where search is a core user experience:
+
+#### OpenSearch (Recommended Open Source)
+
+OpenSearch is an open-source fork of Elasticsearch, fully compatible with the Elasticsearch API.
+
+**Strengths**:
+- Full-featured: fuzzy matching, faceted search, autocomplete, aggregations
+- Relevance scoring with BM25 and custom boosting
+- Horizontal scaling for large datasets
+- Rich query DSL (boolean queries, range queries, nested queries)
+- Near real-time indexing
+- Active open-source community (Apache 2.0 license)
+
+**Weaknesses**:
+- Requires separate infrastructure (cluster management, monitoring)
+- Data synchronization between primary database and search index
+- Operational complexity (index management, shard configuration)
+- Memory-intensive (JVM-based)
+- Not a primary data store (eventual consistency with source of truth)
+
+**When to use**: Search is a core feature, large datasets, need fuzzy matching / autocomplete / faceted search / relevance tuning.
+
+#### Lightweight Alternatives
+
+| Engine | Best For | Language | License |
+|--------|---------|---------|---------|
+| **Meilisearch** | Simple search with great defaults, fast setup | Rust | MIT |
+| **Typesense** | Typo-tolerant search, easy to operate | C++ | GPL-3.0 |
+
+These are simpler to operate than OpenSearch but have fewer features (less flexible aggregations, smaller ecosystems).
+
+### Architecture Pattern: Search Alongside Filtering
+
+A common pattern is to have both:
+
+```
+GET /products?category=electronics&status=active    → Filtering (database)
+GET /products/search?q=wireless+headphones          → Search (search engine)
+```
+
+**Data synchronization**: Keep the search index in sync with the primary database:
+- **Event-driven**: Publish domain events on data changes, consumer updates search index
+- **Change Data Capture (CDC)**: Stream database changes to search index (Debezium)
+- **Scheduled reindex**: Periodic full reindex (simple but has latency)
+
+Event-driven synchronization is preferred as it provides near real-time updates without tight coupling. See [Event-Driven Architecture](../event-driven-architecture/architecture.md).
+
+### Decision Guide
+
+```
+Do you need free-text search across multiple fields?
+├── No → Use filtering (query parameters + database queries)
+└── Yes
+    ├── Is search a core user experience (autocomplete, fuzzy, facets)?
+    │   ├── No → PostgreSQL full-text search
+    │   └── Yes
+    │       ├── Do you have budget for infrastructure?
+    │       │   ├── Yes → OpenSearch
+    │       │   └── No → Meilisearch or Typesense (simpler to operate)
+    │       └── Is your dataset > 1M documents?
+    │           ├── Yes → OpenSearch (scales horizontally)
+    │           └── No → Any of the above works
+```
+
+See also: [Search & Discovery Experience](../../experiences/search-and-discovery/) for the UX perspective on search.
 
 ## API Gateway Patterns
 

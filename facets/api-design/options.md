@@ -116,27 +116,30 @@ Decision matrix for choosing API styles and pagination strategies.
 
 ## Pagination Options
 
-### 1. Offset-Based Pagination
+### 1. Offset-Based Pagination (Spring Data Pageable)
 
-**Description**: Uses `LIMIT` and `OFFSET` with page number and page size. Simple SQL: `SELECT * FROM users LIMIT 20 OFFSET 40`.
+**Description**: Uses `LIMIT` and `OFFSET` with page number and page size. In Spring Boot, this is implemented via `Pageable` / `Page<T>` / `PageRequest`, which provides a standardized request and response format with zero boilerplate.
 
 **Strengths**:
 - Simple to implement and understand
 - Supports jump-to-page (direct navigation to page 5)
 - Easy to show "Page X of Y" to users
 - Familiar to developers and users
+- Spring Data Pageable handles request parsing, sorting, and response envelope automatically
 
 **Weaknesses**:
 - Breaks with concurrent writes (items shift between pages)
 - Expensive for deep pages (OFFSET 10000 requires scanning 10000 rows)
 - Inconsistent results (same item may appear on multiple pages)
 - Performance degrades as offset increases
+- Spring Data `Page<T>` response format is opinionated (may need mapping for non-Spring consumers)
 
 **When to Use**:
-- Small datasets (< 10,000 records)
+- Small to medium datasets (< 10,000 records)
 - User-facing pagination with page numbers
+- Spring Boot APIs (Pageable is the de facto standard)
 - When consistency isn't critical
-- Simple use cases where performance isn't a concern
+- When you want rich pagination metadata without HATEOAS complexity
 
 ### 2. Cursor-Based Pagination
 
