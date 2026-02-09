@@ -1,6 +1,6 @@
 # Engineering Facets
 
-18 engineering-focused deep dives, each covering a critical concern in modern application development. Every facet provides five perspectives: product, architecture, testing, best practices, and options.
+19 engineering-focused deep dives, each covering a critical concern in modern application development. Every facet provides seven perspectives: product, architecture, testing, best practices, gotchas, and options.
 
 ## Facet Index
 
@@ -21,9 +21,10 @@
 | 13 | [Accessibility](accessibility/) | WCAG, ARIA, keyboard navigation, screen readers | UX |
 | 14 | [Error Handling](error-handling/) | Error boundaries, retry patterns, circuit breakers, user feedback | Resilience |
 | 15 | [Event-Driven Architecture](event-driven-architecture/) | Messaging, event sourcing, CQRS, choreography vs orchestration | Architecture |
-| 16 | [Developer Experience](developer-experience/) | Tooling, onboarding, documentation, local dev, debugging | Process |
-| 17 | [Feature Toggles](feature-toggles/) | Toggle strategies, lifecycle management, rollout patterns | Operations |
-| 18 | [Refactoring](refactoring/) | When and how to refactor, extraction patterns, safe migration | Process |
+| 16 | [Feature Toggles](feature-toggles/) | Toggle strategies, lifecycle management, rollout patterns | Operations |
+| 17 | [Configuration Management](configuration-management/) | Externalized config, secrets, profiles, environment management | Operations |
+| 18 | [Refactoring & Extraction](refactoring-and-extraction/) | When and how to refactor, extraction patterns, safe migration | Process |
+| 19 | [Work Management](work-management/) | Ticket systems, ticket types, workflows, estimation, sprints | Process |
 
 ## How to Navigate
 
@@ -40,6 +41,7 @@
 | `architecture.md` | Architecture | Patterns, diagrams, trade-offs, integration points |
 | `testing.md` | Testing | Strategies, what to test, pyramid, tooling categories |
 | `best-practices.md` | Best Practices | Language-agnostic principles, anti-patterns |
+| `gotchas.md` | Gotchas | Common pitfalls, traps, and lessons learned |
 | `options.md` | Options | Decision matrix or recommended practice with alternatives |
 
 ## Adding New Facets
