@@ -110,6 +110,18 @@ last_updated: 2026-02-09
 
 **Avoid When:** Teams use other version control platforms. Teams prefer best-of-breed tools over integrated platforms. Projects don't need GitLab's additional features. Teams are already invested in other CI platforms.
 
+### Azure DevOps Pipelines
+
+**Description:** CI/CD platform integrated with Azure DevOps, supporting both YAML-based pipelines and classic (GUI-based) pipelines. Tightly integrated with Azure Boards for work tracking, Azure Repos for version control, and Azure Artifacts for package management. Part of the broader Azure DevOps ecosystem.
+
+**Strengths:** Full DevOps platform with integrated boards, repos, pipelines, and artifacts. Strong integration with Azure cloud services (AKS, App Service, Azure Container Registry). Supports both YAML and GUI-based pipeline definitions. Enterprise-grade security and compliance features. Self-hosted agent support for on-premises or custom build environments.
+
+**Weaknesses:** Tightest integration is with Azure ecosystem -- using with AWS or GCP adds friction. YAML pipeline syntax has a steeper learning curve than GitHub Actions. Classic (GUI) pipelines are being deprecated in favor of YAML. Smaller marketplace of reusable tasks compared to GitHub Actions. Can feel heavyweight for smaller teams or simpler projects.
+
+**Best For:** Organizations already invested in Azure ecosystem. Teams using Azure Boards for work tracking that want integrated traceability. Enterprises with compliance requirements that Azure DevOps addresses natively. Teams migrating from TFS/TFVC that need a familiar platform.
+
+**Avoid When:** Teams are GitHub-native and don't use Azure services. Projects are small or simple enough that a lighter platform suffices. Teams prefer open-source or vendor-neutral tooling. The broader Azure DevOps platform features (Boards, Repos) aren't being used -- adopting Pipelines alone loses the integration advantage.
+
 ### Jenkins
 
 **Description:** Self-hosted, extensible CI/CD platform. Pipelines defined in Groovy (Jenkinsfile) or configured through web UI. Extensive plugin ecosystem for integration and customization.
@@ -132,7 +144,7 @@ For production deployments, canary deployments provide the best balance of risk 
 
 For high-velocity teams, trunk-based development enables maximum deployment frequency and minimizes integration risk. It requires feature flag infrastructure and discipline but provides the fastest delivery. GitHub Flow offers a simpler alternative that's easier to adopt while still supporting frequent deployment.
 
-For GitHub-hosted repositories, GitHub Actions provides the best integration and developer experience. The tight coupling with pull requests and inline annotations accelerates feedback loops. However, teams using other platforms should evaluate GitLab CI or Jenkins based on their specific needs.
+For GitHub-hosted repositories, GitHub Actions provides the best integration and developer experience. The tight coupling with pull requests and inline annotations accelerates feedback loops. For teams already invested in the Azure ecosystem (Azure Boards, Azure cloud services), Azure DevOps Pipelines provides strong end-to-end traceability from work item to deployment. Teams using Azure DevOps primarily for Boards but GitHub for source control should consider migrating pipelines to GitHub Actions for tighter source-CI integration, while keeping Azure Boards via the GitHub integration. Jenkins and GitLab CI remain options for teams with specific self-hosting or platform requirements.
 
 ## Synergies
 
