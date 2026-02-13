@@ -11,8 +11,18 @@ last_updated: 2026-02-09
 ## Contents
 
 - [Deployment Strategy Options](#deployment-strategy-options)
+  - [Rolling Deployment](#rolling-deployment)
+  - [Blue-Green Deployment](#blue-green-deployment)
+  - [Canary Deployment](#canary-deployment)
 - [Branching Strategy Options](#branching-strategy-options)
+  - [Trunk-Based Development](#trunk-based-development)
+  - [GitHub Flow](#github-flow)
+  - [GitFlow](#gitflow)
 - [CI Platform Options](#ci-platform-options)
+  - [GitHub Actions](#github-actions)
+  - [GitLab CI](#gitlab-ci)
+  - [Azure DevOps Pipelines](#azure-devops-pipelines)
+  - [Jenkins](#jenkins)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

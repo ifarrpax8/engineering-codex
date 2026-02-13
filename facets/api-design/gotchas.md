@@ -15,6 +15,9 @@ Common pitfalls and traps that developers encounter when designing and implement
 - [Pagination Without Stable Sorting](#pagination-without-stable-sorting)
 - [Treating API Keys as Authentication](#treating-api-keys-as-authentication)
 - [Synchronous Responses for Long-Running Operations](#synchronous-responses-for-long-running-operations)
+- [Returning Only IDs When Nested Objects Are Needed](#returning-only-ids-when-nested-objects-are-needed)
+- [Forgetting Idempotency Keys on Mutations](#forgetting-idempotency-keys-on-mutations)
+- [Using Flat Audit Fields When Richer Context Is Available](#using-flat-audit-fields-when-richer-context-is-available)
 
 ## Using POST for Everything
 
@@ -94,3 +97,21 @@ POST /reports → 202 Accepted { "statusUrl": "/reports/abc/status" }
 GET /reports/abc/status → 200 { "status": "processing", "progress": 45 }
 GET /reports/abc/status → 200 { "status": "complete", "downloadUrl": "/reports/abc/download" }
 ```
+
+## Returning Only IDs When Nested Objects Are Needed
+
+**The trap**: Returning bare ID fields like `partnerId`, `clientId`, `userId` and expecting consumers to make additional calls to resolve them.
+
+**Why it's wrong**: Consumers need to make N+1 requests just to display a meaningful list. If an order response includes `partnerId: "abc"` and `userId: "xyz"`, the frontend must call `/partners/abc` and `/users/xyz` for every row. This creates chatty APIs, increases latency, and makes error handling complex. Return nested objects with at least `id`, `name`, and a primary contact field. See [Response Object Depth](best-practices.md#response-object-depth).
+
+## Forgetting Idempotency Keys on Mutations
+
+**The trap**: Assuming POST is "fire and forget" — no idempotency key, no deduplication, no retry safety.
+
+**Why it's wrong**: Networks are unreliable. If a POST request times out, the client doesn't know if the server processed it. Without an idempotency key, retrying might create a duplicate order, duplicate payment, or duplicate record. Add `Idempotency-Key` headers from day one, especially for operations with side effects. Retrofitting idempotency is harder than building it in. See [Idempotency](best-practices.md#idempotency).
+
+## Using Flat Audit Fields When Richer Context Is Available
+
+**The trap**: Storing `createdBy: "user-123"` and `updatedBy: "system"` as flat strings, then realising you need to distinguish user-initiated actions from system-initiated ones, or you need the actor's name for display.
+
+**Why it's wrong**: Flat audit strings lose context. You can't tell whether `"system"` means a cron job, an integration, or an automated workflow. If you have richer actor information available, use a structured audit format from the start — it's much harder to migrate from flat strings to structured objects once consumers depend on the shape. See [Audit Action Fields](best-practices.md#audit-action-fields).

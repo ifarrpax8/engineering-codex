@@ -3,7 +3,13 @@
 ## Contents
 
 - [Feature Toggle Implementation Options](#feature-toggle-implementation-options)
+  - [1. Database-Backed Custom Service](#1-database-backed-custom-service)
+  - [2. Configuration-File Toggles](#2-configuration-file-toggles)
+  - [3. Commercial Platform (LaunchDarkly / Unleash Cloud)](#3-commercial-platform-launchdarkly--unleash-cloud)
 - [Open-Source Alternatives](#open-source-alternatives)
+  - [Unleash (Open-Source)](#unleash-open-source)
+  - [Flagsmith (Open-Source)](#flagsmith-open-source)
+  - [OpenFeature (Vendor-Neutral Standard)](#openfeature-vendor-neutral-standard)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

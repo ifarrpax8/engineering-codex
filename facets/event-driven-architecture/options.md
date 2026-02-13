@@ -11,8 +11,17 @@ last_updated: 2026-02-09
 ## Contents
 
 - [Communication Pattern Options](#communication-pattern-options)
+  - [Synchronous (REST/gRPC)](#synchronous-restgrpc)
+  - [Asynchronous Messaging (Events)](#asynchronous-messaging-events)
+  - [Hybrid](#hybrid)
 - [Message Broker Options](#message-broker-options)
+  - [Apache Kafka](#apache-kafka)
+  - [RabbitMQ](#rabbitmq)
+  - [In-Process (Spring Events / Axon without External Broker)](#in-process-spring-events--axon-without-external-broker)
 - [Process Coordination Options](#process-coordination-options)
+  - [Choreography](#choreography)
+  - [Orchestration (Saga)](#orchestration-saga)
+  - [Hybrid](#hybrid)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

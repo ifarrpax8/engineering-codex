@@ -9,7 +9,13 @@ State management decisions depend on application complexity, team preferences, a
 ## Contents
 
 - [Client State Management Options](#client-state-management-options)
+  - [Local Component State Only](#local-component-state-only)
+  - [Lightweight Store (Pinia / Zustand)](#lightweight-store-pinia--zustand)
+  - [Full Flux Architecture (Redux / Vuex)](#full-flux-architecture-redux--vuex)
 - [Server State Management Options](#server-state-management-options)
+  - [Manual Fetching (fetch/axios + local state)](#manual-fetching-fetchaxios--local-state)
+  - [Server State Library (TanStack Query / VueQuery)](#server-state-library-tanstack-query--vuequery)
+  - [GraphQL Client (Apollo / urql)](#graphql-client-apollo--urql)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

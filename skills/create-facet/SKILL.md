@@ -142,9 +142,21 @@ recommendation_type: decision-matrix  # or "best-practice"
 <!-- If best-practice: Lead with the recommendation, list "consider instead if..." escape hatches -->
 <!-- If decision-matrix: Present all options with criteria scoring -->
 
+## Contents
+
+<!-- TOC MUST include nested entries for each individual option under its parent section -->
+<!-- Example: -->
+<!-- - [Options](#options) -->
+<!--   - [Option A](#1-option-a) -->
+<!--   - [Option B](#2-option-b) -->
+<!-- - [Evaluation Criteria](#evaluation-criteria) -->
+<!-- - [Recommendation Guidance](#recommendation-guidance) -->
+<!-- - [Synergies](#synergies) -->
+<!-- - [Evolution Triggers](#evolution-triggers) -->
+
 ## Options
 
-<!-- ### Option 1: [Name] -->
+<!-- ### 1. [Name] -->
 <!-- - **Description:** -->
 <!-- - **Strengths:** -->
 <!-- - **Weaknesses:** -->
@@ -161,6 +173,8 @@ recommendation_type: decision-matrix  # or "best-practice"
 <!-- When should this decision be reconsidered? -->
 <!-- What changes in scale, team, or requirements would warrant revisiting? -->
 ```
+
+> **Important:** The `## Contents` section in `options.md` must drill down to list each individual option as a nested entry under its parent section. This makes the available choices scannable at a glance. See any existing facet's `options.md` for examples.
 
 ### Phase 3: Update Index
 

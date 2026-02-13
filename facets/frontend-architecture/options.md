@@ -7,7 +7,13 @@ recommendation_type: decision-matrix
 ## Contents
 
 - [Options](#options)
+  - [Single Page Application (SPA)](#single-page-application-spa)
+  - [Micro-Frontend (MFE)](#micro-frontend-mfe)
+  - [Server-Side Rendering (SSR)](#server-side-rendering-ssr)
 - [MFE Composition Options](#mfe-composition-options)
+  - [Module Federation](#module-federation)
+  - [single-spa](#single-spa)
+  - [Web Components](#web-components)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

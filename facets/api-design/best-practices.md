@@ -10,6 +10,8 @@ Language-agnostic principles for designing consistent, maintainable, and develop
 - [Pagination by Default](#pagination-by-default)
 - [API-First Design](#api-first-design)
 - [Request and Response Design](#request-and-response-design)
+- [Response Object Depth](#response-object-depth)
+- [Audit Action Fields](#audit-action-fields)
 - [Versioning Discipline](#versioning-discipline)
 - [Stack-Specific Callouts](#stack-specific-callouts)
 
@@ -153,7 +155,7 @@ POST is not idempotent—calling `POST /users` multiple times creates multiple u
 
 ### Use Idempotency Keys for Non-Idempotent Operations
 
-For non-idempotent POST operations, use idempotency keys:
+For non-idempotent POST operations, use idempotency keys to allow safe retries:
 
 **Client sends unique key**:
 ```
@@ -167,10 +169,13 @@ Content-Type: application/json
 }
 ```
 
-**Server deduplicates**:
-- Store idempotency key with request
-- If key exists, return original response (don't create duplicate)
-- Key expires after reasonable time (e.g., 24 hours)
+**Server behaviour**:
+- Store idempotency key with the request payload fingerprint and response
+- If key exists with same payload, return the cached response (don't re-process)
+- If key exists with different payload, return 409 Conflict or 422 Unprocessable Entity
+- Handle concurrent requests with the same key (return 409 with `Retry-After` header)
+
+**Key expiry**: Set a reasonable TTL (e.g., 24 hours to 7 days) based on your retry window. Indefinite storage provides the strongest guarantee but has storage implications.
 
 **Critical for**:
 - Payment operations (prevent duplicate charges)
@@ -180,8 +185,11 @@ Content-Type: application/json
 **Idempotency key requirements**:
 - Client-generated unique identifier (UUID recommended)
 - Sent in header: `Idempotency-Key: <uuid>`
-- Server validates and deduplicates
-- Response includes idempotency status (new request vs duplicate)
+- Same key reused when retrying the same operation
+- New key generated for each distinct operation
+- Server validates, deduplicates, and returns cached response for duplicates
+
+> **Stack Callout — Pax8**: Pax8 requires `Idempotency-Key` on all mutating operations (POST, PUT, PATCH, DELETE), not just POST. Keys are stored indefinitely. See ADR-0080 and the [API Development standards](https://pax8.atlassian.net/wiki/spaces/DD/pages/2444624640) for implementation details.
 
 ## Pagination by Default
 
@@ -325,6 +333,8 @@ paths:
                   $ref: '#/components/schemas/User'
 ```
 
+> **Stack Callout — Pax8**: Pax8 mandates TypeSpec as the API definition language per ADR-0057. All API specs live in the [pax8-api-specs](https://github.com/pax8/pax8-api-specs) repository. Design reviews with the Architecture and API Enablement team are required before implementation. OpenAPI specs are auto-generated from TypeSpec.
+
 ### Generate Server Stubs and Client SDKs from Specs
 
 Generate code from specs:
@@ -436,6 +446,108 @@ Or use reference IDs:
 ```
 
 Links enable clients to discover related resources without hardcoding URLs.
+
+## Response Object Depth
+
+### Return Nested Objects, Not Bare IDs
+
+When a resource references related entities, return enough data for the consumer to display meaningful information without extra round trips. Bare ID fields force clients to make N+1 requests to resolve references.
+
+**Discouraged** — bare IDs require additional API calls:
+```json
+{
+  "orderId": "550e8400-e29b-41d4-a716-446655440000",
+  "partnerId": "660e8400-e29b-41d4-a716-446655440001",
+  "userId": "880e8400-e29b-41d4-a716-446655440003",
+  "status": "active"
+}
+```
+
+**Preferred** — nested objects with base data:
+```json
+{
+  "orderId": "550e8400-e29b-41d4-a716-446655440000",
+  "partner": {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "name": "Acme Corporation",
+    "email": "contact@acme.com"
+  },
+  "user": {
+    "id": "880e8400-e29b-41d4-a716-446655440003",
+    "name": "John Doe",
+    "email": "john.doe@example.com"
+  },
+  "status": "active"
+}
+```
+
+**Guidelines**:
+- Include at minimum: `id` plus one or two display-friendly fields (`name`, `email`, or equivalent)
+- Avoid deep nesting beyond 2-3 levels
+- For optional depth, consider expansion parameters (e.g., `?expand=partner,user`) so clients control what gets included
+- Document the nested object structure in your API specification
+
+### Balance Efficiency with Payload Size
+
+Not every related entity needs full nesting. Consider the consumer's typical use case:
+- **Always include**: Fields the consumer needs to display a meaningful row or card (name, email, status)
+- **Expand on request**: Detailed sub-resources that are only needed in detail views
+- **Link only**: Resources that are rarely needed inline — provide a URL or ID for on-demand fetching
+
+## Audit Action Fields
+
+### Use a Structured Format for Audit Metadata
+
+When API responses include audit metadata (who created/updated a resource and when), use a structured action-based format rather than flat fields. This provides richer information and supports multiple actor types.
+
+**Flat fields** (simpler but limited):
+```json
+{
+  "id": "123",
+  "name": "Example",
+  "createdBy": "user-456",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "updatedBy": "user-789",
+  "updatedAt": "2024-06-20T14:45:30Z"
+}
+```
+
+**Action-based format** (richer, supports actor types):
+```json
+{
+  "id": "123",
+  "name": "Example",
+  "created": {
+    "by": {
+      "user": { "id": "user-456", "name": "John Doe", "email": "john@example.com" }
+    },
+    "at": "2024-01-15T10:30:00Z"
+  },
+  "updated": {
+    "by": {
+      "user": { "id": "user-789", "name": "Jane Smith", "email": "jane@example.com" }
+    },
+    "at": "2024-06-20T14:45:30Z"
+  }
+}
+```
+
+**When to use the action-based format**:
+- You need to distinguish actor types (user, system, application/integration)
+- You want to track domain-specific actions beyond `created`/`updated` (e.g., `approved`, `published`, `archived`)
+- You want consistency between REST responses and event payloads
+
+**When flat fields are fine**:
+- Simple internal APIs where only `createdAt`/`updatedAt` matter
+- No need to track actor types or multiple actions
+
+**Guidelines**:
+- Audit fields are optional — include them only if they provide value to consumers
+- If you include them, be consistent across all endpoints in your API
+- Use ISO 8601 timestamps in UTC
+- Action names should be past tense (`created`, `updated`, `deleted`, `sent`, `approved`)
+
+> **Stack Callout — Pax8**: Pax8 standardises on the action-based audit format per ADR-0079, with `user`, `system`, and `application` actor types. The same format is used in both REST responses and Kafka event payloads for consistency. See [Audit Object Structure for API Responses](https://github.com/pax8/adr/tree/main/00079-audit-object-structure-for-api-responses).
 
 ## Versioning Discipline
 

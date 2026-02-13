@@ -11,11 +11,24 @@ Best practices for data persistence balance correctness, performance, and mainta
 
 ## Contents
 
+- [SQL Coding Standards](#sql-coding-standards)
 - [Migration Best Practices](#migration-best-practices)
 - [Index Strategy](#index-strategy)
 - [N+1 Query Prevention](#n1-query-prevention)
 - [Connection Pool Sizing](#connection-pool-sizing)
 - [Transaction Management](#transaction-management)
+
+## SQL Coding Standards
+
+### SQL Style and Conventions
+
+Use uppercase for reserved keywords (SELECT, FROM, WHERE, WITH, etc.). Use lower_snake_case for table and column names. Use singular, collective names for tables and columns. Use consistent 4-space indentation. Left-align root keywords (SELECT, FROM, WHERE, GROUP BY, ORDER BY, HAVING, LIMIT, OFFSET) on the same character boundary. Use implicit aliasing. If parentheses span multiple lines: opening paren terminates the line, closing paren aligns with root keywords, contents indented one level.
+
+### Prefer CTEs Over Subqueries
+
+Use Common Table Expressions (WITH clauses) instead of nested subqueries. CTEs improve readability and make complex queries easier to debug and maintain. Each CTE should have a clear, descriptive name.
+
+> **Stack Callout — Pax8**: Pax8 uses PostgreSQL as the primary relational database. All Postgres code must follow the [Postgres Coding Standards](https://pax8.atlassian.net/wiki/spaces/DD/pages/2527101240). Spring Data JPA and Spring Data Relational are the standard ORM layers for microservices; MongoDB is used where document storage is appropriate.
 
 ## Migration Best Practices
 

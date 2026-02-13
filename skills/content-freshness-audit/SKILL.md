@@ -68,7 +68,24 @@ For each entry in scope:
    - **Stale** — past threshold
    - **No date** — missing `last_updated` field (treat as stale)
 
-### Phase 3: Technology Reference Check
+### Phase 3: TOC Drift Check
+
+For each entry's perspective files (especially `options.md`):
+
+1. Read the `## Contents` section at the top of the file
+2. Parse all `##` and `###` headings in the file body
+3. Check that every `###` option heading (numbered items like `### 1. REST`) appears as a nested entry in the Contents section under its parent `##` section
+4. Flag files where:
+   - A `###` option heading exists but is missing from the TOC
+   - A TOC entry links to a heading that no longer exists (stale anchor)
+   - The TOC has no nested entries for `options.md` files (flat TOC — should be expanded)
+
+Classify:
+- **TOC current** — all headings reflected in Contents
+- **TOC drift** — headings and Contents are out of sync
+- **TOC flat** — `options.md` has no nested option entries (needs expansion)
+
+### Phase 4: Technology Reference Check
 
 For each entry, scan its `options.md` and `best-practices.md` for:
 
@@ -83,7 +100,7 @@ For each entry, scan its `options.md` and `best-practices.md` for:
 2. **Deprecated tools or patterns** — flag if the content recommends something that has since been deprecated or superseded in the industry (not just at Pax8)
 3. **Missing modern alternatives** — flag if a newer, widely-adopted option isn't mentioned (e.g., Bun, Biome, Rspack if they've reached maturity)
 
-### Phase 4: Industry Shift Detection
+### Phase 5: Industry Shift Detection
 
 For key facets, check for significant developments that the content should address:
 
@@ -95,7 +112,7 @@ For key facets, check for significant developments that the content should addre
    - A new industry standard (e.g., new WCAG version, new HTTP spec)
    - A tool reaching end-of-life
 
-### Phase 5: Freshness Report
+### Phase 6: Freshness Report
 
 Present findings in priority order (most stale / most impactful first):
 
@@ -116,6 +133,7 @@ Present findings in priority order (most stale / most impactful first):
 | Stale | X |
 | Needs technology update | X |
 | Needs industry review | X |
+| TOC drift detected | X |
 
 ### Priority Refresh List
 
@@ -146,7 +164,7 @@ Present findings in priority order (most stale / most impactful first):
 [Count] entries are within the freshness threshold.
 ```
 
-### Phase 6: Follow-Up
+### Phase 7: Follow-Up
 
 Ask the user how to proceed:
 

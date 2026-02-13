@@ -7,8 +7,16 @@ recommendation_type: decision-matrix
 ## Contents
 
 - [Testing Strategy Options](#testing-strategy-options)
+  - [1. Test-Driven Development (TDD)](#1-test-driven-development-tdd)
+  - [2. Behavior-Driven Development (BDD)](#2-behavior-driven-development-bdd)
+  - [3. Test-After Development](#3-test-after-development)
+  - [4. Acceptance-Test-Driven Development (ATDD)](#4-acceptance-test-driven-development-atdd)
 - [Test Distribution Options](#test-distribution-options)
+  - [1. Classic Pyramid](#1-classic-pyramid)
+  - [2. Testing Diamond](#2-testing-diamond)
+  - [3. Testing Trophy](#3-testing-trophy)
 - [Testing Infrastructure Options](#testing-infrastructure-options)
+  - [Cloud Service Testing](#cloud-service-testing)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

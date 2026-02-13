@@ -5,7 +5,14 @@ Decision matrix for choosing backend architecture patterns based on team size, d
 ## Contents
 
 - [Deployment Architecture Options](#deployment-architecture-options)
+  - [Monolith](#monolith)
+  - [Modular Monolith (Modulith)](#modular-monolith-modulith)
+  - [Microservices](#microservices)
 - [Internal Architecture Options](#internal-architecture-options)
+  - [Layered Architecture](#layered-architecture)
+  - [Hexagonal Architecture (Ports & Adapters)](#hexagonal-architecture-ports--adapters)
+  - [CQRS](#cqrs)
+  - [Vertical Slice Architecture](#vertical-slice-architecture)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies with Other Facets](#synergies-with-other-facets)

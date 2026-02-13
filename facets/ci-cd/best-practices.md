@@ -9,6 +9,7 @@ last_updated: 2026-02-09
 
 ## Contents
 
+- [Environment Strategy](#environment-strategy)
 - [Keep Pipelines Fast](#keep-pipelines-fast)
 - [Fail Fast](#fail-fast)
 - [Make Builds Reproducible](#make-builds-reproducible)
@@ -17,6 +18,10 @@ last_updated: 2026-02-09
 - [Immutable Artifacts](#immutable-artifacts)
 - [Automate Everything](#automate-everything)
 - [Stack-Specific Optimizations](#stack-specific-optimizations)
+
+## Environment Strategy
+
+Maintain separate environments for different SDLC phases: development/CI, integration/staging, production. Use a development environment for CI and proof-of-concept work; staging/preproduction for integration testing, regression testing, and UAT; production for live user-facing deployments. Follow a structured workflow that flows through these environments.
 
 ## Keep Pipelines Fast
 
@@ -76,6 +81,8 @@ No manual changes to production should be allowed. All changes should go through
 
 ## Immutable Artifacts
 
+Code moved to any environment should always be from an immutable artifact built by CI/CD pipelines. Use container images (Docker) as the standard delivery mechanism. Images should NOT be modified between build and deploy. Rollback should be to a previously released artifact, never to an altered one.
+
 Build artifacts should be immutable: built once, deployed to all environments. Environment-specific configuration comes from environment variables, ConfigMaps, or values files, not from rebuilding artifacts. This ensures that what's tested in staging is identical to what's deployed to production.
 
 Rebuilding for each environment introduces risk. Subtle differences between builds can cause issues that only appear in production. Build timestamps, dependency resolution differences, or environment-specific build logic can create artifacts that behave differently despite appearing identical.
@@ -83,6 +90,16 @@ Rebuilding for each environment introduces risk. Subtle differences between buil
 Immutable artifacts enable reliable testing. If staging tests pass, production deployment should work because the artifact is identical. This reduces the "works on my machine" problem and increases deployment confidence.
 
 Container images exemplify immutable artifacts. An image built in CI is tagged and deployed to staging, then the same tagged image is deployed to production. No rebuild occurs between environments. Configuration differences come from environment variables or mounted configuration files.
+
+## Continuous Delivery Practices
+
+Shorten feedback loops by delivering software to production as early and often as possible. Nothing in higher environments should be manually deployed or run from a developer's machine. Automate build, test, and deployment pipelines. Deploying is not the same as releasing—use feature flags to decouple deployment from release.
+
+## Release Process
+
+Define clear release processes appropriate to your architecture. Microservices and microfrontends can be released independently (e.g., on GitHub release creation). Monolithic applications may require scheduled release windows with regression testing.
+
+> **Stack Callout — Pax8**: Pax8 uses GitHub Actions for build/test automation, ArgoCD for microservice and monolith deployments, and Atlantis for infrastructure (Terraform) deployments. Microservices and MFEs deploy to production on [GitHub release creation](https://backstage.paxating.com/catalog/default/component/platform/docs/ci-cd/02.service-deployment/). The monolith follows a scheduled release process: release branches on Mon/Wed, regression on Tue/Thu, then production deploy. Feature flags are managed with [LaunchDarkly](https://launchdarkly.com/). See the [Deployment](https://pax8.atlassian.net/wiki/spaces/DD/pages/1807876269) documentation for full details.
 
 ## Automate Everything
 

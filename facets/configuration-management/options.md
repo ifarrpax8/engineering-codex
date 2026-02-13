@@ -4,7 +4,13 @@
 
 - [Recommended Configuration Stack](#recommended-configuration-stack)
 - [Secrets Management Options](#secrets-management-options)
+  - [HashiCorp Vault](#hashicorp-vault)
+  - [Cloud Provider Secrets Managers](#cloud-provider-secrets-managers)
+  - [Kubernetes Secrets with Sealed-Secrets](#kubernetes-secrets-with-sealed-secrets)
 - [Runtime Configuration Options](#runtime-configuration-options)
+  - [Environment Variables](#environment-variables)
+  - [Spring Cloud Config Server](#spring-cloud-config-server)
+  - [Kubernetes ConfigMaps with File Mounting](#kubernetes-configmaps-with-file-mounting)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies with Other Facets](#synergies-with-other-facets)

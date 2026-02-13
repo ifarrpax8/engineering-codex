@@ -3,8 +3,17 @@
 ## Contents
 
 - [Ticket System Options](#ticket-system-options)
+  - [Jira](#jira)
+  - [GitHub Issues](#github-issues)
+  - [Azure Boards](#azure-boards)
 - [Estimation Approach Options](#estimation-approach-options)
+  - [Story Points (Fibonacci)](#story-points-fibonacci)
+  - [T-Shirt Sizing (S/M/L/XL)](#t-shirt-sizing-s-m-l-xl)
+  - [No Estimates (Throughput)](#no-estimates-throughput)
 - [Workflow Complexity Options](#workflow-complexity-options)
+  - [Minimal (To Do → In Progress → Done)](#minimal-to-do-in-progress-done)
+  - [Standard (Backlog → Ready → In Progress → Review → Done)](#standard-backlog-ready-in-progress-review-done)
+  - [Extended (with QA, Staging, UAT gates)](#extended-with-qa-staging-uat-gates)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

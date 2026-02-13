@@ -3,26 +3,33 @@
 ## Contents
 
 - [Structured Logging Everywhere](#structured-logging-everywhere)
+- [Log Message Quality](#log-message-quality)
 - [Correlation IDs End-to-End](#correlation-ids-end-to-end)
+- [Contextual Logging (MDC)](#contextual-logging-mdc)
 - [Instrument at Boundaries](#instrument-at-boundaries)
 - [Define SLOs Before Building Dashboards](#define-slos-before-building-dashboards)
 - [Alert on Symptoms, Not Causes](#alert-on-symptoms-not-causes)
 - [Keep Metric Cardinality Under Control](#keep-metric-cardinality-under-control)
 - [Log at the Right Level](#log-at-the-right-level)
+- [Exception Handling in Logs](#exception-handling-in-logs)
 - [Stack-Specific Practices](#stack-specific-practices)
 
 Observability best practices ensure that telemetry data is useful, actionable, and cost-effective. These practices apply across languages and frameworks, with stack-specific considerations for Spring Boot, Kotlin, and frontend applications.
 
 ## Structured Logging Everywhere
 
-Use JSON-formatted logs with consistent field names across all services. Structured logs enable querying and aggregation—finding all logs for a specific user ID, filtering by error type, correlating events across services. Free-form text logs cannot be queried effectively.
+All services should log to STDOUT/STDERR following 12-factor methodology. Never write to log files directly—let the platform or container runtime capture and route output. Use JSON-formatted structured logging in all non-local environments. Structured logs enable querying and aggregation—finding all logs for a specific user ID, filtering by error type, correlating events across services. Free-form text logs cannot be queried effectively.
+
+Include request/trace IDs in logs to enable distributed tracing. Structured logging with consistent field names and explicit parameters is preferred over string concatenation.
 
 **Required Fields in Every Log Entry:**
 
 Every log entry must include these standard fields for correlation and debugging:
 
 - **`timestamp`**: ISO 8601 format with millisecond precision (e.g., `2026-02-09T14:23:45.123Z`). Use UTC to avoid timezone confusion.
-- **`level`**: `ERROR`, `WARN`, `INFO`, `DEBUG`. Use consistent casing across all services.
+- **`level`**: `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`. Use consistent casing across all services.
+- **`thread`**: Thread name for correlation when debugging concurrent flows.
+- **`logger`**: Logger name (typically class name) for filtering logs by component.
 - **`service`**: Service name (e.g., `payment-service`, `order-service`). Use kebab-case for consistency.
 - **`traceId`**: Distributed trace ID (W3C Trace Context format: 32 hex characters). Enables correlating logs with traces.
 - **`spanId`**: Current span ID (16 hex characters). Identifies the specific operation within a trace.
@@ -31,6 +38,7 @@ Every log entry must include these standard fields for correlation and debugging
 - **`userId`**: User identifier when applicable. Enables filtering logs by user. Use consistent format (UUID, email, numeric ID) across services.
 - **`tenantId`**: Tenant identifier in multi-tenant systems. Enables filtering logs by tenant.
 - **`environment`**: Deployment environment (`production`, `staging`, `development`). Helps distinguish logs from different environments.
+- **`exception`**: Exception details (class name, message, stack trace) when the log records an error. Never omit when logging failures.
 
 **Optional but Recommended Fields:**
 
@@ -52,9 +60,11 @@ Include trace ID, span ID, service name, and business context in every log line.
 - Avoid nested objects when possible—flatten structure for easier querying (e.g., `user.id` instead of `user: { id: ... }`).
 - Use bounded values for fields used in queries—avoid high-cardinality values like full URLs or user emails as top-level fields.
 
-Never log sensitive data. Passwords, tokens, credit card numbers, and PII must be excluded or masked. Configure log scrubbing rules to automatically remove sensitive patterns. Review log output during code review to catch accidental sensitive data logging.
+## Log Message Quality
 
-Use appropriate log levels. ERROR for failures that need human attention, WARN for handled but unexpected situations, INFO for significant business events (order placed, user created), DEBUG for diagnostic detail (usually disabled in production). Log level should reflect severity, not verbosity.
+Be specific and actionable. Log "Failed to update customer record: Invalid email format" not "Error occurred". Messages should enable an engineer to understand what happened and what to investigate without reading the code.
+
+Never log sensitive information (passwords, credit cards, PII). Mask sensitive fields when logging objects—never log raw request/response bodies that may contain credentials or tokens. Use structured logging with explicit fields rather than string concatenation, which can accidentally include sensitive data. Configure log scrubbing rules to automatically remove sensitive patterns. Review log output during code review to catch accidental sensitive data logging.
 
 **Example: Structured Logging with Correlation ID**
 
@@ -157,6 +167,12 @@ Correlation IDs should be included in HTTP headers, message metadata (Kafka head
 
 Use correlation IDs for business operations, not just technical requests. An order placement might generate multiple HTTP requests, but they should share a correlation ID representing the order placement operation. This enables correlating all activity related to a single business transaction.
 
+## Contextual Logging (MDC)
+
+Use Mapped Diagnostic Context (MDC) to enrich log entries with request context automatically. Set MDC at request entry points—filters, interceptors, or message consumers—and clear it when the request completes. All log statements within the request scope will include the MDC values without explicit propagation.
+
+Common MDC values: `requestId`/`traceId`, `userId`/`customerId`, `tenantId`/`accountId`, `sessionId`, `environmentName`. Always clear MDC in a `finally` block or equivalent to prevent context leaking into subsequent requests (e.g., in thread pools).
+
 ## Instrument at Boundaries
 
 Trace every incoming HTTP request, outgoing HTTP call, database query, message publish, and message consume. These boundaries are where failures occur and where performance issues manifest. OpenTelemetry auto-instrumentation handles most of this automatically.
@@ -230,15 +246,20 @@ Custom business metrics should use bounded dimensions. "Orders by status" (pendi
 
 ## Log at the Right Level
 
-ERROR for failures that need human attention. Exceptions, timeouts, business logic failures that prevent operation completion. These require investigation and potentially immediate response.
-
-WARN for handled but unexpected situations. Retryable failures that were retried successfully, deprecated API usage, configuration issues that don't prevent operation. These are worth noting but don't require immediate action.
-
-INFO for significant business events. Order placed, user created, payment processed. These events represent important state changes that might be needed for auditing or business intelligence.
-
-DEBUG for detailed diagnostic info. Variable values, intermediate calculation results, detailed execution flow. DEBUG logs are usually disabled in production due to volume and potential sensitive data exposure.
+- **ERROR**: Exceptions and errors that affect functionality. Failures that need human attention—exceptions, timeouts, business logic failures that prevent operation completion. These require investigation and potentially immediate response.
+- **WARN**: Potentially harmful situations that don't interrupt the application. Handled but unexpected situations—retryable failures that were retried successfully, deprecated API usage, configuration issues that don't prevent operation. Worth noting but don't require immediate action.
+- **INFO**: General operational information about system state. Significant business events—order placed, user created, payment processed. These events represent important state changes for auditing or business intelligence.
+- **DEBUG**: Detailed information helpful during development and troubleshooting. Variable values, intermediate calculation results, detailed execution flow. Usually disabled in production due to volume and potential sensitive data exposure.
+- **TRACE**: Very detailed information, only for specific troubleshooting. Finest granularity; use sparingly and only when needed.
 
 Use dynamic log level adjustment for temporary debugging. Rather than changing configuration and redeploying, use an admin endpoint or feature flag to temporarily enable DEBUG logging for a specific service or operation. This enables targeted debugging without affecting all services.
+
+## Exception Handling in Logs
+
+- **DO NOT** drop stack traces or format exception names in error messages. Always include the full exception when logging errors—this enables debugging production issues.
+- **DO NOT** log and swallow exceptions. If you catch an exception, either re-throw it or handle it meaningfully. Logging and continuing masks bugs.
+- **DO NOT** log and re-throw unless doing so adds context. Duplicate logging at each layer creates noise.
+- When catching and re-throwing, wrap in a meaningful domain exception that adds context. The original exception should be the cause; the wrapper explains the business impact.
 
 ## Stack-Specific Practices
 
@@ -482,6 +503,8 @@ class TraceContextFilter : Filter {
 ### Kotlin
 
 Structured logging with kotlin-logging (wrapper around SLF4J) provides type-safe logging with lazy evaluation. Use logger.info { "Message with $variable" } to avoid string concatenation when log level is disabled.
+
+> **Stack Callout — Pax8**: Pax8 uses `KotlinLogging.logger {}` for all Kotlin microservices (via the kotlin-logging library). Use lazy evaluation with curly braces for debug/trace to avoid costly method evaluations: `logger.debug { "Expensive: ${expensiveCall()}" }`. Spring Boot services must use structured JSON logging as defined in the standard logback configuration. MDC in Kotlin uses `withLoggingContext("key" to value) { ... }`. See [RFC-0029: Logging Best Practices](https://github.com/pax8/rfc/blob/main/0029-logging/README.md) and the [Logging Standards](https://pax8.atlassian.net/wiki/spaces/DD/pages/2543256204) for complete details.
 
 Coroutine context propagation for trace IDs requires explicit handling. OpenTelemetry provides coroutine context propagation, but it must be configured. Verify that trace context propagates through coroutine launches and async operations.
 

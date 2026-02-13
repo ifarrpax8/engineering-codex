@@ -3,8 +3,17 @@
 ## Contents
 
 - [Frontend i18n Library Options](#frontend-i18n-library-options)
+  - [vue-i18n (Vue) / react-intl (React)](#vue-i18n-vue--react-intl-react)
+  - [i18next](#i18next)
+  - [Custom Solution](#custom-solution)
 - [Translation Management Options](#translation-management-options)
+  - [TMS Platform (Crowdin / Phrase / Lokalise)](#tms-platform-crowdin--phrase--lokalise)
+  - [Manual File Management](#manual-file-management)
+  - [Machine Translation + Human Review](#machine-translation--human-review)
 - [Backend Localization Options](#backend-localization-options)
+  - [Spring MessageSource](#spring-messagesource)
+  - [Database-Stored Translations](#database-stored-translations)
+  - [External i18n Service](#external-i18n-service)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

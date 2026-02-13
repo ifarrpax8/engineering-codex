@@ -17,6 +17,8 @@ Frontend architecture encompasses the structural patterns that organize how appl
 - [Server-Side Rendering (SSR)](#server-side-rendering-ssr)
 - [Component Architecture](#component-architecture)
 - [Routing Patterns](#routing-patterns)
+- [Shared Dependencies Strategy](#shared-dependencies-strategy)
+- [Security in Frontend](#security-in-frontend)
 
 ## Single Page Application (SPA)
 
@@ -187,6 +189,10 @@ URL parameters serve as a communication channel for navigable state. When the fi
 
 Shared configuration objects, distributed by the shell, provide immutable contracts. Authentication context, feature flags, and API endpoints can be provided to all MFEs without creating coupling. MFEs read this configuration but don't modify it, ensuring consistency without dependencies.
 
+### Micro-Frontend Implementation Guidelines
+
+Micro-frontends enable independent development, testing, and deployment of UI features. Each MFE should have clearly defined exposed modules and dependencies. Test MFE integration points thoroughly. Consider bundle size impact on host applications. Communication between MFEs should use events or shared state, not direct imports.
+
 ## Server-Side Rendering (SSR)
 
 Server-Side Rendering generates HTML on the server for each request, sending fully-rendered pages to the browser. The browser receives HTML that's immediately renderable, then "hydrates" this HTML by attaching JavaScript event handlers and enabling client-side interactivity.
@@ -323,3 +329,10 @@ Coordinated upgrades ensure all MFEs use the same dependency versions. When upgr
 Alternatively, design systems can maintain backward compatibility guarantees, allowing MFEs to use different minor versions. Propulsion v2.1 and v2.2 might be compatible, enabling gradual upgrades. However, this requires careful API design and compatibility testing.
 
 Dependency version monitoring becomes critical. Tools that detect version mismatches, analyze compatibility, and suggest alignment strategies help maintain shared dependency health. Automated checks in CI can prevent deployments that introduce incompatible versions.
+
+## Security in Frontend
+
+- Content Security Policy (CSP): test policies in development, avoid inline scripts/styles, use nonces or hashes for necessary inline content
+- Regularly audit npm dependencies for vulnerabilities
+- Keep dependencies up to date; use exact versions for critical dependencies
+- Review new dependencies before adding them

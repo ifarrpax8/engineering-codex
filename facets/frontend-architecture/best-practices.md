@@ -4,15 +4,35 @@ Principles and patterns for building maintainable, performant frontend applicati
 
 ## Contents
 
+- [Code Readability Over Brevity](#code-readability-over-brevity)
+- [Service Layer Design](#service-layer-design)
+- [Promise and Async Handling](#promise-and-async-handling)
 - [Feature-Based Folder Structure](#feature-based-folder-structure)
 - [Component Composition Over Inheritance](#component-composition-over-inheritance)
+- [Component Architecture](#component-architecture)
 - [Smart vs Presentational Components](#smart-vs-presentational-components)
 - [Prop Drilling Alternatives](#prop-drilling-alternatives)
+- [File Naming Conventions](#file-naming-conventions)
 - [Lazy Loading Routes](#lazy-loading-routes)
 - [Shared Design System Usage](#shared-design-system-usage)
 - [Code Splitting Strategy](#code-splitting-strategy)
+- [Build and Bundle Optimisation](#build-and-bundle-optimisation)
+- [Testing Strategy](#testing-strategy)
+- [State Management](#state-management)
 - [Error Boundaries and Resilience](#error-boundaries-and-resilience)
 - [Stack-Specific Callouts](#stack-specific-callouts)
+
+## Code Readability Over Brevity
+
+Don't sacrifice readability to make something one line. Break complex logic into named intermediate variables. Avoid deeply nested ternary operators. Use early returns to distinguish "quick exits" from main logic.
+
+## Service Layer Design
+
+Don't pass more than 3 parameters to service/API calls — use object destructuring. This lets consumers avoid worrying about parameter order. Write out all destructured params explicitly to serve as documentation for the next developer (avoid `...rest` spread that hides required fields).
+
+## Promise and Async Handling
+
+Prefer `async/await` over chained `.then()` for readability. Never nest `.then()` calls — flatten the chain or use async/await. Use `Promise.all()` for parallel operations on independent promises. Remember: calling `.then()` on the same promise multiple times doesn't re-execute it — promises resolve once. Always handle errors with `.catch()` or try/catch.
 
 ## Feature-Based Folder Structure
 
@@ -81,6 +101,10 @@ function usePagination<T>(fetchFn: (page: number) => Promise<Page<T>>) {
 
 **Why this matters**: Composables/hooks are plain functions. They can be tested independently, composed together, and their dependencies are explicit. Component inheritance creates rigid hierarchies that are difficult to refactor.
 
+## Component Architecture
+
+Follow Single File Component (SFC) standards. Organize components by feature, not by type. Keep components focused and single-purpose. Use descriptive names (avoid generic names like `Item.vue`).
+
 ## Smart vs Presentational Components
 
 Separate components into two categories:
@@ -114,6 +138,10 @@ When data needs to reach deeply nested components, avoid passing props through e
 **URL state**: for state that should survive page refreshes and be shareable via links (active filters, selected tab, current page number). Use query parameters or route params.
 
 **When to just drill props**: If the component hierarchy is shallow (2-3 levels) and the data flows naturally through the tree, prop drilling is simpler and more explicit. Don't optimize for a problem you don't have.
+
+## File Naming Conventions
+
+Use camelCase for folders and files. Use kebab-case (snake-case) for routes only.
 
 ## Lazy Loading Routes
 
@@ -163,6 +191,18 @@ Apply code splitting in this order of impact:
 
 **Measure before splitting further**: after route-level splitting, use bundle analysis tools (rollup-plugin-visualizer, webpack-bundle-analyzer) to identify the largest chunks. Don't split small components -- the overhead of additional network requests can outweigh the benefit.
 
+## Build and Bundle Optimisation
+
+Implement code splitting for large applications. Use lazy loading for routes and heavy components. Optimise images and assets before bundling. Minimise bundle size with tree shaking. Use compression for production builds.
+
+## Testing Strategy
+
+Unit tests for utility functions and complex logic (Jest or equivalent). Component tests for user interactions (Vue Test Utils, Testing Library). E2E tests for critical user journeys (Cypress, Playwright). Visual regression tests for UI consistency (Chromatic, Percy). Target 80%+ test coverage. Write tests before or alongside code (TDD approach). Test behaviour, not implementation details.
+
+## State Management
+
+Use a dedicated state management solution for complex state (Vuex, Pinia, Redux, Zustand). Keep state minimal and normalised. Use getters/selectors for computed/derived state. Handle async operations in actions, not directly in components.
+
 ## Error Boundaries and Resilience
 
 Wrap independent sections of the UI in error boundaries so that a failure in one section doesn't crash the entire page.
@@ -170,6 +210,8 @@ Wrap independent sections of the UI in error boundaries so that a failure in one
 This is especially important in MFE architectures where one failing micro-frontend should not take down the shell or other micro-frontends. Display a graceful fallback (error message, retry button) instead of a blank page.
 
 ## Stack-Specific Callouts
+
+> **Stack Callout — Pax8**: Pax8 uses [Airbnb](https://github.com/airbnb/javascript) and [Vue Recommended](https://eslint.vuejs.org/) ESLint rule sets. Custom ESLint config lives in the [pax8-frontend .eslintrc](https://github.com/pax8/pax8-frontend/blob/master/.eslintrc). State management uses Vuex/Pinia. Visual regression testing uses Chromatic. For MFE development, use the micro-frontend local development setup with hot module replacement. See the [Frontend Coding Standards](https://pax8.atlassian.net/wiki/spaces/DD/pages/1807680317) and [Build Best Practices](https://pax8.atlassian.net/wiki/spaces/DD/pages/2135458248) for complete details.
 
 ### Vue 3
 

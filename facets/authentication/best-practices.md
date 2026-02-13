@@ -103,6 +103,34 @@ Every API request must include authentication credentials (tokens, API keys, or 
 
 Authentication middleware should reject requests without valid credentials with 401 Unauthorized responses. Don't allow "optional" authentication—if an endpoint requires auth, enforce it consistently.
 
+### Consider Fine-Grained Authorization (FGA)
+
+Traditional RBAC (Role-Based Access Control) assigns users to roles with broad permissions (e.g., `admin`, `viewer`). Fine-Grained Authorization (FGA) provides more precise control by defining relationships between users, actions, and specific resources.
+
+**RBAC** (coarse-grained):
+- User has `admin` role → can access all orders
+- Simple, works for many applications
+
+**FGA** (fine-grained):
+- User has `read` permission on order `123` → can only access that specific order
+- User has `write` permission on orders in organisation `abc` → can modify orders scoped to that org
+- More complex, but essential for multi-tenant platforms and resource-level access control
+
+**When to use FGA**:
+- Multi-tenant applications where users should only access their own organisation's data
+- Resource-level permissions (e.g., "can this user edit this specific document?")
+- Complex permission hierarchies (organisation → team → project → resource)
+- When RBAC roles become too coarse (too many roles, role explosion)
+
+**When RBAC is sufficient**:
+- Single-tenant applications with clear role boundaries
+- Simple permission models (admin, editor, viewer)
+- Early-stage applications where the permission model is still evolving
+
+**Implementation approach**: Define permission models declaratively (who can do what on which resource), integrate checks at the service layer, and test authorization paths thoroughly.
+
+> **Stack Callout — Pax8**: Pax8 mandates Fine-Grained Authorization for all new APIs. Permission models are defined in the `role-management` repository. Use `@PreAuthorize("@accessChecks.hasPermission('read:orders')")` in Spring controllers. See the [API Security Guide](https://pax8.atlassian.net/wiki/spaces/DD/pages/2444198682) for implementation patterns.
+
 ### Use API Keys for Identification, OAuth for Authorization
 
 API keys identify clients (applications or services) but don't represent user identity. Use API keys for service-to-service authentication where user context isn't needed. Use OAuth 2.0 client credentials flow for machine-to-machine authentication with proper scoping.

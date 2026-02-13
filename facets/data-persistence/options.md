@@ -13,8 +13,17 @@ This decision matrix guides data persistence technology choices based on applica
 ## Contents
 
 - [Primary Data Store Options](#primary-data-store-options)
+  - [Relational Database (PostgreSQL)](#1-relational-database-postgresql)
+  - [Document Store (MongoDB)](#2-document-store-mongodb)
+  - [Event Sourcing (Axon Server)](#3-event-sourcing-axon-server)
 - [Data Access Pattern Options](#data-access-pattern-options)
+  - [ORM (Spring Data JPA / Hibernate)](#1-orm-spring-data-jpa--hibernate)
+  - [Query Builder (JOOQ / Exposed)](#2-query-builder-jooq--exposed)
+  - [Raw SQL (Spring JDBC / JdbcTemplate)](#3-raw-sql-spring-jdbc--jdbctemplate)
 - [Caching Options](#caching-options)
+  - [Cache-Aside with Redis](#1-cache-aside-with-redis)
+  - [Write-Through Cache](#2-write-through-cache)
+  - [No Cache (Database Only)](#3-no-cache-database-only)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

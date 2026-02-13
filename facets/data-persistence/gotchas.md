@@ -16,6 +16,7 @@ Common pitfalls and traps in data persistence can cause performance problems, da
 - [Migrations That Lock Tables in Production](#migrations-that-lock-tables-in-production)
 - [Shared Database Across Services Creating Coupling](#shared-database-across-services-creating-coupling)
 - [Event Sourcing Without Snapshots](#event-sourcing-without-snapshots)
+- [Nested Subqueries Instead of CTEs](#nested-subqueries-instead-of-ctes)
 - [Caching Stale Data](#caching-stale-data)
 - [Premature Denormalization](#premature-denormalization)
 
@@ -80,6 +81,10 @@ Use tools like `pg-osc` (PostgreSQL Online Schema Change) for zero-downtime sche
 ### Prevention
 
 Test migrations against production-sized datasets (or large test datasets) to identify locking issues. Use `pg_stat_activity` to monitor locks during migration testing. Plan migrations carefully: some operations cannot be made non-blocking and may require maintenance windows.
+
+## Nested Subqueries Instead of CTEs
+
+Deeply nested subqueries are hard to read and debug. Use Common Table Expressions (WITH clauses) for complex queries to improve readability.
 
 ## Shared Database Across Services Creating Coupling
 

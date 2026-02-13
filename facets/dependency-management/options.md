@@ -3,7 +3,14 @@
 ## Contents
 
 - [Automated Upgrade Tools](#automated-upgrade-tools)
+  - [Renovate](#renovate)
+  - [Dependabot](#dependabot)
+  - [Manual Updates](#manual-updates)
 - [Version Strategies](#version-strategies)
+  - [Pinned Versions](#pinned-versions)
+  - [Caret Ranges (^)](#caret-ranges-)
+  - [Tilde Ranges (~)](#tilde-ranges-)
+  - [Latest](#latest)
 
 Decision matrices for dependency management technology choices. Each option is evaluated against criteria relevant to maintenance burden, security, developer experience, and integration complexity.
 

@@ -9,7 +9,13 @@ Decision matrix for choosing API styles and pagination strategies.
 ## Contents
 
 - [API Style Options](#api-style-options)
+  - [REST](#1-rest)
+  - [GraphQL](#2-graphql)
+  - [gRPC](#3-grpc)
 - [Pagination Options](#pagination-options)
+  - [Offset-Based Pagination (Spring Data Pageable)](#1-offset-based-pagination-spring-data-pageable)
+  - [Cursor-Based Pagination](#2-cursor-based-pagination)
+  - [Keyset Pagination](#3-keyset-pagination)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)
@@ -172,6 +178,8 @@ Decision matrix for choosing API styles and pagination strategies.
 - When consistency matters
 - Infinite scroll or "load more" patterns
 - APIs where performance is critical
+
+> **Stack Callout — Pax8**: Cursor-based pagination is the required standard for all new APIs per ADR-0074. Response format uses `content`, `nextCursor`, `prevCursor`, `hasMore`, and `limit` fields. Offset pagination is only acceptable for internal admin UIs with small datasets.
 
 ### 3. Keyset Pagination
 

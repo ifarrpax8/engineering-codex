@@ -3,8 +3,17 @@
 ## Contents
 
 - [Secrets Management](#secrets-management)
+  - [HashiCorp Vault](#hashicorp-vault)
+  - [Cloud Provider Secrets Managers](#cloud-provider-secrets-managers)
+  - [Kubernetes Secrets with Encryption](#kubernetes-secrets-with-encryption)
 - [Dependency Scanning](#dependency-scanning)
+  - [Dependabot / Renovate](#dependabot--renovate)
+  - [Snyk](#snyk)
+  - [OWASP Dependency-Check](#owasp-dependency-check)
 - [Application Security Testing](#application-security-testing)
+  - [SAST (Static Application Security Testing)](#sast-static-application-security-testing)
+  - [DAST (Dynamic Application Security Testing)](#dast-dynamic-application-security-testing)
+  - [Both (SAST + DAST)](#both-sast-dast)
 
 Decision matrices for security technology choices. Each option is evaluated against criteria relevant to security, operational complexity, and integration with existing infrastructure.
 

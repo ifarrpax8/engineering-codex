@@ -9,7 +9,13 @@ Authentication strategy is a foundational architectural decision that impacts se
 ## Contents
 
 - [Options](#options)
+  - [Session-Based Authentication](#1-session-based-authentication)
+  - [JWT (Self-Contained Tokens)](#2-jwt-self-contained-tokens)
+  - [OAuth 2.0 / OpenID Connect](#3-oauth-20--openid-connect)
 - [Authorization Model Options](#authorization-model-options)
+  - [RBAC (Role-Based Access Control)](#rbac-role-based-access-control)
+  - [ABAC (Attribute-Based Access Control)](#abac-attribute-based-access-control)
+  - [FGA/ReBAC (Fine-Grained / Relationship-Based Access Control)](#fgarebac-fine-grained--relationship-based-access-control)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

@@ -4,6 +4,10 @@
 
 - [Alert Fatigue](#alert-fatigue)
 - [Logging Sensitive Data](#logging-sensitive-data)
+- [Excessive Logging in Hot Paths](#excessive-logging-in-hot-paths)
+- [Swallowing Exceptions](#swallowing-exceptions)
+- [Inconsistent Log Formats Across Services](#inconsistent-log-formats-across-services)
+- [String Concatenation in Log Statements](#string-concatenation-in-log-statements)
 - [Metric Cardinality Explosion](#metric-cardinality-explosion)
 - [Missing Trace Context in Async Flows](#missing-trace-context-in-async-flows)
 - [Log Volume Cost](#log-volume-cost)
@@ -68,13 +72,29 @@ Result: 50 alerts → 15 actionable alerts. Alert fatigue eliminated, team respo
 
 ## Logging Sensitive Data
 
-Accidentally logging passwords, tokens, PII (emails, SSNs), credit card numbers creates security and compliance risks. GDPR requires knowing what's in your logs and having processes to handle data subject requests. Logging sensitive data violates these requirements.
+Accidentally logging PII, passwords, or tokens in request/response bodies creates security and compliance risks. GDPR requires knowing what's in your logs and having processes to handle data subject requests. Logging sensitive data violates these requirements. Use masking or redaction for objects that may contain sensitive fields—never log raw request/response payloads.
 
 Configure log scrubbing rules to automatically remove sensitive patterns. Common patterns include credit card numbers (Luhn algorithm validation), SSNs (XXX-XX-XXXX format), and email addresses (if PII concerns exist). However, scrubbing is not foolproof—prevention is better.
 
 Review log output during code review. Look for log statements that include request bodies, query parameters, or user input. These often contain sensitive data. Use structured logging with explicit fields rather than logging entire objects.
 
 Test log scrubbing in staging environments. Inject test data containing sensitive patterns and verify that logs are scrubbed. However, remember that scrubbing cannot catch all cases—the best approach is to not log sensitive data in the first place.
+
+## Excessive Logging in Hot Paths
+
+Logging inside tight loops or high-throughput code paths can severely impact performance. Each log call—even when the level is disabled—can incur overhead from parameter evaluation, formatting, and framework processing. Use appropriate log levels and guard expensive log statements with level checks or lazy evaluation (e.g., `logger.debug { "Expensive: ${expensiveCall()}" }`).
+
+## Swallowing Exceptions
+
+Catching exceptions and only logging `e.message` without the stack trace, then not re-throwing, makes production debugging nearly impossible. The stack trace shows where the failure occurred and the call path that led to it; without it, engineers are left guessing. Always log the full exception and either re-throw or handle meaningfully—never log and continue as if nothing happened.
+
+## Inconsistent Log Formats Across Services
+
+When different services use different log formats (plain text vs. JSON, different field names, different nesting), centralized log aggregation and searching becomes unreliable. Queries that work for one service fail for another. Standardize on a single structured format with consistent field names across all services.
+
+## String Concatenation in Log Statements
+
+Using string concatenation (`"User " + userId + " failed"`) instead of structured logging parameters evaluates the concatenation even when the log level is disabled. If the concatenation involves method calls or expensive operations, you pay the cost without any benefit. Use parameterized logging or lazy evaluation so string building only happens when the log entry is actually written.
 
 ## Metric Cardinality Explosion
 

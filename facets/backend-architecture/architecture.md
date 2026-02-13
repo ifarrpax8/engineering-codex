@@ -5,6 +5,7 @@ Backend architecture encompasses both deployment architecture (how code is packa
 ## Contents
 
 - [Deployment Architectures](#deployment-architectures)
+- [Microservice Construction Pattern](#microservice-construction-pattern)
 - [Internal Architecture Patterns](#internal-architecture-patterns)
 - [Domain-Driven Design](#domain-driven-design)
 - [Vertical Slice Architecture](#vertical-slice-architecture)
@@ -121,6 +122,12 @@ Microservices decompose applications into independently deployable services, eac
 **Prerequisites**: Microservices require mature CI/CD pipelines, comprehensive observability (distributed tracing, metrics, logging), team experience with distributed systems, and platform teams to provide shared infrastructure.
 
 **When to Use**: Large teams (15+ developers), need for independent scaling, different technology requirements per domain, mature DevOps practices, clear domain boundaries.
+
+## Microservice Construction Pattern
+
+Controller/API layer → Command Handlers (writes) + Query Services (reads) → Repositories (aggregate root only) → Domain Model.
+
+This replaces the traditional `Controller → Service → DAO → DTO` pattern. View repositories (read models) decouple queries from the command/write model. Domain events bridge aggregates without direct coupling.
 
 ## Internal Architecture Patterns
 

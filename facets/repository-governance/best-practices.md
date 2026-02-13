@@ -2,6 +2,7 @@
 
 ## Contents
 
+- [Design Process](#design-process)
 - [Essential Repository Files](#essential-repository-files)
 - [Conventional Commits](#conventional-commits)
 - [Small, Focused PRs](#small-focused-prs)
@@ -13,6 +14,24 @@
 - [Branch Protection Configuration](#branch-protection-configuration)
 
 Repository governance best practices are principles that apply regardless of specific tools or organizational structure. These practices emerge from experience and enable effective collaboration, code quality, and developer productivity through consistent conventions and automated enforcement.
+
+## Design Process
+
+All major features, API changes, new services, and significant refactors should go through a design review. Use collaborative design techniques like Event Storming and Event Modeling to build shared understanding across stakeholders (developers, PMs, designers). Document architectural decisions in Architecture Decision Records (ADRs). Place global/cross-cutting ADRs in a central repository; context-specific ADRs in `docs/adr` within the project.
+
+### Development Practices
+
+Encourage TDD, pair programming, and mob programming. Practice short-lived feature branches with trunk-based development and Continuous Integration. Branch names should enable traceability back to work items (e.g., Jira tickets). Code must pass automated checks before PRs can be merged.
+
+### Code Review
+
+Code reviews via Pull Requests are mandatory for quality assurance. PRs should follow established best practices (small, focused, well-described). Follow a structured approval process.
+
+### Security in Design
+
+New system designs should undergo a Security Risk Assessment. All system designs should undergo Threat Modeling. Integrate security requirements during design to catch risks early.
+
+> **Stack Callout — Pax8**: Pax8 follows a design process defined in [RFC-0058](https://github.com/pax8/rfc/tree/main/0058-architecture-and-design-process). Design reviews are presented at [Architecture Forum](https://pax8.atlassian.net/wiki/spaces/AR/pages/360644740/Architecture+Forum) for feedback and knowledge sharing. ADRs are stored in the central [pax8/adr](https://github.com/pax8/adr) repository or in project-local `docs/adr` directories. Event Storming and Event Modeling are the recommended collaborative design techniques. Contact the Architecture Support Slack channel to discuss design needs. See the [Design](https://pax8.atlassian.net/wiki/spaces/DD/pages/1807679662) and [Development](https://pax8.atlassian.net/wiki/spaces/DD/pages/1807908991) SDLC documentation for full details.
 
 ## Essential Repository Files
 

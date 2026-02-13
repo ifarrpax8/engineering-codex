@@ -4,6 +4,54 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-13] - Development Practices Alignment
+
+### Changed
+
+- **facets/observability/best-practices.md**: Added Structured Logging (12-factor, JSON format, standard fields), Log Message Quality (specific/actionable messages, no sensitive data), Contextual Logging (MDC with common keys), Exception Handling in Logs (anti-patterns: swallowing, dropping stack traces), Pax8 stack callout for KotlinLogging, lazy evaluation, RFC-0029
+- **facets/observability/architecture.md**: Added Logging Architecture section (centralized aggregation pipeline, W3C Trace Context correlation, retention policies), Pax8 stack callout for SumoLogic
+- **facets/observability/gotchas.md**: Added 5 gotchas: Logging Sensitive Data, Excessive Logging in Hot Paths, Swallowing Exceptions, Inconsistent Log Formats, String Concatenation in Log Statements
+- **facets/backend-architecture/best-practices.md**: Added Domain-Driven Design in Microservices (bounded contexts, aggregate scoping), CQRS (command/query separation), Aggregate Root Design (no service per table, repositories on aggregate roots only), Naming Conventions (Commands/Events/Views not DTOs, verb-like service names), Event-Driven Patterns, Pax8 stack callout for Donut Manager reference architecture and Axon Framework
+- **facets/backend-architecture/architecture.md**: Added Microservice Construction Pattern (Controller → Command Handlers + Query Services → Repositories → Domain Model)
+- **facets/backend-architecture/gotchas.md**: Added 4 gotchas: One Service Per Database Table, Repositories for Child Entities, Generic DTO Naming, Synchronous Cross-Context Coupling
+- **facets/frontend-architecture/best-practices.md**: Added Code Readability Over Brevity, Service Layer Design (object destructuring), Promise and Async Handling, Component Architecture (SFC, feature-based), File Naming Conventions, Build and Bundle Optimisation, Testing Strategy (unit/component/E2E/visual regression, 80% coverage), State Management, Pax8 stack callout for ESLint (Airbnb/Vue Recommended), Vuex/Pinia, Chromatic
+- **facets/frontend-architecture/architecture.md**: Added Micro-Frontend Implementation Guidelines, Security in Frontend (CSP, dependency audits)
+- **facets/frontend-architecture/gotchas.md**: Added 5 gotchas: Nested Ternary Operators, Parameter Explosion in Service Calls, Nested .then() Chains, Lodash When Native JS Suffices, Console.log in Production
+- **facets/ci-cd/best-practices.md**: Added Environment Strategy (dev/staging/prod), Immutable Artifacts (container images, no modification between build and deploy), Continuous Delivery Practices (automate everything, no manual deploys), Release Process (independent vs scheduled), Pax8 stack callout for GitHub Actions, ArgoCD, Atlantis, LaunchDarkly
+- **facets/feature-toggles/best-practices.md**: Added Pax8 stack callout for LaunchDarkly
+- **facets/data-persistence/best-practices.md**: Added SQL Coding Standards (uppercase keywords, snake_case names, 4-space indent, left-aligned root keywords), Prefer CTEs Over Subqueries, Pax8 stack callout for PostgreSQL and Spring Data
+- **facets/data-persistence/gotchas.md**: Added Nested Subqueries Instead of CTEs gotcha
+- **facets/repository-governance/best-practices.md**: Added Design Process (Event Storming, Event Modeling, ADRs), Development Practices (TDD, pair/mob programming, trunk-based development), Code Review (mandatory PRs, structured approval), Security in Design (risk assessment, threat modeling), Pax8 stack callout for RFC-0058, Architecture Forum, ADR location
+- **pax8-context/standards-map.md**: Added RFC-0003 (Kafka Standards), RFC-0014 (Service Documentation), RFC-0022/0023 (REST API Guidelines), RFC-0029 (Logging), RFC-0058 (Architecture and Design Process)
+
+---
+
+## [2026-02-13] - API Standards Alignment
+
+### Changed
+
+- **facets/api-design/best-practices.md**: Added Response Object Depth (nested objects vs bare IDs), Audit Action Fields (structured action-based format with actor types), expanded Idempotency section (retry semantics, conflict handling, key expiry), added Pax8 stack callouts for TypeSpec-first (ADR-0057) and idempotency-key requirements (ADR-0080)
+- **facets/api-design/architecture.md**: Added Distributed Tracing Headers section (W3C Trace Context, traceparent/tracestate, comparison with idempotency keys), added Pax8 stack callout for REST Query API library (RFC-0039)
+- **facets/api-design/options.md**: Added Pax8 stack callout on cursor-based pagination as required standard (ADR-0074)
+- **facets/api-design/gotchas.md**: Added 3 new pitfalls: Returning Only IDs When Nested Objects Are Needed, Forgetting Idempotency Keys on Mutations, Using Flat Audit Fields When Richer Context Is Available
+- **checklists/api-design-review.md**: Added Idempotency & Reliability section (3 checks), Audit & Tracing section (3 checks), API-first and object depth checks, clarified error format reference to support both RFC 9457 and organisational standards
+- **facets/error-handling/best-practices.md**: Added Pax8 stack callout for ADR-0082 custom error format (ErrorType/ErrorCode enums, details array)
+- **facets/event-driven-architecture/best-practices.md**: Added Include Required Event Metadata section (id, messageId, updatedTime, events as upserts, audit fields in events), Pax8 stack callout for RFC-0026 event standards, topic naming, and schema registry
+- **facets/authentication/best-practices.md**: Added Fine-Grained Authorization (FGA) guidance with RBAC comparison and when-to-use criteria, Pax8 stack callout for mandatory FGA on new APIs
+- **pax8-context/standards-map.md**: Added ADR-0057 (API First Development), ADR-0059 (Public API Process), ADR-0082 (API Error Response Format) to complete table and facet summary
+
+---
+
+## [2026-02-10] - Options TOC Enhancement
+
+### Changed
+
+- **38 options.md files** (21 facets + 17 experiences): Expanded `## Contents` table of contents to include nested entries for each individual option, making available choices scannable at a glance without reading the full document
+- **create-facet skill**: Updated `options.md` template to include nested TOC pattern and guidance note
+- **content-freshness-audit skill**: Added new Phase 3 (TOC Drift Check) that detects when headings and Contents sections are out of sync, renumbered subsequent phases
+
+---
+
 ## [2026-02-09] - Tech Radar and Maintenance Skills
 
 ### Added

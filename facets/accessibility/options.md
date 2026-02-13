@@ -4,7 +4,13 @@
 
 - [Recommended Accessibility Approach](#recommended-accessibility-approach)
 - [Accessibility Testing Strategy Decision Matrix](#accessibility-testing-strategy-decision-matrix)
+  - [Option 1: Automated Only (axe-core + Linting)](#option-1-automated-only-axe-core--linting)
+  - [Option 2: Automated + Manual Keyboard/Screen Reader Testing](#option-2-automated-manual-keyboardscreen-reader-testing)
+  - [Option 3: Full Accessibility Program (Automated + Manual + Expert Audit + User Testing)](#option-3-full-accessibility-program-automated--manual--expert-audit--user-testing)
 - [Component Library Strategy Decision Matrix](#component-library-strategy-decision-matrix)
+  - [Option 1: Design System Components (Propulsion)](#option-1-design-system-components-propulsion)
+  - [Option 2: Headless UI Libraries (Headless UI, Radix, React Aria)](#option-2-headless-ui-libraries-headless-ui-radix-react-aria)
+  - [Option 3: Custom Components](#option-3-custom-components)
 - [Recommended Decision Path](#recommended-decision-path)
 
 ## Recommended Accessibility Approach

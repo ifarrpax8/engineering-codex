@@ -638,3 +638,5 @@ Following these best practices helps teams maintain healthy toggle systems:
 7. **Document everything**—name, purpose, owner, lifespan, safe default, verification
 
 Stack-specific practices leverage language and framework features to make toggle evaluation more ergonomic and type-safe. The goal is to make toggles easy to use correctly and hard to use incorrectly.
+
+> **Stack Callout — Pax8**: Pax8 uses [LaunchDarkly](https://launchdarkly.com/) for feature flag management. Feature flags enable continuous deployment to production without making features visible to all users, providing granular control over the release process and enabling testing in the live environment.

@@ -3,6 +3,7 @@
 ## Contents
 
 - [The Three Pillars of Observability](#the-three-pillars-of-observability)
+- [Logging Architecture](#logging-architecture)
 - [Frontend Observability](#frontend-observability)
 - [OpenTelemetry Architecture](#opentelemetry-architecture)
 - [Alerting](#alerting)
@@ -268,6 +269,16 @@ In micro-frontend architectures, each MFE should generate its own trace spans an
 - **Tail-based sampling:** Decide after seeing all spans. Keep all error traces and slow traces, sample successful ones. More sophisticated but requires buffering spans.
 - **Adaptive sampling:** Adjust sampling rate based on traffic volume. High-traffic services use lower rates (1-5%), low-traffic services use higher rates (50-100%).
 - **Error sampling:** Always sample error traces (100%), sample successful traces at lower rate (1-10%). Ensures error visibility while managing volume.
+
+## Logging Architecture
+
+Centralized log aggregation consolidates logs from all services into a single platform. Common platforms include ELK (Elasticsearch, Logstash, Kibana), Splunk, Datadog, and SumoLogic. The pipeline follows: Application → STDOUT → Log collector → Aggregation platform.
+
+Applications emit structured JSON logs to STDOUT. The container runtime or log collector (e.g., Fluentd, Filebeat) captures output and forwards it to the aggregation platform. Correlation across services relies on distributed trace IDs. Use W3C Trace Context headers (`traceparent`/`tracestate`) so logs from the same request can be correlated across service boundaries.
+
+Log retention policies should align with compliance requirements. Retain detailed logs for 7–30 days for debugging; archive or delete older logs per regulatory needs. Retain aggregated metrics and summaries longer.
+
+> **Stack Callout — Pax8**: Pax8 uses SumoLogic for centralized log aggregation. All services emit structured JSON logs to STDOUT, collected by the platform infrastructure. Use the Searching Logs Guide for query patterns. See the [Logging Standards](https://pax8.atlassian.net/wiki/spaces/DD/pages/2543256204) for platform-specific configuration.
 
 ## Frontend Observability
 

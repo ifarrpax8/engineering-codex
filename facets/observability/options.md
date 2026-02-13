@@ -3,7 +3,13 @@
 ## Contents
 
 - [Observability Stack Options](#observability-stack-options)
+  - [Open Source Stack (OpenTelemetry + Prometheus + Grafana + Loki + Tempo/Jaeger)](#open-source-stack-opentelemetry--prometheus--grafana--loki--tempojaeger)
+  - [Cloud-Native (CloudWatch / Azure Monitor / GCP Operations)](#cloud-native-cloudwatch--azure-monitor--gcp-operations)
+  - [Commercial Platform (Datadog / New Relic / Dynatrace)](#commercial-platform-datadog--new-relic--dynatrace)
 - [Instrumentation Standard Options](#instrumentation-standard-options)
+  - [OpenTelemetry](#opentelemetry)
+  - [Vendor-Specific SDK (Datadog APM, New Relic Agent)](#vendor-specific-sdk-datadog-apm-new-relic-agent)
+  - [Micrometer Only](#micrometer-only)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies](#synergies)

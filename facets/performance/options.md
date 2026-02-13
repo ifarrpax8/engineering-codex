@@ -11,8 +11,17 @@ recommendation_type: decision-matrix
 ## Contents
 
 - [Load Testing Tool Options](#load-testing-tool-options)
+  - [k6](#k6)
+  - [Gatling](#gatling)
+  - [Apache JMeter](#apache-jmeter)
 - [Frontend Performance Monitoring Options](#frontend-performance-monitoring-options)
+  - [Lighthouse CI](#lighthouse-ci)
+  - [Real User Monitoring (RUM)](#real-user-monitoring-rum)
+  - [Web Vitals Library + Custom Reporting](#web-vitals-library--custom-reporting)
 - [Backend Caching Options](#backend-caching-options)
+  - [Redis (Cache-Aside)](#redis-cache-aside)
+  - [Spring Cache (In-Memory)](#spring-cache-in-memory)
+  - [CDN / HTTP Caching](#cdn--http-caching)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Recommendation Guidance](#recommendation-guidance)
 - [Synergies with Other Facets](#synergies-with-other-facets)

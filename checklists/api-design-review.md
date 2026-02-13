@@ -14,10 +14,23 @@ Use this checklist before publishing a new API or making a breaking change to an
 
 - [ ] **HTTP methods used correctly** (GET reads, POST creates, PUT replaces, PATCH updates, DELETE removes) → [api-design/best-practices.md](../facets/api-design/best-practices.md)
 - [ ] **HTTP status codes are accurate** (201 for create, 204 for no content, 404 vs 400 vs 422) → [api-design/best-practices.md](../facets/api-design/best-practices.md)
-- [ ] **Error responses follow RFC 7807 Problem Details format** → [error-handling/architecture.md](../facets/error-handling/architecture.md)
+- [ ] **Error responses follow RFC 9457 Problem Details format** (or organisational standard) → [error-handling/architecture.md](../facets/error-handling/architecture.md)
 - [ ] **Pagination implemented for list endpoints** (never return unbounded collections) → [api-design/architecture.md](../facets/api-design/architecture.md)
 - [ ] **Filtering, sorting, and field selection use consistent query parameter conventions** → [api-design/architecture.md](../facets/api-design/architecture.md)
 - [ ] **Response envelope is consistent across all endpoints** → [api-design/best-practices.md](../facets/api-design/best-practices.md)
+- [ ] **Related entities returned as nested objects** (not bare IDs) where consumers need display data → [api-design/best-practices.md](../facets/api-design/best-practices.md#response-object-depth)
+
+## Idempotency & Reliability
+
+- [ ] **Idempotency-Key header supported on POST** (and other mutation endpoints if organisational standard requires it) → [api-design/best-practices.md](../facets/api-design/best-practices.md#idempotency)
+- [ ] **Duplicate requests return cached response** (same key + same payload = same result) → [api-design/best-practices.md](../facets/api-design/best-practices.md#idempotency)
+- [ ] **Concurrent requests with same key handled** (409 Conflict with Retry-After) → [api-design/best-practices.md](../facets/api-design/best-practices.md#idempotency)
+
+## Audit & Tracing
+
+- [ ] **Audit fields use consistent format** (structured action-based or flat — pick one and apply across all endpoints) → [api-design/best-practices.md](../facets/api-design/best-practices.md#audit-action-fields)
+- [ ] **W3C Trace Context supported** (`traceparent`/`tracestate` headers propagated) → [api-design/architecture.md](../facets/api-design/architecture.md#distributed-tracing-headers)
+- [ ] **Trace ID included in error responses** for debugging correlation → [error-handling/best-practices.md](../facets/error-handling/best-practices.md)
 
 ## Security
 
@@ -29,7 +42,8 @@ Use this checklist before publishing a new API or making a breaking change to an
 
 ## Contract & Documentation
 
-- [ ] **OpenAPI/TypeSpec spec exists and matches implementation** → [api-design/best-practices.md](../facets/api-design/best-practices.md)
+- [ ] **API spec exists and matches implementation** (OpenAPI, TypeSpec, or equivalent) → [api-design/best-practices.md](../facets/api-design/best-practices.md#api-first-design)
+- [ ] **Spec designed before implementation** (API-first workflow) → [api-design/best-practices.md](../facets/api-design/best-practices.md#api-first-design)
 - [ ] **Breaking changes documented and versioned** → [api-design/options.md](../facets/api-design/options.md)
 - [ ] **Example requests and responses provided** → [api-design/best-practices.md](../facets/api-design/best-practices.md)
 - [ ] **Error catalog documented** (all possible error codes and meanings) → [error-handling/best-practices.md](../facets/error-handling/best-practices.md)

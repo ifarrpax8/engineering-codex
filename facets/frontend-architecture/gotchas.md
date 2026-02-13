@@ -4,6 +4,11 @@ Common pitfalls and traps when making frontend architecture decisions. These are
 
 ## Contents
 
+- [Nested Ternary Operators](#nested-ternary-operators)
+- [Parameter Explosion in Service Calls](#parameter-explosion-in-service-calls)
+- [Nested `.then()` Chains](#nested-then-chains)
+- [Using Lodash When Native JS Suffices](#using-lodash-when-native-js-suffices)
+- [Console.log Left in Production Code](#consolelog-left-in-production-code)
 - [Shared State Across MFEs](#shared-state-across-mfes)
 - [CSS Isolation Failures](#css-isolation-failures)
 - [Duplicated Dependencies Inflating Bundle](#duplicated-dependencies-inflating-bundle)
@@ -12,6 +17,26 @@ Common pitfalls and traps when making frontend architecture decisions. These are
 - [Version Conflicts in Shared Libraries](#version-conflicts-in-shared-libraries)
 - [Over-Engineering Component Abstraction](#over-engineering-component-abstraction)
 - [Route Conflicts Across MFEs](#route-conflicts-across-mfes)
+
+## Nested Ternary Operators
+
+Deeply nested ternaries become unreadable fast. Break conditions into named variables or use early returns/switch statements.
+
+## Parameter Explosion in Service Calls
+
+Passing 5+ positional parameters to API service functions is error-prone and hard to maintain. Use object destructuring instead.
+
+## Nested `.then()` Chains
+
+Nesting promise chains recreates callback hell. Flatten with chaining or convert to async/await.
+
+## Using Lodash When Native JS Suffices
+
+Import only what you need from utility libraries and prefer native ES6 methods (e.g., `Array.prototype.map()` over `lodash/map`) when they're equivalent.
+
+## Console.log Left in Production Code
+
+Stray console.log statements clutter browser consoles. Remove before committing or use a linter rule to catch them.
 
 ## Shared State Across MFEs
 

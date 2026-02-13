@@ -14,6 +14,10 @@ Common pitfalls that trap teams when building backend systems. Recognizing these
 - [Anemic Domain Model](#anemic-domain-model)
 - [Ignoring Conway's Law](#ignoring-conways-law)
 - [Over-Engineering](#over-engineering)
+- [One Service Per Database Table](#one-service-per-database-table)
+- [Repositories for Child Entities](#repositories-for-child-entities)
+- [Generic DTO Naming](#generic-dto-naming)
+- [Synchronous Cross-Context Coupling](#synchronous-cross-context-coupling)
 - [Summary](#summary)
 
 ## Distributed Monolith
@@ -209,6 +213,54 @@ Adding complexity (microservices, event sourcing, CQRS) before it's needed. Prem
 **Fix**: Simplify. Remove unnecessary complexity. Extract to simpler patterns. Add complexity only when clear benefits emerge.
 
 **Prevention**: Start simple. Add complexity when scaling triggers are reached. Regularly question whether architecture complexity is justified. Measure the cost of complexity (development speed, operational overhead).
+
+## One Service Per Database Table
+
+Creating a service class for every database table leads to anemic domain models and tightly coupled transaction scripts. Organize around aggregates instead.
+
+**Symptoms**: One service per entity, services that merely delegate to repositories, business logic scattered across multiple service classes, no clear aggregate boundaries.
+
+**Why It Happens**: Tables feel like natural boundaries. Teams mirror the database schema in the service layer.
+
+**Fix**: Identify aggregates. Group related entities under an aggregate root. One service (or command handler + query service) per aggregate, not per table.
+
+**Prevention**: Design from the domain outward. Use DDD to identify aggregates before creating services.
+
+## Repositories for Child Entities
+
+Creating a `LineItemRepository` when `LineItem` is owned by a `Quote` aggregate breaks aggregate boundaries and bypasses business invariants enforced by the root.
+
+**Symptoms**: Repositories for entities that are always loaded with a parent, direct updates to child entities bypassing the aggregate root, invariants that can be violated.
+
+**Why It Happens**: Each entity gets a repository by default. Teams treat aggregates as flat entity graphs.
+
+**Fix**: Repositories exist only for aggregate roots. Child entities are modified through the root. Load the aggregate, call a method on the root, persist the root.
+
+**Prevention**: Treat the aggregate root as the only access point. Child entities have no independent lifecycle.
+
+## Generic DTO Naming
+
+Using `*DTO` for everything obscures intent. A `CreateOrderCommand` is fundamentally different from an `OrderView` even if they share fields.
+
+**Symptoms**: Generic `LineItemDTO`, `OrderDTO`, `UserDTO` used for commands, events, and views alike; unclear whether a type represents input, output, or an event; refactoring is error-prone.
+
+**Why It Happens**: DTO is a familiar acronym. Teams default to it without considering the role of each type.
+
+**Fix**: Name by intent: `AddLineItem`, `OrderCreatedEvent`, `OrderSummaryView`. The name should convey whether it's a command, event, or read model.
+
+**Prevention**: Establish naming conventions: Commands use verb phrases, events use past tense, views describe the shape of data returned.
+
+## Synchronous Cross-Context Coupling
+
+Calling another bounded context's API synchronously during a transaction creates a distributed monolith. If the remote service is down, your operation fails.
+
+**Symptoms**: Service A calls Service B (different bounded context) inside a transaction; B's unavailability causes A's operation to fail; deployment of A requires B to be available; timeout errors cascade.
+
+**Why It Happens**: Synchronous calls feel simpler. Teams want immediate consistency across contexts.
+
+**Fix**: Use events for cross-context communication. Publish domain events; let other contexts consume them asynchronously. If you must call another context, do it outside the transaction boundary and accept eventual consistency.
+
+**Prevention**: Treat bounded contexts as autonomous. Communicate via events or async messaging. Avoid synchronous calls during write operations.
 
 ## Summary
 

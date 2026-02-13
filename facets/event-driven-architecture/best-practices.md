@@ -11,6 +11,7 @@ last_updated: 2026-02-09
 
 - [Design Events as Facts](#design-events-as-facts)
 - [Keep Events Immutable](#keep-events-immutable)
+- [Include Required Event Metadata](#include-required-event-metadata)
 - [Design for Idempotent Consumers](#design-for-idempotent-consumers)
 - [Use Correlation IDs](#use-correlation-ids)
 - [Prefer Choreography for Simple Flows](#prefer-choreography-for-simple-flows)
@@ -38,6 +39,43 @@ Immutable events enable event sourcing. Systems can replay events to reconstruct
 Schema evolution must maintain immutability. Old events remain unchanged. New event versions are published alongside old versions. Systems upcast old events to new formats during replay. This preserves history while enabling evolution.
 
 Design event schemas with immutability in mind. Use immutable data structures. In Kotlin, use data classes with `val` properties. In Java, use final fields and immutable collections. Avoid mutable references that could be modified after event creation.
+
+## Include Required Event Metadata
+
+Every event should carry standard metadata fields that enable idempotency, ordering, and traceability. At minimum, include:
+
+- **`id`**: Unique identifier for the aggregate (UUID recommended). This is the business entity ID, not the event ID.
+- **`messageId`**: Unique identifier for this specific message, used for consumer-side idempotency. Generate a new `messageId` for each publication, even when the aggregate `id` is the same.
+- **`updatedTime`**: ISO 8601 timestamp of when the aggregate was last updated in the source system. This represents the aggregate's state, not when the event was published — Kafka's message timestamp captures publication time.
+
+**Recommended additional fields**:
+- **`createdTime`**: ISO 8601 timestamp of when the aggregate was first created
+- **`action`**: A specific business action that triggered the event (e.g., `OrderCompleted`, `InvoiceGenerated`). Use meaningful domain verbs, not generic CRUD labels.
+- **`deleted`**: Boolean flag for soft deletes (defaults to `false`)
+
+**Example**:
+```json
+{
+  "id": "25373786-c77f-4eee-8d62-501b21d787e2",
+  "messageId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "action": "OrderCompleted",
+  "partnerId": "0ba38027-0d3c-4e17-b159-2cb99f5d836b",
+  "lineItems": [...],
+  "updatedTime": "2024-01-01T00:00:00.000Z",
+  "createdTime": "2024-01-01T00:00:00.000Z",
+  "deleted": false
+}
+```
+
+### Events as Upserts
+
+Events should represent the complete state of a domain aggregate (Event-Carried State Transfer pattern). This means consumers receive everything they need to create or update their local representation without calling back to the producer. Use one topic per domain aggregate to maintain correct ordering of state changes.
+
+### Audit Action Fields in Events
+
+If your events include audit metadata, use the same structured format as REST APIs for consistency. This allows consumers to parse audit information the same way regardless of whether data comes from an API call or an event. See [API Design > Audit Action Fields](../api-design/best-practices.md#audit-action-fields) for the format.
+
+> **Stack Callout — Pax8**: Pax8 requires `id`, `messageId`, and `updatedTime` on all events per RFC-0026. Events follow the Event-Carried State Transfer pattern. Topic naming convention: `[datacenter].[context].[classification].[name].[format].[version]` (e.g., `order-mgmt.evt.order.json.v1`). All event schemas must be registered in Schema Registry with BACKWARD_TRANSITIVE compatibility per RFC-0035. Audit action fields in events follow the same ADR-0079 format as REST APIs.
 
 ## Design for Idempotent Consumers
 

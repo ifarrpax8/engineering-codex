@@ -12,6 +12,11 @@ Principles and patterns for building maintainable, scalable backend applications
 - [Idempotent Operations](#idempotent-operations)
 - [Consistent Error Handling](#consistent-error-handling)
 - [Graceful Degradation](#graceful-degradation)
+- [Domain-Driven Design in Microservices](#domain-driven-design-in-microservices)
+- [CQRS (Command Query Responsibility Segregation)](#cqrs-command-query-responsibility-segregation)
+- [Aggregate Root Design](#aggregate-root-design)
+- [Naming Conventions](#naming-conventions)
+- [Event-Driven Patterns in Microservices](#event-driven-patterns-in-microservices)
 - [Stack-Specific Callouts](#stack-specific-callouts)
 
 ## Start Simple, Evolve When Needed
@@ -112,6 +117,38 @@ Design services to continue functioning (possibly with reduced capability) when 
 **Timeouts**: set explicit timeouts on all external calls. A missing timeout means a single slow dependency can exhaust all threads and bring down the entire service.
 
 **Bulkheads**: isolate connection pools and thread pools per dependency so that a failing dependency doesn't consume resources needed by healthy operations.
+
+## Domain-Driven Design in Microservices
+
+Scope each microservice to a single bounded context. A single microservice should generally represent one domain aggregate (e.g., `/orders`, `/products`, `/users`).
+
+Use techniques like Event-Driven Architecture, Anti-corruption Layers, and CQRS to decouple services across bounded contexts. If another service in another context being down causes your service to fail, revisit your design.
+
+## CQRS (Command Query Responsibility Segregation)
+
+Separate command handling (writes) from query services (reads)—e.g., `OrderCommandHandler` and `OrderQueryService` rather than a single `OrderService`. This avoids 1000+ line transaction script service classes (an anti-pattern known as Anemic Domain Model).
+
+Services should coordinate repositories and infrastructure concerns, not contain all business logic (see hexagonal, onion, and clean architectures).
+
+## Aggregate Root Design
+
+Do NOT create a Service per database table—organize services around aggregates.
+
+Keep business logic in the domain, and application/interface logic decoupled from storage. Repositories focus on aggregate roots as access points, not individual entities. Child entities (e.g., `LineItem`) are owned by their aggregate root (e.g., `Quote`) and do not have their own repository. Use the aggregate root as the transactional boundary where business invariants are enforced.
+
+## Naming Conventions
+
+Name DTOs with intent: Command, Event, View—not generic `*DTO`. `AddLineItem` conveys more meaning than `LineItemDTO`.
+
+Name services with "verb-like" suffixes: handler, adapter, manager—the name should describe what it does. Avoid generic words in service names: api, service, pax8.
+
+## Event-Driven Patterns in Microservices
+
+Emit domain events when commands are handled and aggregate state changes. Use events to: update view/read models, trigger business processes in other aggregates, update caches, emit data to message brokers.
+
+This creates powerful decoupling of domains from each other and from infrastructure.
+
+> **Stack Callout — Pax8**: Pax8 microservices are written in Kotlin using Spring Boot. The [Donut Manager](https://github.com/pax8/donut-manager) repository serves as the reference architecture for all Spring Boot microservices—use it as a learning/guiding tool, not a cargo-cult template. Pax8 uses Spring Data (JPA, Relational, or MongoDB) for repositories and recommends Axon Framework for CQRS/Event Sourcing. See the [Microservices Best Practices](https://pax8.atlassian.net/wiki/spaces/DD/pages/2036761074) for the canonical anatomy of a microservice.
 
 ## Stack-Specific Callouts
 

@@ -7,6 +7,10 @@ recommendation_type: decision-matrix
 ## Contents
 
 - [Options](#options)
+  - [Option 1: Database Filtering Only](#option-1-database-filtering-only)
+  - [Option 2: PostgreSQL Full-Text Search](#option-2-postgresql-full-text-search)
+  - [Option 3: OpenSearch (Recommended for Advanced Needs)](#option-3-opensearch-recommended-for-advanced-needs)
+  - [Option 4: Lightweight Search Engine (Meilisearch or Typesense)](#option-4-lightweight-search-engine-meilisearch-or-typesense)
 - [Evaluation Criteria](#evaluation-criteria)
 - [Decision Framework](#decision-framework)
 - [Synergies](#synergies)

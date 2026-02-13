@@ -4,6 +4,9 @@
 
 - [Recommended Refactoring Approach](#recommended-refactoring-approach)
 - [Refactoring Trigger Decision Guide](#refactoring-trigger-decision-guide)
+  - [When to Refactor NOW (Blocking Current Work)](#when-to-refactor-now-blocking-current-work)
+  - [When to Refactor SOON (Schedule It)](#when-to-refactor-soon-schedule-it)
+  - [When NOT to Refactor](#when-not-to-refactor)
 - [Extraction Readiness Checklist](#extraction-readiness-checklist)
 - [Synergies with Other Facets](#synergies-with-other-facets)
 - [Decision Matrix Summary](#decision-matrix-summary)

@@ -326,6 +326,8 @@ throw ResponseStatusException(
 )
 ```
 
+> **Stack Callout — Pax8**: Pax8 uses a custom error format (ADR-0082) instead of RFC 9457. The format uses an `ErrorType` enum (`INVALID_REQUEST`, `NOT_FOUND`, `BUSINESS_RULE_ERROR`, etc.) and `ErrorCode` enum (`FIELD_REQUIRED`, `RESOURCE_NOT_FOUND`, etc.) with a `details` array. This was chosen over RFC 9457's URI-based `type` field for developer ergonomics. Standard `ErrorType` values are shared across all services; teams define domain-specific `ErrorCode` values for business logic (e.g., `QUOTE_EXPIRED`, `INSUFFICIENT_BALANCE`). See the [API Development standards](https://pax8.atlassian.net/wiki/spaces/DD/pages/2444624640) for the full error response structure and decision tree.
+
 ### Vue 3
 
 **onErrorCaptured for Component Error Boundaries**:
