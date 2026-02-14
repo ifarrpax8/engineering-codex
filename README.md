@@ -144,6 +144,44 @@ engineering-codex/
 - **validate-links** -- Scan for broken internal links and anchor references
 - **what-should-i-read** -- Map a task description to relevant codex content
 
+## Setup
+
+### With workspace-standards (recommended)
+
+If you use [workspace-standards](../workspace-standards/) alongside the codex, the setup script handles everything:
+
+```bash
+cd ~/Development/workspace-standards
+./scripts/setup-skills.sh
+```
+
+This registers the codex's `codex-navigator` subagent (and its skills) globally in Cursor.
+
+### Standalone
+
+To use the codex on its own:
+
+1. Add `~/Development/engineering-codex` to your Cursor workspace
+2. Skills in `.cursor/skills/` are automatically available when the codex is in the workspace
+3. To register the `codex-navigator` subagent globally:
+   ```bash
+   mkdir -p ~/.cursor/agents
+   ln -sfn ~/Development/engineering-codex/.cursor/agents/codex-navigator.md ~/.cursor/agents/codex-navigator.md
+   ```
+4. Restart Cursor (or reload window)
+
+### Codex Navigator Subagent
+
+The codex ships with a `codex-navigator` subagent (`.cursor/agents/codex-navigator.md`) that provides quick access to codex knowledge. Invoke it with `/codex-navigator` or let the agent delegate automatically.
+
+Example prompts:
+- "What are the gotchas for event-driven architecture?"
+- "Compare options for state management"
+- "What's the Pax8 standard for observability?"
+- "What should I read before adding pagination?"
+- "Generate an ADR for our authentication decision"
+- "Generate a production readiness checklist for currency-manager"
+
 ## Related Resources
 
 - [workspace-standards](../workspace-standards/) -- Cursor rules, implementation skills, scoring, golden paths
