@@ -4,6 +4,32 @@ All notable changes to the Engineering Codex will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to date-based versioning.
 
+## [2026-02-14] - Skills Suite Consolidation
+
+### Changed
+
+- **Eliminated wrapper hop**: Consolidated all 10 skills from a two-file pattern (`skills/{name}/SKILL.md` + `.cursor/skills/{name}/SKILL.md` wrapper) to a single-file pattern (`.cursor/skills/{name}/SKILL.md` only)
+- **Deleted top-level `skills/` directory**: All skill implementations now live exclusively under `.cursor/skills/`
+- **Shortened frontmatter descriptions** to under 20 words for faster Cursor routing (all 10 skills)
+- **Added "When NOT to Use" sections** with cross-references to sibling skills for disambiguation (all 10 skills)
+- **Added Verification sections** with phase-specific checkpoints (all 10 skills)
+- **Added Worked Examples** with Input, Key steps, and Output excerpt (all 10 skills)
+- **`CONTRIBUTING.md`**: Updated to document single-file skill pattern, removed "Wrappers Over Symlinks" section, added new required sections
+- **`README.md`**: Updated directory tree to remove top-level `skills/` and wrapper references
+
+### Added
+
+- **`SKILLS.md`**: Root-level index listing all 10 skills with descriptions and paths
+
+### Fixed
+
+- Fixed `../../facets/` links in content-freshness-audit worked example (should be `../../../facets/`)
+- Fixed `engineering-codex/stack-context.md` links in onboarding-guide template (should be `../../../stack-context.md`)
+- Fixed experience-audit "7 perspective files" to "6 perspective files" (excluding README)
+- Fixed create-facet "6 required template files" to "7" (including README)
+
+---
+
 ## [2026-02-13] - Development Practices Alignment
 
 ### Changed

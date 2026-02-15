@@ -52,7 +52,9 @@ Use the `create-facet` skill to scaffold a new facet or experience, then see [CO
 
 ```
 engineering-codex/
-├── skills/                  # Interactive Cursor skills
+├── .cursor/
+│   ├── skills/              # Interactive Cursor skills (auto-discovered)
+│   └── agents/              # Custom subagents (codex-navigator)
 ├── commands/                # Lightweight Cursor commands
 ├── checklists/              # Quick-reference actionable checklists
 ├── decision-frameworks/     # Evaluation criteria, templates, and decision documentation
@@ -144,35 +146,27 @@ engineering-codex/
 - **validate-links** -- Scan for broken internal links and anchor references
 - **what-should-i-read** -- Map a task description to relevant codex content
 
-## Setup
-
-### With workspace-standards (recommended)
-
-If you use [workspace-standards](../workspace-standards/) alongside the codex, the setup script handles everything:
-
-```bash
-cd ~/Development/workspace-standards
-./scripts/setup-skills.sh
-```
-
-This registers the codex's `codex-navigator` subagent (and its skills) globally in Cursor.
-
-### Standalone
-
-To use the codex on its own:
+## Getting Started
 
 1. Add `~/Development/engineering-codex` to your Cursor workspace
-2. Skills in `.cursor/skills/` are automatically available when the codex is in the workspace
-3. To register the `codex-navigator` subagent globally:
+2. (Optional) Add `~/Development/workspace-standards` to the same workspace for implementation skills, scoring, and golden paths
+3. Reload the Cursor window — skills and subagents are auto-discovered from `.cursor/skills/` and `.cursor/agents/`
+4. (Optional) Run the workspace-standards setup script to install global rules:
    ```bash
-   mkdir -p ~/.cursor/agents
-   ln -sfn ~/Development/engineering-codex/.cursor/agents/codex-navigator.md ~/.cursor/agents/codex-navigator.md
+   cd ~/Development/workspace-standards
+   ./scripts/setup-skills.sh
    ```
-4. Restart Cursor (or reload window)
 
-### Codex Navigator Subagent
+### Skills and Subagents
 
-The codex ships with a `codex-navigator` subagent (`.cursor/agents/codex-navigator.md`) that provides quick access to codex knowledge. Invoke it with `/codex-navigator` or let the agent delegate automatically.
+Cursor auto-discovers skills and subagents from `.cursor/` when the repo is in the workspace. No manual registration required.
+
+| Type | Auto-discovered |
+|------|-----------------|
+| Skills (see `.cursor/skills/`) | Yes |
+| Subagents (`codex-navigator`) | Yes |
+
+Invoke the subagent explicitly with `/codex-navigator` or let the agent delegate automatically.
 
 Example prompts:
 - "What are the gotchas for event-driven architecture?"

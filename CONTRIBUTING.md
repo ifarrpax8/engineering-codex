@@ -10,6 +10,61 @@ This is a living document. Contributions are welcome and encouraged as best prac
 4. **Link, don't duplicate** -- Cross-reference other facets and experiences rather than repeating content
 5. **Evergreen over trendy** -- Prefer established patterns. Note emerging approaches but don't over-index on hype
 
+## Directory Conventions
+
+| Content Type | Location | Format |
+|-------------|----------|--------|
+| Cursor Skills | `.cursor/skills/{skill-name}/SKILL.md` | Markdown with structured workflow |
+| Cursor Subagents | `.cursor/agents/{name}.md` | YAML frontmatter + system prompt |
+| Cursor Commands | `commands/{name}.md` | Markdown with usage and behavior |
+| Facets | `facets/{name}/` | 7 files per facet (see below) |
+| Experiences | `experiences/{name}/` | 7 files per experience (see below) |
+| Checklists | `checklists/{name}.md` | Markdown with actionable items |
+| Evolution Guides | `evolution/{name}.md` | Markdown with scaling journeys |
+| Pax8 Context | `pax8-context/` | ADR mappings, deprecated tech, radar overlay |
+
+## Adding a Skill
+
+Skills are interactive Cursor workflows. Each skill is a single file at `.cursor/skills/{name}/SKILL.md`, auto-discovered by Cursor when the repo is in the workspace.
+
+### Required Sections
+
+Every skill must include:
+
+1. **Frontmatter** — `name` and `description` (15-20 words, used by Cursor for routing)
+2. **When to Use** — Scenarios for invocation
+3. **When NOT to Use** — Disambiguation from overlapping skills (with links to alternatives)
+4. **Workflow** — Phased steps with clear instructions
+5. **Verification** — Checkpoints after operations that can fail silently
+6. **Worked Example** — One condensed input-to-output example
+7. **Error Handling** — Graceful handling of missing dependencies or failures
+
+See [SKILLS.md](SKILLS.md) for the full index of available skills.
+
+## Adding a Subagent
+
+Subagents are custom AI agents with focused system prompts. They live directly in `.cursor/agents/{name}.md` (no wrapper needed).
+
+### Required Format
+
+```markdown
+---
+name: {agent-name}
+description: {When to use this agent. Include "use proactively" to encourage automatic delegation.}
+model: fast        # fast, inherit, or a specific model ID
+readonly: true     # true if the agent only reads, doesn't write
+---
+
+{System prompt: what the agent does, how it behaves, what output format to use}
+```
+
+### Conventions
+
+- Keep the system prompt focused on a single responsibility
+- Include specific instructions for different invocation scenarios
+- Use `model: fast` for read-only lookup agents, `model: inherit` for agents that need to write
+- Set `readonly: true` for agents that only read and synthesise (no file changes)
+
 ## Adding a New Facet or Experience
 
 Use the `create-facet` skill to scaffold the directory structure automatically:
