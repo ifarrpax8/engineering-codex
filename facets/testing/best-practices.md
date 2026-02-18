@@ -8,6 +8,7 @@
 - [What to Test vs What Not to Test](#what-to-test-vs-what-not-to-test)
 - [Anti-Patterns](#anti-patterns)
 - [Cloud Integration Testing](#cloud-integration-testing)
+- [API Migration Testing](#api-migration-testing)
 - [Stack-Specific Callouts](#stack-specific-callouts)
 
 ## Test Structure
@@ -727,6 +728,56 @@ class SQSServiceTest {
 - **E2E Tests**: Use real AWS in staging (full system validation)
 
 **Best Practice**: Use LocalStack for integration tests in CI/CD. Use real AWS only for smoke tests and E2E tests in staging environments.
+
+## API Migration Testing
+
+When replacing a legacy API endpoint with a new implementation (e.g., migrating from SQL-backed to OpenSearch-backed), use a structured three-phase approach to verify equivalence before cutting over.
+
+### Phase 1: Input Validation
+
+Systematically test that the new endpoint enforces its contract:
+
+- **Required parameters**: missing, empty string, whitespace-only all return appropriate errors
+- **Format validation**: invalid formats (wrong date shape, injection attempts) are rejected
+- **Valid inputs**: known-good values return 200
+
+This catches contract gaps early and ensures the new endpoint is at least as strict as the legacy one.
+
+### Phase 2: Incremental Filter Diagnosis
+
+Add filters one at a time to isolate which combination causes unexpected zero results:
+
+1. Start with only required parameters (widest scope)
+2. Add one optional filter at a time
+3. Log result counts and a sample record for each combination
+4. Use scannable prefixes: `[OK]` (results found), `[ZERO]` (no results), `[ERR]` (error)
+
+This technique quickly pinpoints which filter is misconfigured — especially valuable when the new implementation uses a different query engine (e.g., Lucene vs SQL).
+
+### Phase 3: A/B Comparison
+
+Fetch records from both legacy and new endpoints with equivalent filters, then match by a shared unique identifier (e.g., GUID):
+
+1. **Account for parameter differences**: the same logical filter may have different names, formats, or defaults between endpoints
+2. **Paginate the legacy endpoint fully**: don't compare page 1 of legacy against page 1 of new — sort orders and pagination models may differ
+3. **Fetch broadly from the new endpoint**: request more records than the legacy to maximize overlap
+4. **Match by unique ID**: build a lookup map and find overlapping records
+5. **Compare field-by-field**: categorize as matching, value difference, legacy-only, or new-only
+
+### Common Pitfalls
+
+- **Different defaults**: legacy may default a filter to `false` while the new endpoint has no default — explicitly pass the same values to both
+- **Date format mismatches**: legacy may require `yyyy-MM-dd`, new may accept `yyyy-MM` — send each endpoint its expected format
+- **Implicit filters**: legacy SQL queries often have implicit `WHERE` clauses (e.g., excluding voided records) that must be replicated in the new implementation, either at index time or query time
+- **Pagination mismatch**: comparing page-for-page gives false negatives when sort order differs; fetch all records from both endpoints instead
+
+### Automation
+
+For repeatable results, generate a single self-contained script (Node.js, Python, or shell) that runs all three phases sequentially with consistent output formatting. This becomes a manual smoke test that can be re-run after every deployment during the migration.
+
+**Best Practice**: Create this script at the start of the migration, not the end. It pays for itself immediately by surfacing contract differences and data discrepancies that would otherwise only be found through ad-hoc browser testing.
+
+> **Skill**: See the [api-migration-test skill](../../../workspace-standards/.cursor/skills/api-migration-test/SKILL.md) for a step-by-step guide to generating these scripts with AI assistance.
 
 ## Stack-Specific Callouts
 
