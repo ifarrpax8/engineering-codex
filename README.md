@@ -55,6 +55,9 @@ engineering-codex/
 ├── .cursor/
 │   ├── skills/              # Interactive Cursor skills (auto-discovered)
 │   └── agents/              # Custom subagents (codex-navigator)
+├── .agents/
+│   └── skills -> .cursor/skills  # Augment skill discovery (symlink)
+├── AGENTS.md                # Cross-tool project context
 ├── commands/                # Lightweight Cursor commands
 ├── checklists/              # Quick-reference actionable checklists
 ├── decision-frameworks/     # Evaluation criteria, templates, and decision documentation
@@ -148,6 +151,8 @@ engineering-codex/
 
 ## Getting Started
 
+### Cursor
+
 1. Add `~/Development/engineering-codex` to your Cursor workspace
 2. (Optional) Add `~/Development/workspace-standards` to the same workspace for implementation skills, scoring, and golden paths
 3. Reload the Cursor window — skills and subagents are auto-discovered from `.cursor/skills/` and `.cursor/agents/`
@@ -157,18 +162,27 @@ engineering-codex/
    ./scripts/setup-skills.sh
    ```
 
+### Augment
+
+1. Add `~/Development/engineering-codex` to your Augment workspace
+2. (Optional) Add `~/Development/workspace-standards` to the same workspace
+3. Skills are auto-discovered from `.agents/skills/` — use `/skills` to see the full list
+4. Project context is auto-loaded from `AGENTS.md`
+
 ### Skills and Subagents
 
-Cursor auto-discovers skills and subagents from `.cursor/` when the repo is in the workspace. No manual registration required.
+Skills follow the [agentskills.io](https://agentskills.io/) specification and are auto-discovered by both Cursor and Augment. No manual registration required.
 
-| Type | Auto-discovered |
-|------|-----------------|
-| Skills (see `.cursor/skills/`) | Yes |
-| Subagents (`codex-navigator`) | Yes |
+| Type | Cursor | Augment |
+|------|--------|---------|
+| Skills | `.cursor/skills/` | `.agents/skills/` |
+| Subagents | `.cursor/agents/` (`codex-navigator`) | — |
 
-Invoke the subagent explicitly with `/codex-navigator` or let the agent delegate automatically.
+**Cursor**: Invoke the subagent explicitly with `/codex-navigator` or let the agent delegate automatically.
 
-Example prompts:
+**Augment**: Use `/skills` to browse available skills, then invoke them by describing the task.
+
+Example prompts (both tools):
 - "What are the gotchas for event-driven architecture?"
 - "Compare options for state management"
 - "What's the Pax8 standard for observability?"
