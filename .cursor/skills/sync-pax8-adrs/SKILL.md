@@ -1,6 +1,8 @@
 ---
 name: sync-pax8-adrs
 description: Diff the Pax8 ADR repository against the codex standards map to surface new, changed, and superseded ADRs.
+complexity: high
+prompt-version: "1.0"
 ---
 
 # Sync Pax8 ADRs Skill

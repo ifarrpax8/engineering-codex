@@ -1,6 +1,8 @@
 ---
 name: refresh-tech-radar
 description: Regenerate the Tech Radar from current codex facets, Pax8 standards, and deprecated technologies.
+complexity: high
+prompt-version: "1.0"
 ---
 
 # Refresh Tech Radar Skill

@@ -27,6 +27,15 @@ This repository provides 10 interactive skills for navigating and applying codex
 - **refresh-tech-radar** -- Regenerate the tech radar from current content
 - **sync-pax8-adrs** -- Diff ADR repo against standards map
 
+## Skill Conventions
+
+All skills use YAML frontmatter with these fields:
+
+- `name` -- skill identifier (kebab-case)
+- `description` -- one-line purpose (used by Cursor for routing)
+- `complexity` -- `low` (structured, suitable for smaller models) or `high` (requires significant reasoning)
+- `prompt-version` -- version string for tracking prompt iterations (e.g. `"1.0"`)
+
 ## Navigation
 
 - **By role**: See `reading-paths.md` for curated routes (developer, QA, architect, product, DevOps, tech lead)

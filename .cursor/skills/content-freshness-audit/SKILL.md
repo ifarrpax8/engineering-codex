@@ -1,6 +1,8 @@
 ---
 name: content-freshness-audit
 description: Audit codex content for staleness by age, outdated tech references, and industry shifts.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Content Freshness Audit Skill

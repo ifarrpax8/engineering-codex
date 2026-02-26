@@ -1,6 +1,8 @@
 ---
 name: create-facet
 description: Scaffold a new facet or experience in the Engineering Codex with all required template files.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Create Facet Skill

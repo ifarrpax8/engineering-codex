@@ -1,6 +1,8 @@
 ---
 name: architecture-review
 description: Compare codebase architecture against Engineering Codex recommendations and identify alignment gaps.
+complexity: high
+prompt-version: "1.0"
 ---
 
 # Architecture Review Skill

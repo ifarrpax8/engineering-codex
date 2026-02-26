@@ -1,6 +1,8 @@
 ---
 name: facet-deep-dive
 description: Explore any Engineering Codex facet or experience interactively, connected to your codebase context.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Facet Deep Dive Skill

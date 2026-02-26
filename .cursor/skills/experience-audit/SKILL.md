@@ -1,6 +1,8 @@
 ---
 name: experience-audit
 description: Audit frontend components against an Engineering Codex experience's UX guidelines and patterns.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Experience Audit Skill

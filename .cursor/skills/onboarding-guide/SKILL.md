@@ -1,6 +1,8 @@
 ---
 name: onboarding-guide
 description: Generate a personalized codex reading path based on your project's detected tech stack and role.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Onboarding Guide Skill

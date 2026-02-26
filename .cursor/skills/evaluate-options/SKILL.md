@@ -1,6 +1,8 @@
 ---
 name: evaluate-options
 description: Score options against weighted criteria using a facet's decision matrix to produce a documented recommendation.
+complexity: high
+prompt-version: "1.0"
 ---
 
 # Evaluate Options Skill

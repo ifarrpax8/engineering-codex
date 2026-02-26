@@ -54,7 +54,7 @@ Linting and formatting checks run early in the pipeline to provide fast feedback
 
 Compilation transforms source code into executable artifacts. For Gradle-based projects, this involves compiling Java or Kotlin source files, processing resources, and assembling JAR files. For frontend projects using Vite, this involves bundling JavaScript, processing CSS, and optimizing assets. Compilation should leverage incremental builds and build caches to avoid recompiling unchanged code.
 
-Unit tests execute next, providing fast feedback on code correctness. These tests should run in parallel when possible, using JUnit's parallel execution for Java/Kotlin tests or Vitest's worker threads for frontend tests. Unit tests should be isolated, fast, and deterministic. They form the foundation of the testing pyramid and catch the majority of bugs.
+Unit tests execute next, providing fast feedback on code correctness. These tests should run in parallel when possible, using JUnit's parallel execution for Java/Kotlin tests or Vitest's worker threads for frontend tests. Unit tests should be isolated, fast, and deterministic. They form the foundation of the test pyramid and catch the majority of bugs.
 
 Integration tests follow unit tests, validating interactions between components. These tests may involve databases, message queues, or external services. They run more slowly than unit tests but provide higher confidence. Integration tests should use test containers or mocked services to maintain isolation and determinism.
 

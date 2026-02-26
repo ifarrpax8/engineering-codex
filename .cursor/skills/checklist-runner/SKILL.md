@@ -1,6 +1,8 @@
 ---
 name: checklist-runner
 description: Audit your project against any Engineering Codex checklist with gap analysis and remediation links.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Checklist Runner Skill
