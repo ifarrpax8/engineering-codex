@@ -4,12 +4,17 @@ Curated routes through the Engineering Codex based on your role or current need.
 
 ## Contents
 
+- [Agentic workflow (Pax8)](#agentic-workflow-pax8)
 - [New Developer](#new-developer)
 - [QA / Test Engineer](#qa-test-engineer)
 - [Architect](#architect)
 - [Product Manager / Designer](#product-manager-designer)
 - [DevOps / Platform Engineer](#devops-platform-engineer)
 - [Tech Lead / Engineering Manager](#tech-lead-engineering-manager)
+
+## Agentic workflow (Pax8)
+
+When using Cursor with **workspace-standards** in the workspace: the **[pax8-workflow](https://github.com/pax8/workspace-standards/blob/main/.cursor/skills/pax8-workflow/SKILL.md)** skill is the map for which skill to run next (refine → implement → review), Jira vs local plans, Superpowers, Qodo, and retrospectives. Single source of truth lives in workspace-standards; this codex remains the practices and facets layer.
 
 ## New Developer
 
@@ -85,12 +90,13 @@ Focus on operations, CI/CD, infrastructure, and observability.
 
 Focus on process, decision-making, and team effectiveness.
 
-1. [Work Management — Best Practices](facets/work-management/best-practices.md) — ticket and sprint practices
-2. [Work Management — Options](facets/work-management/options.md) — tooling decisions
-3. [Decision Frameworks](decision-frameworks/README.md) — how to document decisions
-4. [Checklists Index](checklists/README.md) — all available checklists
-5. [New Project Checklist](checklists/new-project.md) — starting a project
-6. [New Feature Checklist](checklists/new-feature.md) — adding features
-7. [Testing — Product](facets/testing/product.md) — business case for testing
-8. [Evolution: Scaling Triggers](evolution/scaling-triggers.md) — when to change architecture
-9. [CONTRIBUTING.md](CONTRIBUTING.md) — how to evolve the codex itself
+1. [Pax8 workflow skill](https://github.com/pax8/workspace-standards/blob/main/.cursor/skills/pax8-workflow/SKILL.md) — orchestrator for skills, shift-left review, retrospectives (requires workspace-standards repo)
+2. [Work Management — Best Practices](facets/work-management/best-practices.md) — ticket and sprint practices
+3. [Work Management — Options](facets/work-management/options.md) — tooling decisions
+4. [Decision Frameworks](decision-frameworks/README.md) — how to document decisions
+5. [Checklists Index](checklists/README.md) — all available checklists
+6. [New Project Checklist](checklists/new-project.md) — starting a project
+7. [New Feature Checklist](checklists/new-feature.md) — adding features
+8. [Testing — Product](facets/testing/product.md) — business case for testing
+9. [Evolution: Scaling Triggers](evolution/scaling-triggers.md) — when to change architecture
+10. [CONTRIBUTING.md](CONTRIBUTING.md) — how to evolve the codex itself
