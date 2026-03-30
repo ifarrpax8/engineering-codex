@@ -14,7 +14,7 @@ Curated routes through the Engineering Codex based on your role or current need.
 
 ## Agentic workflow (Pax8)
 
-When using Cursor with **workspace-standards** in the workspace: the **[pax8-workflow](https://github.com/pax8/workspace-standards/blob/main/.cursor/skills/pax8-workflow/SKILL.md)** skill is the map for which skill to run next (refine → implement → review), Jira vs local plans, Superpowers, Qodo, and retrospectives. Single source of truth lives in workspace-standards; this codex remains the practices and facets layer.
+When using Cursor with **workspace-standards** in the workspace: the **[pax8-workflow](https://github.com/pax8/workspace-standards/blob/main/.cursor/skills/pax8-workflow/SKILL.md)** skill is the map for which skill to run next (including **unrefined ticket → refine → plan → implement → pre-PR bundle**), Jira vs local plans, Superpowers, Qodo, retrospectives, and **GitHub CLI (`gh`)** when GitHub MCP is unreliable. Single source of truth lives in workspace-standards; this codex remains the practices and facets layer.
 
 ## New Developer
 
