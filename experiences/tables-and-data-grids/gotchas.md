@@ -13,6 +13,8 @@
 - [Mobile Tables That Are Just Squeezed Desktop Tables](#mobile-tables-that-are-just-squeezed-desktop-tables)
 - [Select All Ambiguity](#select-all-ambiguity)
 - [Stale Data After Background Changes](#stale-data-after-background-changes)
+- [Design System Tables (Propulsion PTable)](#design-system-tables-propulsion-ptable)
+- [Propulsion PTable: itemsPerPage and header select-all](#propulsion-ptable-itemsperpage-and-header-select-all)
 
 ## Loading All Data Client-Side
 
@@ -672,3 +674,30 @@ const deleteUser = async (id) => {
 ```
 
 **Best Practice**: Provide manual refresh button as baseline, add auto-refresh or real-time updates for critical data.
+
+## Design System Tables (Propulsion PTable)
+
+**Problem**: Numeric or currency columns stay visually left-aligned after adding `text-align: right` (or `end`) in scoped CSS.
+
+**Why It Happens**: In Pax8 Vue MFEs, Propulsion **`PTable`** typically lays out cells and headers with **flex**. Alignment is controlled on the flex container (main axis), not only by `text-align` on inner text.
+
+**Solution**:
+
+- Use **flex-end alignment** on the cell content wrapper (`justify-content: flex-end` or your design-system utility equivalents).
+- Use the table’s **column configuration** for alignment (for example `align: 'end'`) when the API exposes it.
+- For sortable headers without a dedicated header slot, target header chrome with **scoped `:deep`** rules as needed.
+
+**Pax8 reference**: full conventions live in the **workspace-standards** repository, `.cursor/rules/vue-standards.md`, section **Propulsion and PTable**.
+
+### Propulsion PTable: itemsPerPage and header select-all
+
+**Problem**: After increasing the page size (for example via `p-pagination`), more rows appear, but **header select-all** still selects only **10** rows (or another fixed cap).
+
+**Why it happens**: Propulsion **`PTable`** uses the prop **`itemsPerPage`** (template: **`:items-per-page`**). Attributes like **`:page-size`** are **not** defined on `Table` / `PTable`, so Vue drops them. The table then keeps the default **`itemsPerPage` (10)**. The header checkbox logic uses that internal value to decide which row indices to toggle.
+
+**Solution**:
+
+- Bind **`:items-per-page="pageSize"`** (or your equivalent) on **`p-table`** so it stays in sync with the API and **`p-pagination`**.
+- Do not rely on **`:page-size`** on `p-table`; use **`per-page-options`** on **`p-pagination`** for the rows-per-page control.
+
+**Pax8 reference**: **workspace-standards** `.cursor/rules/vue-standards.md` → **Propulsion and PTable** → **PTable: pagination size and header select-all**.
